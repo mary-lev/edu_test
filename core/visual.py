@@ -6,10 +6,10 @@ import pandas as pd
 df = pd.read_json('core/messages.json')
 df['long'] = df['text'].apply(lambda x: len(x) if x is not None else 0)
 
-#fig = go.Figure([go.Scatter(x=df['date'], y=df['long'])])
-#fig = go.Figure([px.Scatter(df, x=df['date'], y=df['long'], title='Test')])
+dn = df.groupby(['channel', 'date']).count()
 
-fig = px.scatter(df, x="date", y="long", color='channel')
+
+fig = px.line(df, x="date", y="long", color='channel')
 fig.update_xaxes(rangeslider_visible=True)
 
 
