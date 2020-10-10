@@ -1,10 +1,16 @@
 from django.db import models
 
 
+class Company(models.Model):
+	name = models.CharField()
+	logo = models.ImageField()
+
+
 class Student(models.Model):
 	email = models.EmailField()
 	first_name = models.CharField()
 	last_name = models.CharField()
+	company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
 
 
 class Module(models.Model):
