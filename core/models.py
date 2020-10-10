@@ -41,6 +41,3 @@ class Solution(models.Model):
 class Feedback(models.Model):
 	student = models.ForeignKey(Student)
 	task_group = models.ForeignKey(TaskGroup)
-
-
-
