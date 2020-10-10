@@ -19,18 +19,28 @@ class Lesson(models.Model):
 
 class TaskGroup(models.Model):
 	lesson = models.ForeignKey(Lesson)
+	text = models.TextField()
+	mark_max = models.IntegerField()
 
 
 class Task(models.Model):
 	task_group = models.ForeignKey(TaskGroup)
-	text = models.TextArea()
-	question = models.TextArea()
+	text = models.TextField()
+	question = models.TextField()
 	picture = models.ImageField()
+	solution = models.TextField()
 
 
 class Solution(models.Model):
 	task = models.ForeignKey(Task)
 	text = models.CharField()
+	student = models.ForeignKey(Student)
+	mark = models.IntegerField()
 
-	
+
+class Feedback(models.Model):
+	student = models.ForeignKey(Student)
+	task_group = models.ForeignKey(TaskGroup)
+
+
 
