@@ -8,14 +8,22 @@ class Company(models.Model):
 
 class Student(models.Model):
 	email = models.EmailField()
+	phone = models.CharField()
 	first_name = models.CharField()
 	last_name = models.CharField()
-	company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+	company = models.ManyToMany(Company, on_delete=models.CASCADE, related_name="students", null=True)
+	stream = models.ManyToManyField(Stream) 
 
 
 class Module(models.Model):
 	name = models.CharField()
 	slug = models.SlugField()
+
+
+class Stream(models.Model):
+	name = models.CharField()
+	module = models.ForeignKey(Module)
+	start = models.DateField()
 
 
 class Lesson(models.Model):
