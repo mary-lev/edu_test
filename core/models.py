@@ -6,15 +6,6 @@ class Company(models.Model):
 	logo = models.ImageField()
 
 
-class Student(models.Model):
-	email = models.EmailField()
-	phone = models.CharField()
-	first_name = models.CharField()
-	last_name = models.CharField()
-	company = models.ManyToMany(Company, on_delete=models.CASCADE, related_name="students", null=True)
-	stream = models.ManyToManyField(Stream) 
-
-
 class Module(models.Model):
 	name = models.CharField()
 	slug = models.SlugField()
@@ -22,23 +13,32 @@ class Module(models.Model):
 
 class Stream(models.Model):
 	name = models.CharField()
-	module = models.ForeignKey(Module)
+	module = models.ForeignKey(Module, on_delete=models.CASCADE)
 	start = models.DateField()
 
 
+class Student(models.Model):
+	email = models.EmailField()
+	phone = models.CharField()
+	first_name = models.CharField()
+	last_name = models.CharField()
+	company = models.ManyToManyField(Company, related_name="students", null=True)
+	stream = models.ManyToManyField(Stream) 
+
+
 class Lesson(models.Model):
-	module = models.ForeignKey(Module)
+	module = models.ForeignKey(Module, on_delete=models.CASCADE)
 	number = models.IntegerField()
 
 
 class TaskGroup(models.Model):
-	lesson = models.ForeignKey(Lesson) # связь с уроком
+	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE) # связь с уроком
 	text = models.TextField() # общий текст для группы задач
 	#mark_max = models.IntegerField() # максимальное количество баллов за группу задач?
 
 
 class Task(models.Model):
-	task_group = models.ForeignKey(TaskGroup) # связь с группой задач
+	task_group = models.ForeignKey(TaskGroup, on_delete=models.CASCADE) # связь с группой задач
 	text = models.TextField() # формулировка задачи
 	question_type = models.TextField() # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField() # поле для хранения опций, если вопрос - выбор
@@ -48,12 +48,12 @@ class Task(models.Model):
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
-	task = models.ForeignKey(Task) # связь с задачей
+	task = models.ForeignKey(Task, on_delete=models.CASCADE) # связь с задачей
 	text = models.CharField() # решение
-	student = models.ForeignKey(Student) # связь со студентом
+	student = models.ForeignKey(Student, on_delete=models.CASCADE) # связь со студентом
 	mark = models.IntegerField(default=0) # количество полученных баллов
 
 
 class Feedback(models.Model):
-	student = models.ForeignKey(Student)
-	task_group = models.ForeignKey(TaskGroup)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
+	task_group = models.ForeignKey(TaskGroup, on_delete=models.CASCADE)
