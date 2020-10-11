@@ -22,7 +22,7 @@ class Student(models.Model):
 	phone = models.CharField(max_length=100)
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=100)
-	company = models.ManyToManyField(Company, related_name="students", null=True)
+	company = models.ManyToManyField(Company, related_name="students")
 	stream = models.ManyToManyField(Stream) 
 
 
@@ -43,7 +43,7 @@ class Task(models.Model):
 	question_type = models.TextField() # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField() # поле для хранения опций, если вопрос - выбор
 	picture = models.ImageField() # картинка из шаблона
-	solution = models.TextField(null=True) # образцовое решение
+	our_solution = models.TextField(null=True) # образцовое решение
 	mark = models.IntegerField() # количество баллов за задачу (здесь или в Solution?)
 
 
