@@ -2,26 +2,26 @@ from django.db import models
 
 
 class Company(models.Model):
-	name = models.CharField()
+	name = models.CharField(max_length=100)
 	logo = models.ImageField()
 
 
 class Module(models.Model):
-	name = models.CharField()
+	name = models.CharField(max_length=100)
 	slug = models.SlugField()
 
 
 class Stream(models.Model):
-	name = models.CharField()
+	name = models.CharField(max_length=100)
 	module = models.ForeignKey(Module, on_delete=models.CASCADE)
 	start = models.DateField()
 
 
 class Student(models.Model):
 	email = models.EmailField()
-	phone = models.CharField()
-	first_name = models.CharField()
-	last_name = models.CharField()
+	phone = models.CharField(max_length=100)
+	first_name = models.CharField(max_length=100)
+	last_name = models.CharField(max_length=100)
 	company = models.ManyToManyField(Company, related_name="students", null=True)
 	stream = models.ManyToManyField(Stream) 
 
@@ -49,7 +49,7 @@ class Task(models.Model):
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
 	task = models.ForeignKey(Task, on_delete=models.CASCADE) # связь с задачей
-	text = models.CharField() # решение
+	text = models.CharField(max_length=100) # решение
 	student = models.ForeignKey(Student, on_delete=models.CASCADE) # связь со студентом
 	mark = models.IntegerField(default=0) # количество полученных баллов
 
