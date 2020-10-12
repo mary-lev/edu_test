@@ -36,13 +36,14 @@ class Lesson(models.Model):
 
 class Task(models.Model):
 	number = models.CharField(max_length=10)
-	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True) # связь с группой задач
-	text = models.TextField(null=True) # формулировка задачи
-	question_type = models.TextField(null=True) # тип задачи (сделать список: выбор, вписать ответ)
-	options = models.TextField(null=True) # поле для хранения опций, если вопрос - выбор
-	picture = models.ImageField(null=True) # картинка из шаблона
-	our_solution = models.TextField(null=True) # образцовое решение
-	mark = models.IntegerField(null=True) # количество баллов за задачу (здесь или в Solution?)
+	name = models.CharField(max_length=200, blank=True)
+	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True) # связь с группой задач
+	text = models.TextField(blank=True) # формулировка задачи
+	question_type = models.TextField(blank=True) # тип задачи (сделать список: выбор, вписать ответ)
+	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор
+	picture = models.ImageField(blank=True) # картинка из шаблона
+	our_solution = models.TextField(blank=True) # образцовое решение
+	mark = models.IntegerField(blank=True) # количество баллов за задачу (здесь или в Solution?)
 
 	def __str__(self):
 		return self.number

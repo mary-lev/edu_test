@@ -2,7 +2,7 @@
 <body>
 
 {% for task in tasks %}
-<h3>Урок {{task.lesson.number}}. Задача {{ task.number|slice:"4:" }}: {{ task.feedbacks.count }}</h3>
+<h3>Урок {{task.lesson.number}}. Задача {{ task.number|slice:"4:" }}. {{ task.name }} ({{ task.feedbacks.count }})</h3>
 	<ul>
 		{% for feedback in task.feedbacks.all %}
 		<li><b>{{ feedback.student.first_name }} {{ feedback.student.last_name}}.</b> {{ feedback.text|safe }}</li>
