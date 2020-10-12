@@ -19,10 +19,10 @@ def index(request):
     	'percents': percents.to_html()})
 
 def parse(request):
-	df = pd.read_json('scenario1.json')
-	for row in df.iterrows():
-		pass
-
+	with open('scenario1.json', 'r') as f:
+		data = json.load(f)
+	return render(request, 'parse.html', {'data': data})
+	
 
 class DateGraph(TemplateView):
     template_name = 'telegram.html'
