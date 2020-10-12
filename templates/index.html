@@ -1,12 +1,15 @@
 <html>
 <body>
 	<ul>
-{% for message in messages %}
-<li>{{ message }}</li>
+{% for row in df %}
+{% for data in row %}
+<li>{{ data }}</li>
+{% endfor %}
 {% endfor %}
 
 	{{messages|safe}}
 
+{{ percents|safe }}
 
 </body>
 </html>

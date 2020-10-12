@@ -31,14 +31,8 @@ class Lesson(models.Model):
 	number = models.IntegerField()
 
 
-class TaskGroup(models.Model):
-	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE) # связь с уроком
-	text = models.TextField() # общий текст для группы задач
-	#mark_max = models.IntegerField() # максимальное количество баллов за группу задач?
-
-
 class Task(models.Model):
-	task_group = models.ForeignKey(TaskGroup, on_delete=models.CASCADE) # связь с группой задач
+	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE) # связь с группой задач
 	text = models.TextField() # формулировка задачи
 	question_type = models.TextField() # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField() # поле для хранения опций, если вопрос - выбор
