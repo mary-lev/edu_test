@@ -50,4 +50,6 @@ class Solution(models.Model): # решение конкретной задачи
 
 class Feedback(models.Model):
 	student = models.ForeignKey(Student, on_delete=models.CASCADE)
-	task = models.ForeignKey(Task, on_delete=models.CASCADE)
+	task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, related_name='feedbacks')
+	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
+	#lesson_help = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')

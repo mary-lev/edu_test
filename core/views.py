@@ -12,14 +12,16 @@ def index(request):
     columns = [all for all in columns if all not in exclude_columns]
     percents_columns = [0, 4,17,39,61,83,102,126,147,170,201]
     percents = df.iloc[:, percents_columns]
-    df = df.iloc[:, columns]
+    dn = df.iloc[:, columns]
     return render(request, 'index.html', {
-    	'messages': df.to_html(),
-    	'df': df.iterrows(),
+    	'messages': dn.to_html(),
+    	'df': df.itertuples(),
     	'percents': percents.to_html()})
 
 def parse(request):
 	df = pd.read_json('scenario1.json')
+	for row in df.iterrows():
+		pass
 
 
 class DateGraph(TemplateView):
