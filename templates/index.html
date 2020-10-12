@@ -1,5 +1,12 @@
 <html>
 <body>
-	{{ messages.head }}
+	<ul>
+{% for message in messages %}
+<li>{{ message }}</li>
+{% endfor %}
+
+	{{messages|safe}}
+
+
 </body>
 </html>

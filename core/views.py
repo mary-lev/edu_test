@@ -6,9 +6,8 @@ from django.views.generic import TemplateView
 from .visual import date_div, dn
 
 def index(request):
-    df = pd.read_json('core/messages.json')
-
-    return render(request, 'index.html', {'messages': df})
+    df = pd.read_json('scenario1.json')
+    return render(request, 'index.html', {'messages': df.to_html(), 'df': df.iterrows()})
 
 
 class DateGraph(TemplateView):
