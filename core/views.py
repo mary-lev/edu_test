@@ -19,9 +19,32 @@ def index(request):
     	'percents': percents.to_html()})
 
 def parse(request):
-	with open('scenario1.json', 'r') as f:
-		data = json.load(f)
-	return render(request, 'parse.html', {'data': data})
+	df = pd.read_json('scenario1.json')
+	users = list()
+	for index, row in df.iterrows():
+		module, create = Module.objects.get_or_create(
+			name='Сценарии', slug='scenario')
+		stream, create = Stream.objects.get_or_create(
+			name='Апрель', module=module)
+		student, create = Student.objects.get_or_create(
+			email=row['email'],
+			first_name=row['name'],
+			last_name=row['last_name'])
+		for x in range(1, 156):
+			if x == 131:
+				one = 'task' + str(x)
+				task, create = Task.objects.get_or_create(
+					number=one,
+					)
+				if row[one]:
+					feedback, create = Feedback.objects.get_or_create(
+						student=student,
+						task=task,
+						text=row[one])
+
+		users.append(row['email'])
+
+	return render(request, 'parse.html', {'data': users})
 	
 
 class DateGraph(TemplateView):

@@ -14,16 +14,19 @@ class Module(models.Model):
 class Stream(models.Model):
 	name = models.CharField(max_length=100)
 	module = models.ForeignKey(Module, on_delete=models.CASCADE)
-	start = models.DateField()
+	start = models.DateField(null=True)
 
 
 class Student(models.Model):
 	email = models.EmailField()
-	phone = models.CharField(max_length=100)
-	first_name = models.CharField(max_length=100)
-	last_name = models.CharField(max_length=100)
+	phone = models.CharField(max_length=100, null=True)
+	first_name = models.CharField(max_length=100, null=True)
+	last_name = models.CharField(max_length=100, null=True)
 	company = models.ManyToManyField(Company, related_name="students")
-	stream = models.ManyToManyField(Stream) 
+	stream = models.ManyToManyField(Stream)
+
+	def __str__(self):
+		return "{1} {1}".format(self.first_name, self.last_name)
 
 
 class Lesson(models.Model):
@@ -32,13 +35,17 @@ class Lesson(models.Model):
 
 
 class Task(models.Model):
-	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE) # связь с группой задач
-	text = models.TextField() # формулировка задачи
-	question_type = models.TextField() # тип задачи (сделать список: выбор, вписать ответ)
-	options = models.TextField() # поле для хранения опций, если вопрос - выбор
-	picture = models.ImageField() # картинка из шаблона
+	number = models.CharField(max_length=10)
+	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True) # связь с группой задач
+	text = models.TextField(null=True) # формулировка задачи
+	question_type = models.TextField(null=True) # тип задачи (сделать список: выбор, вписать ответ)
+	options = models.TextField(null=True) # поле для хранения опций, если вопрос - выбор
+	picture = models.ImageField(null=True) # картинка из шаблона
 	our_solution = models.TextField(null=True) # образцовое решение
-	mark = models.IntegerField() # количество баллов за задачу (здесь или в Solution?)
+	mark = models.IntegerField(null=True) # количество баллов за задачу (здесь или в Solution?)
+
+	def __str__(self):
+		return self.number
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
@@ -52,4 +59,5 @@ class Feedback(models.Model):
 	student = models.ForeignKey(Student, on_delete=models.CASCADE)
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
+	text = models.TextField(null=True)
 	#lesson_help = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
