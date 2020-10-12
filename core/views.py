@@ -5,7 +5,14 @@ from django.views.generic import TemplateView
 
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback
+
+
 def index(request):
+	tasks = Task.objects.all()
+	return render(request, 'index.html', {'tasks': tasks})
+
+
+def index1(request):
     df = pd.read_json('scenario1.json')
     columns = [all[0] for all in enumerate(df.columns.to_list())]
     exclude_columns = [3, 16, 36, 37, 38, 60, 82, 100, 101, 125, 145, 146, 169, 198, 199, 200]
