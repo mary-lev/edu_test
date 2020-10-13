@@ -28,6 +28,29 @@ def index1(request):
     	'percents': percents.to_html()})
 
 def parse(request):
+	with open('scenario2.json', 'r') as f:
+		users = json.load(f)
+	tasks = list()
+	for all in users:
+		module = Module.objects.get(name='Сценарии')
+		stream, create = Stream.objects.get_or_create(
+			name='Июнь', module=module)
+		student, create = Student.objects.get_or_create(
+			email=all['email'],
+			first_name=all['name'],
+			last_name=all['family']
+			)
+		task, create = Task.objects.get_or_create(
+			number='task'+all['number'])
+		feedback, create = Feedback.objects.get_or_create(
+			student=student,
+			task=task,
+			text=all['text'])
+		tasks.append(task)
+	return render(request, 'parse.html', {'data': tasks})
+
+
+def parse1(request):
 	df = pd.read_json('scenario1.json')
 	users = list()
 	for index, row in df.iterrows():
