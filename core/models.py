@@ -26,7 +26,7 @@ class Student(models.Model):
 	stream = models.ManyToManyField(Stream)
 
 	def __str__(self):
-		return "{1} {1}".format(self.first_name, self.last_name)
+		return "{0} {1}".format(self.first_name, self.last_name)
 
 
 class Lesson(models.Model):
