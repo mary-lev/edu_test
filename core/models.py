@@ -62,3 +62,6 @@ class Feedback(models.Model):
 	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	text = models.TextField(null=True)
 	#lesson_help = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
+
+	def __str__(self):
+		return self.text
