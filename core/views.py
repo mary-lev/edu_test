@@ -6,10 +6,12 @@ from django.views.generic import TemplateView
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback
 
+from .feedback import div
+
 
 def index(request):
 	tasks = Task.objects.all()
-	return render(request, 'index.html', {'tasks': tasks})
+	return render(request, 'index.html', {'tasks': tasks, 'div': div})
 
 
 def index1(request):

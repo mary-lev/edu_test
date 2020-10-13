@@ -1,5 +1,9 @@
 <html>
 <body>
+<div style="width:1200;height:900">
+{{ div|safe }}
+
+</div>
 
 {% for task in tasks %}
 <h3>Урок {{task.lesson.number}}. Задача {{ task.number|slice:"4:" }}. {{ task.name }} ({{ task.feedbacks.count }})</h3>
