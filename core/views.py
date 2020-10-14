@@ -17,8 +17,22 @@ def index(request):
 class StudentView(DetailView):
 	model = Student
 
+
 class TaskView(DetailView):
 	model = Task
+
+
+class LessonView(DetailView):
+	model = Lesson
+
+
+class ModuleView(DetailView):
+	model = Module
+
+
+class StreamView(DetailView):
+	model = Stream
+
 
 def index1(request):
     df = pd.read_json('scenario1.json')
