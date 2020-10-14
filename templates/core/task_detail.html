@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Задача {{ object.number|slice:"4:" }}</h3>
+
+{% for feedback in object.feedbacks.all %}
+<li> {{ feedback.text }} (<a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student }}</a>)</li>
+{% endfor %}
+
+{% endblock %}

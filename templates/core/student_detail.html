@@ -1,6 +1,6 @@
-<html>
-<body>
+{% extends 'base.html' %}
 
+{% block content %}
 <h3>{{ object }}</h3>
 
 {% for feedback in object.feedbacks.all %}
@@ -10,5 +10,4 @@
 </ul>
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}

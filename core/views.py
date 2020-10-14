@@ -17,6 +17,9 @@ def index(request):
 class StudentView(DetailView):
 	model = Student
 
+class TaskView(DetailView):
+	model = Task
+
 def index1(request):
     df = pd.read_json('scenario1.json')
     columns = [all[0] for all in enumerate(df.columns.to_list())]

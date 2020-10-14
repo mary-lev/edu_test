@@ -1,12 +1,13 @@
-<html>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
 <div style="width:1200;height:900">
 {{ div|safe }}
 
 </div>
 
 {% for task in tasks %}
-<h3>Урок {{task.lesson.number}}. Задача {{ task.number|slice:"4:" }}. {{ task.name }} ({{ task.feedbacks.count }})</h3>
+<h3>Урок {{task.lesson.number}}. <a href="{% url 'core:task' task.id %}">Задача {{ task.number|slice:"4:" }}. {{ task.name }}</a> ({{ task.feedbacks.count }})</h3>
 	<ul>
 		{% for feedback in task.feedbacks.all %}
 		<li><b><a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student.first_name }} {{ feedback.student.last_name}}</a>.</b> {{ feedback.text|safe }}</li>
@@ -15,5 +16,4 @@
 	
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}
