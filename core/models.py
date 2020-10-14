@@ -46,7 +46,12 @@ class Lesson(models.Model):
 class Task(models.Model):
 	number = models.CharField(max_length=10)
 	name = models.CharField(max_length=200, blank=True)
-	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True) # связь с группой задач
+	lesson = models.ForeignKey(
+							Lesson,
+							on_delete=models.CASCADE,
+							blank=True,
+							related_name='tasks'
+							) # связь с группой задач
 	text = models.TextField(blank=True) # формулировка задачи
 	question_type = models.TextField(blank=True) # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор

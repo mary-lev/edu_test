@@ -2,6 +2,10 @@
 
 {% block content %}
 
-{{ object }}
+<h1 class="display-4">{{ object }}</h1>
+
+{% for task in object.tasks.all %}
+<li>Задача {{ task.number|slice:"4:" }}</li>
+{% endfor %}
 
 {% endblock %}
