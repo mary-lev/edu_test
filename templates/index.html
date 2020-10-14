@@ -9,7 +9,7 @@
 <h3>Урок {{task.lesson.number}}. Задача {{ task.number|slice:"4:" }}. {{ task.name }} ({{ task.feedbacks.count }})</h3>
 	<ul>
 		{% for feedback in task.feedbacks.all %}
-		<li><b>{{ feedback.student.first_name }} {{ feedback.student.last_name}}.</b> {{ feedback.text|safe }}</li>
+		<li><b><a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student.first_name }} {{ feedback.student.last_name}}</a>.</b> {{ feedback.text|safe }}</li>
 		{% endfor %}
 	</ul>
 	

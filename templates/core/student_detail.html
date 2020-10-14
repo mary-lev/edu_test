@@ -1,0 +1,14 @@
+<html>
+<body>
+
+<h3>{{ object }}</h3>
+
+{% for feedback in object.feedbacks.all %}
+<li><b>Задача {{ feedback.task.number|slice:"4:" }}</b>.</li>
+<ul>
+<li> {{ feedback.text }}</li>
+</ul>
+{% endfor %}
+
+</body>
+</html>

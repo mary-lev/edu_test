@@ -2,6 +2,7 @@ import json
 import pandas as pd
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
 
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback
@@ -13,6 +14,8 @@ def index(request):
 	all_tasks = Task.objects.all()
 	return render(request, 'index.html', {'tasks': all_tasks, 'div': div})
 
+class StudentView(DetailView):
+	model = Student
 
 def index1(request):
     df = pd.read_json('scenario1.json')

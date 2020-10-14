@@ -3,8 +3,10 @@ from django.urls import path, include
 
 from . import views
 
+app_name ='core'
 urlpatterns = [
 	path('', views.index, name='index'),
 	path('parse/', views.parse, name='parse'),
+	path('student/<pk>/', views.StudentView.as_view(), name='student'),
     path('telegram/', views.DateGraph.as_view(), name='telegram'),
     ]

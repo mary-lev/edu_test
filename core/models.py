@@ -22,7 +22,7 @@ class Student(models.Model):
 	phone = models.CharField(max_length=100, null=True, blank=True)
 	first_name = models.CharField(max_length=100, null=True, blank=True)
 	last_name = models.CharField(max_length=100, null=True, blank=True)
-	company = models.ManyToManyField(Company, related_name="students", null=True, blank=True)
+	company = models.ManyToManyField(Company, related_name="students", blank=True)
 	stream = models.ManyToManyField(Stream)
 
 	def __str__(self):
@@ -57,7 +57,7 @@ class Solution(models.Model): # решение конкретной задачи
 
 
 class Feedback(models.Model):
-	student = models.ForeignKey(Student, on_delete=models.CASCADE)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='feedbacks')
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	text = models.TextField(null=True)
