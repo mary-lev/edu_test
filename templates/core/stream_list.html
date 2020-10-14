@@ -1,0 +1,17 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Потоки</h1>
+
+
+<ul>
+	{% for stream in object_list %}
+	<li><a href="{% url 'core:stream' stream.id %}">{{ stream.name }} </a></li>
+	{% endfor %}
+</ul>
+
+
+
+{% endblock %}

@@ -1,7 +1,10 @@
-<html>
-<body>
+{% extends 'base.html' %}
 
-{{ object }}
+{% block content %}
 
-</body>
-</html>
+<h1 class="display-4">{{ object }}</h1>
+{% for stream in object.streams.all %}
+<li><a href="{% url 'core:stream' stream.id %}">{{ stream.name}}</a></li>
+{% endfor %}
+
+{% endblock %}

@@ -16,7 +16,7 @@ class Module(models.Model):
 
 class Stream(models.Model):
 	name = models.CharField(max_length=100)
-	module = models.ForeignKey(Module, on_delete=models.CASCADE)
+	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='streams')
 	start = models.DateField(null=True)
 
 	def __str__(self):

@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 
 from .visual import date_div, dn
@@ -31,6 +31,14 @@ class ModuleView(DetailView):
 
 
 class StreamView(DetailView):
+	model = Stream
+
+
+class ModuleListView(ListView):
+	model = Module
+
+
+class StreamListView(ListView):
 	model = Stream
 
 
