@@ -2,7 +2,13 @@
 
 {% block content %}
 
-<h1 class="display-4">{{ object }}</h1>
+<h1 class="display-4">Модуль «{{ object }}»</h1>
+
+{% for lesson in object.lessons.all %}
+<li><a href="{% url 'core:lesson' lesson.id %}">Урок {{ lesson.number }}</a></li>
+{% endfor %}
+
+<h2 class="display-4">Потоки по модулю</h2>
 {% for stream in object.streams.all %}
 <li><a href="{% url 'core:stream' stream.id %}">{{ stream.name}}</a></li>
 {% endfor %}

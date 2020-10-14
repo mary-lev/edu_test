@@ -1,0 +1,17 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Студенты</h1>
+
+
+<ul>
+	{% for student in object_list %}
+	<li><a href="{% url 'core:student' student.id %}">{{ student }} </a></li>
+	{% endfor %}
+</ul>
+
+
+
+{% endblock %}

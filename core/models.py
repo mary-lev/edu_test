@@ -36,7 +36,7 @@ class Student(models.Model):
 
 
 class Lesson(models.Model):
-	module = models.ForeignKey(Module, on_delete=models.CASCADE)
+	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='lessons')
 	number = models.IntegerField()
 
 	def __str__(self):
