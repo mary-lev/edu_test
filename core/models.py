@@ -19,10 +19,10 @@ class Stream(models.Model):
 
 class Student(models.Model):
 	email = models.EmailField()
-	phone = models.CharField(max_length=100, null=True)
-	first_name = models.CharField(max_length=100, null=True)
-	last_name = models.CharField(max_length=100, null=True)
-	company = models.ManyToManyField(Company, related_name="students")
+	phone = models.CharField(max_length=100, null=True, blank=True)
+	first_name = models.CharField(max_length=100, null=True, blank=True)
+	last_name = models.CharField(max_length=100, null=True, blank=True)
+	company = models.ManyToManyField(Company, related_name="students", null=True, blank=True)
 	stream = models.ManyToManyField(Stream)
 
 	def __str__(self):

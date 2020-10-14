@@ -6,19 +6,36 @@ from django.db.models import Count
 
 from .models import Feedback, Task, Stream
 
-#feedbacks = Feedback.objects.filter(student__stream__name='Апрель').aggregate('task').count()
-feedbacks = Task.objects.filter(feedbacks__student__stream__name='Апрель').annotate(num_feedback=Count('feedbacks'))
-tasks = [all.number for all in feedbacks]
-feed = [all.num_feedback for all in feedbacks]
+all_tasks_number = [all.number for all in Task.objects.all()]
+feedbacks = Task.objects.annotate(num_feedback=Count('feedbacks'))
+all_feedacks = [all.num_feedback for all in feedbacks]
 
-stream = Task.objects.filter(feedbacks__student__stream__name='Июнь').annotate(num_feedback=Count('feedbacks'))
-tasks1 = [all.number for all in feedbacks]
-feed1 = [all.num_feedback for all in stream]
+feedbacks_april = Task.objects.filter(
+	feedbacks__student__stream__name='Апрель').annotate(num_feedback=Count('feedbacks'))
+tasks_april = [all.number for all in feedbacks_april]
+feed_april = [all.num_feedback for all in feedbacks_april]
 
+feedbacks_june = Task.objects.filter(
+	feedbacks__student__stream__name='Июнь').annotate(num_feedback=Count('feedbacks'))
+tasks_june = [all.number for all in feedbacks_june]
+feed_june = [all.num_feedback for all in feedbacks_june]
 
-fig = px.line(feedbacks, x=tasks, y=feed, title='Число фидбэков по задачам')
-fig.add_trace(go.Scatter(x=tasks, y=feed, mode='lines', name='Сценарии. Апрель'))
-fig.add_trace(go.Scatter(x=tasks1, y=feed1, mode='lines', name='Сценарии. Июнь'))
+feedbacks_september = Task.objects.filter(
+	feedbacks__student__stream__name='Сентябрь').annotate(num_feedback=Count('feedbacks'))
+tasks_september = [all.number for all in feedbacks_september]
+feed_september = [all.num_feedback for all in feedbacks_september]
 
+test = [all for all in all_tasks_number if (all in tasks_april or all in tasks_june)]
+
+fig = go.Figure(go.Scatter(
+	x=all_tasks_number,
+	y=all_feedacks,
+	mode='markers',
+	marker={"opacity": 0.1},
+	name='Потоки'))
+fig.add_trace(go.Scatter(x=tasks_april, y=feed_april, mode='lines', name='Сценарии. Апрель'))
+fig.add_trace(go.Scatter(x=tasks_june, y=feed_june, mode='lines', name='Сценарии. Июнь'))
+fig.add_trace(go.Scatter(x=tasks_september, y=feed_september, mode='lines', name='Сценарии. Сентябрь'))
+fig.update_layout(title='Число фидбэков по задачам')
 
 div = opy.plot(fig, auto_open=False, output_type='div')

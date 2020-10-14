@@ -10,8 +10,8 @@ from .feedback import div
 
 
 def index(request):
-	tasks = Task.objects.all()
-	return render(request, 'index.html', {'tasks': tasks, 'div': div})
+	all_tasks = Task.objects.all()
+	return render(request, 'index.html', {'tasks': all_tasks, 'div': div})
 
 
 def index1(request):
@@ -28,7 +28,7 @@ def index1(request):
     	'percents': percents.to_html()})
 
 def parse(request):
-	with open('scenario2.json', 'r') as f:
+	with open('scenario3.json', 'r') as f:
 		users = json.load(f)
 	tasks = list()
 	for all in users:
