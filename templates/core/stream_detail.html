@@ -2,6 +2,13 @@
 
 {% block content %}
 
-{{ object }}
+<h1 class='display-3'>{{ object.module.name }}. {{ object }}</h1>
+
+<h3 class='display-4'>Студенты</h3>
+<ol>
+{% for student in object.students.all %}
+<li>{{ student }}</li>
+{% endfor %}
+</ol>
 
 {% endblock %}

@@ -29,7 +29,7 @@ class Student(models.Model):
 	first_name = models.CharField(max_length=100, null=True, blank=True)
 	last_name = models.CharField(max_length=100, null=True, blank=True)
 	company = models.ManyToManyField(Company, related_name="students", blank=True)
-	stream = models.ManyToManyField(Stream)
+	stream = models.ManyToManyField(Stream, related_name='students')
 
 	def __str__(self):
 		return "{0} {1}".format(self.first_name, self.last_name)
