@@ -7,7 +7,7 @@
 <h3 class='display-4'>Студенты</h3>
 <ol>
 {% for student in object.students.all %}
-<li>{{ student }}</li>
+<li><a href="{% url 'core:student' student.id %}">{{ student }}</a></li>
 {% endfor %}
 </ol>
 

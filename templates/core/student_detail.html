@@ -16,4 +16,10 @@
 </ul>
 {% endfor %}
 
+<h4 class="display-4">Решения</h4>
+{% for solution in object.solutions.all %}
+<li><b>{{ solution.task.lesson.module.name }}</b>. <i>Задача {{ solution.task.number|slice:"4:" }}</i>. {{ solution.text }}</li>
+{% endfor %}
+
+
 {% endblock %}
