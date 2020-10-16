@@ -39,8 +39,8 @@ class Lesson(models.Model):
 	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='lessons')
 	number = models.IntegerField()
 
-#	def __str__(self):
-#		return "{0} {1}".format(self.module, self.number)
+	def __str__(self):
+		return "{0} {1}".format(self.module, self.number)
 
 
 class Task(models.Model):
@@ -61,6 +61,9 @@ class Task(models.Model):
 
 	def __str__(self):
 		return self.number
+
+	class Meta:
+		ordering = ['number']
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом

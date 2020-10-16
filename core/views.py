@@ -60,13 +60,30 @@ def index1(request):
     	'percents': percents.to_html()})
 
 def parse(request):
-	with open('texts2.json', 'r') as f:
+	with open('text_task.json', 'r') as f:
+		tasks = json.load(f)
+	for all in tasks:
+		text_tasks = Task.objects.filter(
+			lesson__module__name='Тексты'
+			)
+		lesson = Lesson.objects.get(id=14)
+		try:
+			task = text_tasks.get(number='task' + all['number'])
+		except:
+			task = Task.objects.create(number='task'+all['number'], lesson=lesson)
+		task.name = all['title']
+		task.text = all['text']
+		task.save()
+	return render(request, 'parse.html', {'data': tasks})
+
+def parse2(request):
+	with open('texts1.json', 'r') as f:
 		users = json.load(f)
 	tasks = list()
 	for all in users:
 		module, create = Module.objects.get_or_create(name='Тексты')
 		stream, create = Stream.objects.get_or_create(
-			name='Сентябрь', module=module)
+			name='Июнь', module=module)
 		lesson, create = Lesson.objects.get_or_create(module=module, number=int(all['lesson']))
 		student, create = Student.objects.get_or_create(
 			email=all['email'],
