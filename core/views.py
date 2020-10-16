@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.detail import DetailView
 
 from .visual import date_div, dn
-from .models import Student, Lesson, Module, Stream, Task, Feedback
+from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution
 
 from .feedback import div
 
@@ -60,24 +60,33 @@ def index1(request):
     	'percents': percents.to_html()})
 
 def parse(request):
-	with open('scenario3.json', 'r') as f:
+	with open('texts2.json', 'r') as f:
 		users = json.load(f)
 	tasks = list()
 	for all in users:
-		module = Module.objects.get(name='Сценарии')
+		module, create = Module.objects.get_or_create(name='Тексты')
 		stream, create = Stream.objects.get_or_create(
-			name='Июнь', module=module)
+			name='Сентябрь', module=module)
+		lesson, create = Lesson.objects.get_or_create(module=module, number=int(all['lesson']))
 		student, create = Student.objects.get_or_create(
 			email=all['email'],
 			first_name=all['name'],
 			last_name=all['family']
 			)
+		student.stream.add(stream)
 		task, create = Task.objects.get_or_create(
-			number='task'+all['number'])
-		feedback, create = Feedback.objects.get_or_create(
-			student=student,
-			task=task,
-			text=all['text'])
+			number='task'+all['number'], lesson=lesson)
+		if all['solution']:
+			solution, create = Solution.objects.get_or_create(
+				task=task,
+				student=student,
+				text=all['solution']
+				)
+		if all['text']:
+			feedback, create = Feedback.objects.get_or_create(
+				student=student,
+				task=task,
+				text=all['text'])
 		tasks.append(task)
 	return render(request, 'parse.html', {'data': tasks})
 

@@ -39,8 +39,8 @@ class Lesson(models.Model):
 	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='lessons')
 	number = models.IntegerField()
 
-	def __str__(self):
-		return "{0} {1}".format(self.module, self.number)
+#	def __str__(self):
+#		return "{0} {1}".format(self.module, self.number)
 
 
 class Task(models.Model):
@@ -57,7 +57,7 @@ class Task(models.Model):
 	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор
 	picture = models.ImageField(blank=True) # картинка из шаблона
 	our_solution = models.TextField(blank=True) # образцовое решение
-	mark = models.IntegerField(blank=True) # количество баллов за задачу (здесь или в Solution?)
+	mark = models.IntegerField(blank=True, null=True) # количество баллов за задачу (здесь или в Solution?)
 
 	def __str__(self):
 		return self.number
