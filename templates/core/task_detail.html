@@ -25,4 +25,10 @@
 <li> {{ solution.text }} () </li>
 {% endfor %}
 
+<div class="card">
+  <div class="card-body">
+    <a href="{% url 'core:task' object.next_task %}">Следующая задача</a>
+  </div>
+</div>
+
 {% endblock %}
