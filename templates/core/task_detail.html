@@ -22,7 +22,7 @@
 
 <h3 class="display-4">Решения</h3>
 {% for solution in object.solutions.all %}
-<li> {{ solution.text }} () </li>
+<li> {{ solution.text }} (<a href="{% url 'core:student' solution.student.id %}">{{ solution.student }}</a>) </li>
 {% endfor %}
 
 <div class="card">
