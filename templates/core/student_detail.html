@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>{{ object }}</h3>
+<h3 class="display-4">{{ object }}</h3>
 
+<h4 class='display-5'>Модули</h4>
+{% for stream in object.stream.all %}
+<li>{{ stream.module.name }}. {{ stream.name }}</li>
+{% endfor %}
+
+<h4 class='display-4'>Feedbacks</h4>
 {% for feedback in object.feedbacks.all %}
-<li><b>Задача {{ feedback.task.number|slice:"4:" }}</b>.</li>
+<li><b>{{ feedback.task.lesson.module.name }}. Задача {{ feedback.task.number|slice:"4:" }}</b>.</li>
 <ul>
 <li> {{ feedback.text }}</li>
 </ul>
