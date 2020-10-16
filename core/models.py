@@ -67,9 +67,9 @@ class Task(models.Model):
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
-	task = models.ForeignKey(Task, on_delete=models.CASCADE) # связь с задачей
+	task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='solutions') # связь с задачей
 	text = models.CharField(max_length=100) # решение
-	student = models.ForeignKey(Student, on_delete=models.CASCADE) # связь со студентом
+	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='solutions') # связь со студентом
 	mark = models.IntegerField(default=0) # количество полученных баллов
 
 
