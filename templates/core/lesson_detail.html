@@ -5,7 +5,7 @@
 <h1 class="display-4">{{ object.module.name }}. Урок {{ object.number }}</h1>
 
 {% for task in object.tasks.all %}
-<li>Задача {{ task.number|slice:"4:" }}. {{ task.name }}</li>
+<li><a href="{% url 'core:task' task.id %}">Задача {{ task.number|slice:"4:" }}</a>. {{ task.name }}</li>
 {% endfor %}
 
 {% endblock %}
