@@ -67,11 +67,11 @@ class Task(models.Model):
 		return self.number
 
 	def next_task(self):
-		return Task.objects.get(number='task' + str(int(self.number) + 1), lesson=self.lesson).id
+		return Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id
 
 
-	#class Meta:
-		#ordering = ['number']
+	class Meta:
+		ordering = ['number']
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
