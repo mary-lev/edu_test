@@ -7,7 +7,7 @@ class Company(models.Model):
 
 
 class Module(models.Model):
-	name = models.CharField(max_length=100)
+	name = models.CharField(max_length=100, verbose_name='Название')
 	slug = models.SlugField()
 
 	def __str__(self):
@@ -15,8 +15,8 @@ class Module(models.Model):
 
 
 class Stream(models.Model):
-	name = models.CharField(max_length=100)
-	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='streams')
+	name = models.CharField(max_length=100, verbose_name='Название')
+	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='streams', verbose_name='Модуль')
 	start = models.DateField(null=True)
 
 	def __str__(self):
@@ -46,6 +46,7 @@ class Lesson(models.Model):
 class Task(models.Model):
 	number = models.CharField(max_length=10)
 	name = models.CharField(max_length=200, blank=True)
+	#module = models.ForeignKey(Module, default=1, on_delete=models.CASCADE)
 	lesson = models.ForeignKey(
 							Lesson,
 							on_delete=models.CASCADE,
