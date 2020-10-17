@@ -11,7 +11,7 @@ def create_graph(module):
 
 	all_tasks_number = [all.number for all in Task.objects.filter(lesson__module=module)]
 	feedbacks = Task.objects.filter(lesson__module=module).annotate(num_feedback=Count('feedbacks'))
-	all_feedacks = [all.num_feedback for all in feedbacks]
+	all_feedacks = [0 for all in feedbacks]
 
 	fig = go.Figure(go.Scatter(
 	x=all_tasks_number,
