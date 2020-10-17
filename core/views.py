@@ -7,12 +7,13 @@ from django.views.generic.detail import DetailView
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution
 
-from .feedback import div
+from .feedback import create_graph
 
 
 def index(request):
 	all_tasks = Task.objects.all()
-	return render(request, 'index.html', {'tasks': all_tasks, 'div': div})
+	module = Module.objects.all().first()
+	return render(request, 'index.html', {'tasks': all_tasks, 'div': create_graph(module)})
 
 class StudentView(DetailView):
 	model = Student
