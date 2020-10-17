@@ -42,6 +42,9 @@ class Lesson(models.Model):
 	def __str__(self):
 		return "{0} {1}".format(self.module, self.number)
 
+	def next_lesson(self):
+		return Lesson.objects.get(number=self.number+1, module=self.module)
+
 
 class Task(models.Model):
 	number = models.CharField(max_length=10)
