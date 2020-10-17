@@ -30,6 +30,11 @@ class LessonView(DetailView):
 class ModuleView(DetailView):
 	model = Module
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['div'] = create_graph(self.object)
+		return context
+
 
 class StreamView(DetailView):
 	model = Stream

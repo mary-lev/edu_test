@@ -10,7 +10,7 @@
 
 <div class="card">
   <div class="card-body">{% if object.next_lesson %}
-    <a href="{% url 'core:task' object.next_lesson %}">Следующий урок</a>
+    <a href="{% url 'core:lesson' object.next_lesson %}">Следующий урок</a>
     {% endif %}
   </div>
 </div>

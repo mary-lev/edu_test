@@ -4,6 +4,10 @@
 
 <h1 class="display-4">Модуль «{{ object }}»</h1>
 
+<div style="width:1200;height:900">
+{{ div|safe }}
+</div>
+
 {% for lesson in object.lessons.all %}
 <li><a href="{% url 'core:lesson' lesson.id %}">Урок {{ lesson.number }}</a></li>
 {% endfor %}

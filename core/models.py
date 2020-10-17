@@ -43,7 +43,7 @@ class Lesson(models.Model):
 		return "{0} {1}".format(self.module, self.number)
 
 	def next_lesson(self):
-		return Lesson.objects.get(number=self.number+1, module=self.module)
+		return Lesson.objects.get(number=self.number+1, module=self.module).id
 
 
 class Task(models.Model):
