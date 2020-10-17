@@ -67,7 +67,7 @@ class Task(models.Model):
 		return self.number
 
 	def next_task(self):
-		return Task.objects.get(number='task' + str(int(self.number[4:]) + 1), lesson=self.lesson).id
+		return Task.objects.get(number='task' + str(int(self.number) + 1), lesson=self.lesson).id
 
 
 	#class Meta:

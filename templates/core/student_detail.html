@@ -10,7 +10,7 @@
 
 <h4 class='display-4'>Feedbacks</h4>
 {% for feedback in object.feedbacks.all %}
-<li><b>{{ feedback.task.lesson.module.name }}. Задача {{ feedback.task.number|slice:"4:" }}</b>.</li>
+<li><b>{{ feedback.task.lesson.module.name }}. Задача {{ feedback.task.number }}</b>.</li>
 <ul>
 <li> {{ feedback.text }}</li>
 </ul>
@@ -18,7 +18,7 @@
 
 <h4 class="display-4">Решения</h4>
 {% for solution in object.solutions.all %}
-<li><b>{{ solution.task.lesson.module.name }}</b>. <i>Задача {{ solution.task.number|slice:"4:" }}</i>. {{ solution.text }}</li>
+<li><b>{{ solution.task.lesson.module.name }}</b>. <i>Задача {{ solution.task.number }}</i>. {{ solution.text }}</li>
 {% endfor %}
 
 
