@@ -20,11 +20,19 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 class FeedbackAdmin(admin.ModelAdmin):
-	list_display = ('task', 'student', 'text')
+	list_display = ('task', 'student', 'text', 'get_lesson', 'get_module')
+	list_filter = ('task__lesson',)
+
+	def get_lesson(self, obj):
+		return obj.task.lesson
+
+	def get_module(self, obj):
+		return obj.task.lesson.module
 
 
 class SolutionAdmin(admin.ModelAdmin):
 	list_display = ('task', 'student', 'text')
+
 
 
 admin.site.register(Student, StudentAdmin)
