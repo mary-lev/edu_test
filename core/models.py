@@ -64,7 +64,7 @@ class Task(models.Model):
 	mark = models.IntegerField(blank=True, null=True) # количество баллов за задачу (здесь или в Solution?)
 
 	def __str__(self):
-		return self.number
+		return str(self.number)
 
 	def next_task(self):
 		return Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id

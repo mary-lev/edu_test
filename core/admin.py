@@ -17,6 +17,7 @@ class StreamAdmin(admin.ModelAdmin):
 
 class TaskAdmin(admin.ModelAdmin):
 	list_display = ('number', 'name', 'lesson')
+	list_filter = ('lesson',)
 
 
 class FeedbackAdmin(admin.ModelAdmin):
