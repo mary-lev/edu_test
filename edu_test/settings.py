@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'bootstrap4',
     'tinymce',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

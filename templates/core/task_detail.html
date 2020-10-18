@@ -15,6 +15,9 @@
   </div>
 </div>
 
+{% load crispy_forms_tags %}
+{% crispy form %}
+
 <h3 class="display-4">Feedback</h3>
 {% for feedback in object.feedbacks.all %}
 <li> {{ feedback.text }} (<a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student }}</a>)</li>

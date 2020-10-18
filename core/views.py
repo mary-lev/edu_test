@@ -1,13 +1,15 @@
 import json
 import pandas as pd
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormMixin
 
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution
 
 from .feedback import create_graph
+from .forms import SolutionForm
 
 
 def index(request):
@@ -21,6 +23,11 @@ class StudentView(DetailView):
 
 class TaskView(DetailView):
 	model = Task
+
+
+class SolutionCreateView(FormMixin, DetailView):
+	model = Task
+	form_class = SolutionForm
 
 
 class LessonView(DetailView):
