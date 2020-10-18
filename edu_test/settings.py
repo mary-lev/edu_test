@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'core',
     'django_extensions',
     'bootstrap4',
+    'tinymce',
 ]
 
 MIDDLEWARE = [

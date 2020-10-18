@@ -5,10 +5,9 @@
 {% block content %}
 <h1 class="display-4">Студенты</h1>
 
-
 <ol>
 	{% for student in object_list %}
-	<li><a href="{% url 'core:student' student.id %}">{{ student }} </a></li>
+	<li><a href="{% url 'core:student' student.id %}">{{ student }} </a> ({% for all in student.stream.all %} {{ all.module.name }}: {{ all.name }}, {% endfor %})</li>
 	{% endfor %}
 </ol>
 

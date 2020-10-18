@@ -4,6 +4,17 @@
 
 <h1 class="display-4">{{ object.module.name }}. Урок {{ object.number }}</h1>
 
+<p>
+  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Теория
+  </a>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    {{ object.theory|safe }}
+  </div>
+</div>
+
 {% for task in object.tasks.all %}
 <li><a href="{% url 'core:task' task.id %}">Задача {{ task.number }}</a>. {{ task.name }}</li>
 {% endfor %}

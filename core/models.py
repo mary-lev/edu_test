@@ -1,4 +1,5 @@
 from django.db import models
+from tinymce.models import HTMLField
 
 
 class Company(models.Model):
@@ -20,7 +21,7 @@ class Stream(models.Model):
 	start = models.DateField(null=True)
 
 	def __str__(self):
-		return self.name
+		return self.module.name + ' ' + self.name
 
 
 class Student(models.Model):
@@ -38,6 +39,7 @@ class Student(models.Model):
 class Lesson(models.Model):
 	module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='lessons')
 	number = models.IntegerField()
+	theory = HTMLField()
 
 	def __str__(self):
 		return "{0} {1}".format(self.module, self.number)

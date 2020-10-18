@@ -8,7 +8,7 @@
 
 <ul>
 	{% for module in object_list %}
-	<li><a href="{% url 'core:module' module.id %}">{{ module.name }} ({{module.stream.all.count}}) </a></li>
+	<li><a href="{% url 'core:module' module.id %}">{{ module.name }} ({{module.streams.all.count}}) </a></li>
 	{% endfor %}
 </ul>
 

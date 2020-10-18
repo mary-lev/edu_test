@@ -5,6 +5,7 @@ from .models import Student, Stream, Module, Task, Lesson, Feedback, Solution
 
 class StudentAdmin(admin.ModelAdmin):
 	list_display = ('first_name', 'last_name', 'email')
+	list_filter = ('stream__name', 'stream__module__name',)
 
 
 class LessonAdmin(admin.ModelAdmin):
