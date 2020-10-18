@@ -9,9 +9,9 @@ from .models import Feedback, Task, Stream
 
 def create_graph(module):
 
-	all_tasks_number = [all.number for all in Task.objects.filter(lesson__module=module)]
-	feedbacks = Task.objects.filter(lesson__module=module).annotate(num_feedback=Count('feedbacks'))
-	all_feedacks = [0 for all in feedbacks]
+	all_tasks = Task.objects.filter(lesson__module=module).order_by('number').annotate(num_feedback=Count('feedbacks'))
+	all_tasks_number = [all.number for all in all_tasks]
+	all_feedacks = [0 for all in all_tasks_number]
 
 	fig = go.Figure(go.Scatter(
 	x=all_tasks_number,
@@ -25,7 +25,7 @@ def create_graph(module):
 	for stream in streams:
 
 		feedbacks_april = Task.objects.filter(
-			feedbacks__student__stream=stream).annotate(num_feedback=Count('feedbacks'))
+			feedbacks__student__stream=stream).order_by('number').annotate(num_feedback=Count('feedbacks'))
 		tasks_april = [all.number for all in feedbacks_april]
 		feed_april = [all.num_feedback for all in feedbacks_april]
 

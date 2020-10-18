@@ -47,7 +47,7 @@ class Lesson(models.Model):
 
 
 class Task(models.Model):
-	number = models.CharField(max_length=10)
+	number = models.IntegerField()
 	name = models.CharField(max_length=200, blank=True)
 	#module = models.ForeignKey(Module, default=1, on_delete=models.CASCADE)
 	lesson = models.ForeignKey(
