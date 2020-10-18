@@ -33,6 +33,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 
 class SolutionAdmin(admin.ModelAdmin):
 	list_display = ('task', 'student', 'text')
+	list_filter = ('task__lesson', 'task')
 
 
 

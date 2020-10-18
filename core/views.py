@@ -65,7 +65,20 @@ def index1(request):
     	'df': df.itertuples(),
     	'percents': percents.to_html()})
 
+
 def parse(request):
+	with open('sce_solutions2.json', 'r') as f:
+		solutions = json.load(f)
+	for solution in solutions:
+		task = Task.objects.get(number=int(solution['task']), lesson__module__name='Сценарии')
+		student, create = Student.objects.get_or_create(
+			first_name=solution['name'],
+			last_name=solution['family'],
+			email=solution['email'])
+		new_solution = Solution.objects.create(task=task, student=student, text=solution['text'])
+	return render(request, 'parse.html', {'data': solutions})
+
+def parse3(request):
 	with open('scen_task.json', 'r') as f:
 		tasks = json.load(f)
 	for all in tasks:
