@@ -66,7 +66,7 @@ class Task(models.Model):
 	mark = models.IntegerField(blank=True, null=True) # количество баллов за задачу (здесь или в Solution?)
 
 	def __str__(self):
-		return str(self.number)
+		return self.lesson.module.name + " " + str(self.number)
 
 	def next_task(self):
 		return Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id
@@ -74,6 +74,24 @@ class Task(models.Model):
 
 	class Meta:
 		ordering = ['number']
+
+
+class Question(models.Model):
+	task = models.ForeignKey(Task, related_name='questions', on_delete=models.CASCADE)
+	QUESTION_TYPES = (
+		('1', 'Radiobutton'),
+		('2', 'Checkbutton'),
+		('3', 'TextArea'),
+		)
+	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
+	question_text = models.CharField(max_length=300)
+	choice = models.CharField(max_length=300)
+	answers = models.CharField(max_length=200)
+
+
+class Variant(models.Model):
+	question = models.ForeignKey(Question, related_name='variants', on_delete=models.CASCADE)
+	text = models.CharField(max_length=300)
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
