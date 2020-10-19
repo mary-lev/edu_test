@@ -23,11 +23,13 @@ class StudentView(DetailView):
 
 class TaskView(DetailView):
 	model = Task
+	template_name = 'task.html'
 
 
 class SolutionCreateView(FormMixin, DetailView):
 	model = Task
 	form_class = SolutionForm
+	template_name = 'solution.html'
 
 
 class LessonView(DetailView):
