@@ -35,7 +35,12 @@ def tone(request):
 		except:
 			fail.append(all[0])
 	data = sorted(data, key = lambda i: i['task'])
-	return render(request, 'tone.html', {'div': create_graph()})
+
+	positive = [all for all in data if all['tone']=='positive']
+	negative = [all for all in data if all['tone']=='negative']
+	tasks = [all['task'] for all in data]
+
+	return render(request, 'tone.html', {'div': create_graph(), 'tasks': tasks})
 
 class StudentView(DetailView):
 	model = Student
