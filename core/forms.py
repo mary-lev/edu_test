@@ -1,26 +1,18 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, Column
 from django import forms
+from django.forms import ModelChoiceField
 
-from .models import Task, Solution, Variant
+from .models import Task, Solution, Variant, Question
 
+
+class VariantModelChoiceField(ModelChoiceField):
+	def label_from_instance(self, obj):
+		return obj.id, obj.text
+		
 
 class QuestionForm(forms.ModelForm):
+	variants =
 	class Meta:
 		model = Question
-		fields = ['text', ]
-		widgets = {
-		'task': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
-		'text': forms.Textarea(attrs={'class': 'form-control'}),
-		}
-
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-		self.fields['questions'].label = kwargs.object.questions[0].text
-
-		self.helper = FormHelper()
-		self.helper.form_method = 'POST'
-		self.helper.label_class = 'mb-2 text-dark'
-		self.helper.field_class = 'form-control'
+		fields = '__all__'
