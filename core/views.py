@@ -13,7 +13,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_graph
-#from .forms import SolutionForm
+from .forms import QuestionForm
 
 
 def index(request):
@@ -49,10 +49,6 @@ class StudentView(DetailView):
 class TaskView(DetailView):
 	model = Task
 	template_name = 'task.html'
-
-
-class QuestionForm(forms.Form):
-	fields = '__all__'
 
 
 class TaskSolution(FormMixin, DetailView):
