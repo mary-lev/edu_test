@@ -4,18 +4,38 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
+from django import forms
+from django.forms import formset_factory
+import csv
 
 from .visual import date_div, dn
-from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution
+from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question
 
 from .feedback import create_graph
-from .forms import SolutionForm
+from .tone import create_graph
+#from .forms import SolutionForm
 
 
 def index(request):
 	all_tasks = Task.objects.all()
 	module = Module.objects.all().first()
 	return render(request, 'index.html', {'tasks': all_tasks, 'div': create_graph(module)})
+
+def tone(request):
+	with open('my_train.csv', 'r', encoding='utf-8') as f:
+		csvrows = csv.reader(f) 
+		train = [all for all in csvrows]
+	data = list()
+	fail = list()
+	for all in train[1:]:
+		try:
+			feed = Feedback.objects.get(text=all[0])
+			one = {'task': feed.task.number, 'text': all[0], 'tone': all[1]}
+			data.append(one)
+		except:
+			fail.append(all[0])
+	data = sorted(data, key = lambda i: i['task'])
+	return render(request, 'tone.html', {'div': create_graph()})
 
 class StudentView(DetailView):
 	model = Student
@@ -26,9 +46,13 @@ class TaskView(DetailView):
 	template_name = 'task.html'
 
 
-class SolutionCreateView(FormMixin, DetailView):
+class QuestionForm(forms.Form):
+	fields = '__all__'
+
+
+class TaskSolution(FormMixin, DetailView):
 	model = Task
-	form_class = SolutionForm
+	form_class = QuestionForm
 	template_name = 'solution.html'
 
 

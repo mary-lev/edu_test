@@ -91,6 +91,7 @@ class Question(models.Model):
 
 class Variant(models.Model):
 	question = models.ForeignKey(Question, related_name='variants', on_delete=models.CASCADE)
+	is_right = models.BooleanField(verbose_name='Верный ответ?')
 	text = models.CharField(max_length=300)
 
 
