@@ -9,7 +9,7 @@ from django.db.models import Count
 from .models import Feedback, Task, Stream
 
 
-def create_graph():
+def create_new_graph():
 
 	with open('my_train.csv', 'r', encoding='utf-8') as f:
 		csvrows = csv.reader(f) 

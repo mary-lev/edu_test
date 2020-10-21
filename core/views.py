@@ -12,7 +12,7 @@ from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question
 
 from .feedback import create_graph
-from .tone import create_graph
+from .tone import create_new_graph
 from .forms import QuestionForm
 
 

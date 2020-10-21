@@ -12,17 +12,27 @@ class VariantModelChoiceField(ModelChoiceField):
 
 
 class QuestionForm(forms.ModelForm):
+	#variants = Variant.objects.filter(question=1)
 	#variants =VariantModelChoiceField(queryset=Variant.objects.all())
 	class Meta:
 		model = Question
-		fields = '__all__'
+		fields = ['question_text']
+		widgets = {'question_text':forms.TextInput(attrs={'readonly': 'readonly'})}
+
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+
+		choices = []
+		for var in Variant.objects.all():
+			choices.append((var.id, var.text,))
+		CHOICES = tuple(choices)
+		self.fields['variants'] = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+		self.fields['variants'].label = self.fields['question_text']
 		self.helper = FormHelper()
 		self.helper.form_method = 'POST'
 		self.helper.add_input(Submit('submit',
-			'Отправить отклик',
+			'Готово',
 			css_class='btn btn-primary mt-4 mb-2'))
 
 		self.helper.form_class = 'card mt-4 mb-3'
