@@ -22,14 +22,16 @@ class QuestionForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+		self.fields['variants'].label_class='mb-0'
+
 		self.helper = FormHelper()
 		self.helper.form_method = 'POST'
 		self.helper.add_input(Submit('submit',
 			'Готово',
-			css_class='btn btn-primary mt-4 mb-2'))
+			css_class='btn btn-info mt-4 mb-2'))
 
 		self.helper.form_class = 'card mt-4 mb-3'
-		self.helper.label_class = 'mb-1'
+		self.helper.label_class = 'display-4'
 
 
 

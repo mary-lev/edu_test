@@ -12,6 +12,7 @@ urlpatterns = [
 	path('students/', views.StudentListView.as_view(), name='students'),
 	path('task/<pk>/', views.TaskView.as_view(), name='task'),
 	path('solution/<pk>/new/', views.TaskSolution.as_view(), name='solution'),
+	path('solution1/<int:task_id>/new/', views.new_solution, name='solution1'),
 	path('lesson/<pk>/', views.LessonView.as_view(), name='lesson'),
 	path('module/<pk>/', views.ModuleView.as_view(), name='module'),
 	path('modules/', views.ModuleListView.as_view(), name='modules'),

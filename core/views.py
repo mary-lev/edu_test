@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django import forms
-from django.forms import formset_factory
+from django.forms import modelformset_factory
 import csv
 
 from .visual import date_div, dn
@@ -41,6 +41,31 @@ def tone(request):
 
 	return render(request, 'tone.html', {'div': create_graph(), 'tasks': tasks})
 
+
+def new_solution(request, task_id):
+	task = Task.objects.get(id=task_id)
+	questions = Question.objects.filter(task=task)
+	formsets = []
+	for all in questions:
+		VariantFormSet = modelformset_factory(
+			Variant,
+			fields=['text', 'is_right']
+			)
+		if request.method == 'POST':
+			myformset = VariantFormSet(request.POST,
+				queryset=Variant.objects.filter(question=all))
+			if myformset.is_valid():
+				myformset.save()
+		else:
+			myformset = VariantFormSet(
+				queryset=Variant.objects.filter(question=all))
+		formsets.append([all.question_text, myformset])
+	return render(request,
+		'solution1.html',
+		{'formsets': formsets, 'questions': questions, 'task': task})
+
+
+
 class StudentView(DetailView):
 	model = Student
 
@@ -60,6 +85,7 @@ class TaskSolution(FormMixin, DetailView):
 		context['form'].fields['variants'].queryset = Variant.objects.filter(
 			question=self.object.questions.all()[0].id).values_list('text', flat=True)
 		context['form'].fields['variants'].label = self.object.questions.all()[0].question_text
+		context['form'].fields['variants'].label_class = 'mb-0'
 		return context
 
 

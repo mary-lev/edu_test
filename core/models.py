@@ -87,6 +87,7 @@ class Question(models.Model):
 	question_text = models.CharField(max_length=300)
 	choice = models.CharField(max_length=300)
 	answers = models.CharField(max_length=200)
+	slug = models.SlugField()
 
 
 class Variant(models.Model):
