@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="width:1200;height:900">
-{{ div|safe }}
+<div class="container">
+	<h1 class="display-4">Модули и потоки</h1>
+<div class="card-group">
+{% for stream in streams %}
 
+<div class="card border-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">{{ stream.name }}</div>
+  <div class="card-body text-dark">
+    <h5 class="card-title"><a href="{% url 'core:module' stream.module.id %}">{{ stream.module.name }}</a></h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
 </div>
 
-{% for task in tasks %}
-<h3>Урок {{task.lesson.number}}. <a href="{% url 'core:task' task.id %}">Задача {{ task.number|slice:"4:" }}. {{ task.name }}</a> ({{ task.feedbacks.count }})</h3>
-	<ul>
-		{% for feedback in task.feedbacks.all %}
-		<li><b><a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student.first_name }} {{ feedback.student.last_name}}</a>.</b> {{ feedback.text|safe }}</li>
-		{% endfor %}
-	</ul>
-	
-{% endfor %}
 
+{% endfor %}
+</div>
+</div>
 {% endblock %}

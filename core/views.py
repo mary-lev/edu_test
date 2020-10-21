@@ -17,9 +17,8 @@ from .forms import QuestionForm
 
 
 def index(request):
-	all_tasks = Task.objects.all()
-	module = Module.objects.all().first()
-	return render(request, 'index.html', {'tasks': all_tasks, 'div': create_graph(module)})
+	streams = Stream.objects.all()
+	return render(request, 'index.html', {'streams': streams})
 
 def tone(request):
 	with open('my_train.csv', 'r', encoding='utf-8') as f:
