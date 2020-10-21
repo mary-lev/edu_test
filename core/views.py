@@ -48,7 +48,6 @@ def new_solution(request, task_id):
 	formsets = []
 	for all in questions:
 		#if all.question_type=='Radiobutton':
-
 		VariantFormSet = make_question_formset(all)
 		if request.method == 'POST':
 			myformset = VariantFormSet(request.POST,
@@ -58,7 +57,7 @@ def new_solution(request, task_id):
 		else:
 			myformset = VariantFormSet(
 				queryset=Variant.objects.filter(question=all))
-		formsets.append([all.question_text, myformset])
+			formsets.append([all.question_text, myformset])
 	return render(request,
 		'solution1.html',
 		{'formsets': formsets, 'questions': questions, 'task': task})

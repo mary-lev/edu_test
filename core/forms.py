@@ -10,12 +10,24 @@ from .models import Task, Solution, Variant, Question
 def make_question_formset(question):
 	class _VariantForm(forms.ModelForm):
 		variants = forms.ModelChoiceField(
-			queryset=Variant.objects.filter(question=question).values_list('text', flat=True),
+			queryset=Variant.objects.filter(question=question).values_list('text', flat=True).distinct(),
 			widget=forms.RadioSelect(),
-			)
+			empty_label=None)
+		
 		class Meta:
 			model = Variant
-			fields = ['text']
+			fields = ['variants']
+
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
+
+			self.fields['variants'].label = ''
+			self.helper = FormHelper()
+			self.helper.form_method = 'POST'
+			self.helper.add_input(Submit('submit',
+				'Готово',
+				css_class='btn btn-info mt-4 mb-2'))
+
 	return modelformset_factory(Variant, form=_VariantForm)
 
 class VariantSomeForm(forms.ModelForm):
@@ -25,9 +37,6 @@ class VariantSomeForm(forms.ModelForm):
 		widgets = {
 		'text': forms.RadioSelect(attrs={'class': 'mb-0'})
 		}
-
-class VariantForm(ModelChoiceField):
-	fields = "__all__"
 
 
 class QuestionForm(forms.ModelForm):
