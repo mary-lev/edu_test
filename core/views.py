@@ -13,7 +13,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import QuestionForm
+from .forms import QuestionForm, make_question_formset
 
 
 def index(request):
@@ -47,10 +47,9 @@ def new_solution(request, task_id):
 	questions = Question.objects.filter(task=task)
 	formsets = []
 	for all in questions:
-		VariantFormSet = modelformset_factory(
-			Variant,
-			fields=['text', 'is_right']
-			)
+		#if all.question_type=='Radiobutton':
+
+		VariantFormSet = make_question_formset(all)
 		if request.method == 'POST':
 			myformset = VariantFormSet(request.POST,
 				queryset=Variant.objects.filter(question=all))

@@ -2,9 +2,29 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, Column
 from django import forms
 from django.forms import ModelChoiceField
+from django.forms import modelformset_factory
 
 from .models import Task, Solution, Variant, Question
 
+
+def make_question_formset(question):
+	class _VariantForm(forms.ModelForm):
+		variants = forms.ModelChoiceField(
+			queryset=Variant.objects.filter(question=question).values_list('text', flat=True),
+			widget=forms.RadioSelect(),
+			)
+		class Meta:
+			model = Variant
+			fields = ['text']
+	return modelformset_factory(Variant, form=_VariantForm)
+
+class VariantSomeForm(forms.ModelForm):
+	class Meta:
+		model = Variant
+		fields = "__all__"
+		widgets = {
+		'text': forms.RadioSelect(attrs={'class': 'mb-0'})
+		}
 
 class VariantForm(ModelChoiceField):
 	fields = "__all__"
