@@ -6,29 +6,23 @@ from django.forms import ModelChoiceField
 from .models import Task, Solution, Variant, Question
 
 
-class VariantModelChoiceField(ModelChoiceField):
-	def label_from_instance(self, obj):
-		return obj.id, obj.text
+class VariantForm(ModelChoiceField):
+	fields = "__all__"
 
 
 class QuestionForm(forms.ModelForm):
-	#variants = Variant.objects.filter(question=1)
-	#variants =VariantModelChoiceField(queryset=Variant.objects.all())
+	variants = forms.ModelChoiceField(
+		queryset=Variant.objects.values_list('text', flat=True).distinct(),
+		widget=forms.RadioSelect)
 	class Meta:
 		model = Question
-		fields = ['question_text']
-		widgets = {'question_text':forms.TextInput(attrs={'readonly': 'readonly'})}
+		fields = ['question_text', 'variants']
 
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		choices = []
-		for var in Variant.objects.all():
-			choices.append((var.id, var.text,))
-		CHOICES = tuple(choices)
-		self.fields['variants'] = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-		self.fields['variants'].label = self.fields['question_text']
+		
 		self.helper = FormHelper()
 		self.helper.form_method = 'POST'
 		self.helper.add_input(Submit('submit',
