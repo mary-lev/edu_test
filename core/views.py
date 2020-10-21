@@ -9,7 +9,7 @@ from django.forms import formset_factory
 import csv
 
 from .visual import date_div, dn
-from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question
+from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question, Variant
 
 from .feedback import create_graph
 from .tone import create_new_graph
@@ -54,6 +54,13 @@ class TaskSolution(FormMixin, DetailView):
 	model = Task
 	form_class = QuestionForm
 	template_name = 'solution.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['form'].fields['variants'].queryset = Variant.objects.filter(
+			question=self.object.questions.all()[0].id).values_list('text', flat=True)
+		context['form'].fields['variants'].label = self.object.questions.all()[0].question_text
+		return context
 
 
 class LessonView(DetailView):

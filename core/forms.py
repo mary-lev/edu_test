@@ -16,13 +16,12 @@ class QuestionForm(forms.ModelForm):
 		widget=forms.RadioSelect)
 	class Meta:
 		model = Question
-		fields = ['question_text', 'variants']
+		fields = ['variants']
 
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		
 		self.helper = FormHelper()
 		self.helper.form_method = 'POST'
 		self.helper.add_input(Submit('submit',
