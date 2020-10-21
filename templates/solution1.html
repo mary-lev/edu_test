@@ -16,12 +16,15 @@
     </blockquote>
   </div>
 </div>
+{% if messages.success %} 
+          <p class="alert alert-info" role="alert">Ответ принят!</p>
+{% endif %}
 
 {% load crispy_forms_tags %}
-{% for formset in formsets %}
-<h3 class='display-4'>{{ formset.0 }}</h3>
-{% crispy formset.1.0 %}
-{% endfor %}
+
+<p class='display-4'>text</h3>
+{% crispy formset %}
+
 
 <div class="card">
   <div class="card-body">{% if task.next_task %}

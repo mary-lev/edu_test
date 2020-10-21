@@ -5,6 +5,8 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django import forms
+  
+from django.contrib import messages
 from django.forms import modelformset_factory
 import csv
 
@@ -46,21 +48,20 @@ def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
 	formsets = []
-	for all in questions:
+	for question in questions:
 		#if all.question_type=='Radiobutton':
-		VariantFormSet = make_question_formset(all)
+		VariantFormSet = make_question_formset(question)
 		if request.method == 'POST':
 			myformset = VariantFormSet(request.POST,
-				queryset=Variant.objects.filter(question=all))
+				prefix=question.id)
 			if myformset.is_valid():
-				myformset.save()
+				messages.success(request, 'some message')
 		else:
 			myformset = VariantFormSet(
-				queryset=Variant.objects.filter(question=all))
-			formsets.append([all.question_text, myformset])
+				prefix=question.id)
 	return render(request,
 		'solution1.html',
-		{'formsets': formsets, 'questions': questions, 'task': task})
+		{'formset': myformset, 'questions': questions, 'task': task})
 
 
 
