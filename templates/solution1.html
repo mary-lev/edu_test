@@ -23,7 +23,11 @@
 {% load crispy_forms_tags %}
 
 <p class='display-4'>text</h3>
-{% crispy formset %}
+{{ formset.management_form }}
+{% for form in formset %}
+  {% crispy form %}
+{% endfor %}
+
 
 
 <div class="card">

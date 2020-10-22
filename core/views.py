@@ -23,25 +23,8 @@ def index(request):
 	return render(request, 'index.html', {'streams': streams})
 
 def tone(request):
-	with open('my_train.csv', 'r', encoding='utf-8') as f:
-		csvrows = csv.reader(f) 
-		train = [all for all in csvrows]
-	data = list()
-	fail = list()
-	for all in train[1:]:
-		try:
-			feed = Feedback.objects.get(text=all[0])
-			one = {'task': feed.task.number, 'text': all[0], 'tone': all[1]}
-			data.append(one)
-		except:
-			fail.append(all[0])
-	data = sorted(data, key = lambda i: i['task'])
-
-	positive = [all for all in data if all['tone']=='positive']
-	negative = [all for all in data if all['tone']=='negative']
-	tasks = [all['task'] for all in data]
-
-	return render(request, 'tone.html', {'div': create_graph(), 'tasks': tasks})
+	div = create_new_graph()
+	return render(request, 'tone.html', {'div': div})
 
 
 def new_solution(request, task_id):
@@ -59,9 +42,10 @@ def new_solution(request, task_id):
 		else:
 			myformset = VariantFormSet(
 				prefix=question.id)
+		formsets.append(myformset)
 	return render(request,
 		'solution1.html',
-		{'formset': myformset, 'questions': questions, 'task': task})
+		{'formset': formsets, 'questions': questions, 'task': task})
 
 
 

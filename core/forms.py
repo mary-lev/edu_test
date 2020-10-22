@@ -12,7 +12,9 @@ def make_question_formset(question, extra=0):
 		variants = forms.ModelChoiceField(
 			queryset=Variant.objects.filter(question=question).values_list('text', flat=True).distinct(),
 			widget=forms.RadioSelect(),
-			empty_label=None)
+			empty_label=None,
+			label=question.question_text
+			)
 		
 		class Meta:
 			model = Question

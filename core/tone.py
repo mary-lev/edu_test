@@ -14,27 +14,34 @@ def create_new_graph():
 	with open('my_train.csv', 'r', encoding='utf-8') as f:
 		csvrows = csv.reader(f) 
 		train = [all for all in csvrows]
-	data = list()
-	fail = list()
-	for all in train[1:]:
+	data = []
+	fail = []
+	for all in train:
 		try:
 			feed = Feedback.objects.get(text=all[0])
-			one = [feed.task.number, all[0], all[2]]
+			one = [feed.task.number, all[0], all[1]]
 			data.append(one)
 		except:
 			fail.append(all[0])
 
-	data = sorted(data, key = lambda i: i[2])
+	data = sorted(data, key = lambda i: i[0])
 
-	positive = [all for all in data if all[2]=='positive']
-	negative = [all for all in data if all[2]=='negative']
-	tasks = set(list([all[0] for all in data]))
-	zeros = [0 for x in range(0, len(tasks))]
+	tasks = [all.number for all in Task.objects.filter(lesson__module__name='Тексты')]
+	zeros = [1 for x in range(0, len(tasks))]
 
-	for all in data:
-		positive = []
-		if all[2] == 'positive':
-			positive.append(all)
+	positives = []
+	negatives = []
+
+	for task in tasks:
+		positiv = 0
+		negativ = 0
+		for all in data:
+			if all[0] == task and all[2] == 'positive':
+				positiv += 1
+			elif all[0] == task and all[2] == 'negative':
+				negativ += 1
+		positives.append(positiv)
+		negatives.append(negativ)
 
 
 	fig = go.Figure(go.Scatter(
@@ -45,7 +52,8 @@ def create_new_graph():
 	name='positive'))
 
 
-	#fig.add_trace(go.Scatter(x=tasks_april, y=feed_april, mode='lines', name=stream.name))
+	fig.add_trace(go.Scatter(x=list(tasks), y=positives, mode='lines', name='positive'))
+	fig.add_trace(go.Scatter(x=list(tasks), y=negatives, mode='lines', name='negative'))
 
 	fig.update_layout(title='Позитив и негатив')
 

@@ -10,12 +10,28 @@
   <div class="card-header">{{ stream.name }}</div>
   <div class="card-body text-dark">
     <h5 class="card-title"><a href="{% url 'core:module' stream.module.id %}">{{ stream.module.name }}</a></h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <p class="card-text"></p>
   </div>
 </div>
-
-
 {% endfor %}
 </div>
+
+<div class="card-group">
+<div class="card border-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">График</div>
+  <div class="card-body text-dark">
+    <h5 class="card-title"><a href="{% url 'core:telegram' %}">Telegram</a></h5>
+    <p class="card-text">Активность в группах</p>
+  </div>
+</div>
+<div class="card border-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">График</div>
+  <div class="card-body text-dark">
+    <h5 class="card-title"><a href="{% url 'core:tone' %}">Тексты</a></h5>
+    <p class="card-text">Позитивный и негативный фидбэк по задачам</p>
+  </div>
+</div>
+</div>
+
 </div>
 {% endblock %}
