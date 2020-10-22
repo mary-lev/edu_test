@@ -5,6 +5,7 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django import forms
+from django.db.models import Count
   
 from django.contrib import messages
 from django.forms import modelformset_factory
@@ -94,6 +95,13 @@ class ModuleView(DetailView):
 
 class StreamView(DetailView):
 	model = Stream
+
+
+class SolutionAll(ListView):
+	model = Solution
+
+	def get_queryset(self):
+		return Solution.objects.filter(task__lesson__module__name='Тексты').annotate(num_task=Count('task'))
 
 
 class ModuleListView(ListView):

@@ -1,0 +1,18 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Решения</h1>
+
+{{ object_list }}
+
+<ul>
+	{% for solution in object_list %}
+	<li><a href="{% url 'core:task' solution.task.id %}">{{ solution.task.number }}</a>: ({{solution.text}})</li>
+	{% endfor %}
+</ul>
+
+
+
+{% endblock %}

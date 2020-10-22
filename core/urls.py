@@ -11,6 +11,7 @@ urlpatterns = [
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
 	path('students/', views.StudentListView.as_view(), name='students'),
 	path('task/<pk>/', views.TaskView.as_view(), name='task'),
+	path('solutions/', views.SolutionAll.as_view(), name='solutions'),
 	path('solution/<pk>/new/', views.TaskSolution.as_view(), name='solution'),
 	path('solution1/<int:task_id>/new/', views.new_solution, name='solution1'),
 	path('solution2/<int:task_id>/new/', views.get_solution, name='solution2'),
