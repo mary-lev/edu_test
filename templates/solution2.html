@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="card">
+  <div class="card-header">
+    Задача {{ task.number }}. {{ task.name }}
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p>{{ task.text }}</p>
+
+
+      <footer class="blockquote-footer"><a href="{% url 'core:lesson' task.lesson.id %}">Урок {{ task.lesson.number }}</a> <cite title="Source Title">{{ task.lesson.module.name }}</cite></footer>
+    </blockquote>
+  </div>
+</div>
+
+{{ form }}
+
+
+<div class="card">
+  <div class="card-body">{% if task.next_task %}
+    <a href="{% url 'core:solution' task.next_task %}">Следующая задача</a>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

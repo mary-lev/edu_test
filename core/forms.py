@@ -7,6 +7,13 @@ from django.forms import modelformset_factory
 from .models import Task, Solution, Variant, Question
 
 
+def create_solution_formset(task):
+	formset = []
+
+	return formset
+
+
+
 def make_question_formset(question, extra=0):
 	class _VariantForm(forms.ModelForm):
 		variants = forms.ModelChoiceField(
