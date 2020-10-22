@@ -1,5 +1,5 @@
 import csv
-import operator
+import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
 import plotly.offline as opy
@@ -27,7 +27,7 @@ def create_new_graph():
 	data = sorted(data, key = lambda i: i[0])
 
 	tasks = [all.number for all in Task.objects.filter(lesson__module__name='Тексты')]
-	zeros = [1 for x in range(0, len(tasks))]
+	zeros = [0 for x in range(0, len(tasks))]
 
 	positives = []
 	negatives = []
@@ -43,19 +43,21 @@ def create_new_graph():
 		positives.append(positiv)
 		negatives.append(negativ)
 
+	df = pd.DataFrame({'task': tasks, 'positive': positives, 'negative': negatives})
+	df['text'] = df['task'].apply(lambda x: 'Задача {0}'.format(x))
+
 
 	fig = go.Figure(go.Scatter(
 	x=list(tasks),
 	y=zeros,
 	mode='markers',
-	marker={"opacity": 0.1},
-	name='positive'))
+	marker={"opacity": 0.1}))
 
 
-	fig.add_trace(go.Scatter(x=list(tasks), y=positives, mode='lines', name='positive'))
-	fig.add_trace(go.Scatter(x=list(tasks), y=negatives, mode='lines', name='negative'))
+	fig.add_trace(go.Scatter(x=df['task'], y=df['positive'], mode='lines', line_color='#237ce1', text=df['text'], name='спасибо'))
+	fig.add_trace(go.Scatter(x=df['task'], y=df['negative'], mode='lines', line_color='#a4a5a5', text=df['text'], name='протест'))
 
-	fig.update_layout(title='Позитив и негатив')
+	fig.update_layout(title='График фидбэка: модуль «Тексты»')
 
 	div = opy.plot(fig, auto_open=False, output_type='div')
 
