@@ -27,19 +27,6 @@ def make_question_formset(question, extra=0):
 			model = Question
 			fields = ['variants']
 
-		def __init__(self, *args, **kwargs):
-			super().__init__(*args, **kwargs)
-
-			self.fields['variants'].label = question.question_text
-			self.helper = FormHelper()
-			self.helper.form_show_error = False
-			self.fields['variants'].required = False
-			self.fields['variants'].label_class = 'display-4'
-			self.helper.form_method = 'POST'
-			self.helper.add_input(Submit('submit',
-				'Готово',
-				css_class='btn btn-info mt-4 mb-2'))
-
 	return _VariantForm
 
 class VariantSomeForm(forms.ModelForm):

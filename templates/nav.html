@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">   
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}"/>
+    <link rel="stylesheet" href="{% static 'css/eduhund.min.css' %}"/>
     <title>{% block title %}EduHund{% endblock %} </title>
   </head>
   <body>
@@ -22,11 +23,19 @@
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'core:modules' %}">Модули <span class="sr-only">(current)</span></a>
+      <li class="nav-item active dropdown">
+         <a class="nav-link dropdown-toggle" href="{% url 'core:modules' %}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Модули</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'core:module' 2 %}">Тексты</a>
+          <a class="dropdown-item" href="{% url 'core:module' 1 %}">Сценарии</a>
+        </div>
       </li>
-       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'core:streams' %}">Потоки <span class="sr-only">(current)</span></a>
+       <li class="nav-item active dropdown">
+        <a class="nav-link dropdown-toggle" id='navbarDropdown' role='button' href="{% url 'core:streams' %}" data-toggle="dropdown-menu" aria-haspopup='true' aria-expanded="false">Потоки </a>
+        <div class="dropdown-menu" aria-labelled="navbarDropdown" >
+          <a class="dropdown-item" href="" ></a>
+          <a class="dropdown-item" href=""></a>
+          </div>
       </li>
        <li class="nav-item active">
         <a class="nav-link" href="{% url 'core:students' %}">Студенты <span class="sr-only">(current)</span></a>

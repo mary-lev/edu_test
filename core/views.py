@@ -47,7 +47,7 @@ def new_solution(request, task_id):
 			myformset = VariantFormSet(request.POST,
 				prefix=question.id)
 			if myformset.is_valid():
-				messages.success(request, 'some message')
+				myformset.save()
 		else:
 			myformset = VariantFormSet(
 				prefix=question.id)

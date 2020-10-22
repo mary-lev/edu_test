@@ -21,12 +21,16 @@
 {% endif %}
 
 {% load crispy_forms_tags %}
-
-<p class='display-4'>text</h3>
+<form method='POST'>
+  {% csrf_token %}
 {{ formset.management_form }}
 {% for form in formset %}
-  {% crispy form %}
+  {% for field in form %}
+            <h5>{{ field.label_tag }}</h5> {{ field }}
+        {% endfor %}
 {% endfor %}
+<input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />
+</form>
 
 
 
