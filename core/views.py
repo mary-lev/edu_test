@@ -212,4 +212,5 @@ class DateGraph(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date_div'] = date_div
+        context['dn'] = dn
         return context
