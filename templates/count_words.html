@@ -3,13 +3,15 @@
 
 
 {% block content %}
-<h1 class="display-4">Решения</h1>
-
-<ul>
+<h1 class="display-4">Сколько слов написали студенты</h1>
+<b>Все вместе написали {{ tolstoy }} % романа Толстого «Война и мир».</b>
+<ol>
 	{% for solution in data %}
-		{{ solution.student }}
+		<li>{{ solution.0 }}, вы написали {{ solution.2 }} слов. Это примерно {{ solution.3 }} % «Войны и мира».</li>
+			
+
 	{% endfor %}
-</ul>
+</ol>
 
 
 

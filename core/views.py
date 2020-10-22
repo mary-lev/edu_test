@@ -1,4 +1,5 @@
 import json
+import string
 import pandas as pd
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
@@ -96,10 +97,25 @@ class ModuleView(DetailView):
 class StreamView(DetailView):
 	model = Stream
 
-
+TOLSTOY = 461688
 def count_words(request):
-	queryset = Solution.objects.filter(task__lesson__module__name='Тексты')
-	return render(request, 'count_words.html', {'data': queryset})
+	stream = Stream.objects.filter(module__name='Тексты').values_list('students')
+	students = Student.objects.filter(id__in=stream)
+	solutions = Solution.objects.filter(task__lesson__module__name='Тексты')
+	students_texts = []
+	all_tolstoy = 0
+	for student in students:
+		student_text = solutions.filter(student=student).values_list('text', flat=True)
+		student_words = 0
+		for all in student_text:
+			s = all.translate(str.maketrans('', '', string.punctuation))
+			student_words += len(s.split(' '))
+		all_tolstoy += student_words
+		tolstoy = round((student_words*100)/TOLSTOY, 2)
+		students_texts.append([student, student_text, student_words, tolstoy])
+	all_tolstoy = round((all_tolstoy*100)/TOLSTOY, 1)
+	students_texts = sorted(students_texts, key=lambda x: x[3], reverse=True)
+	return render(request, 'count_words.html', {'data': students_texts, 'tolstoy': all_tolstoy})
 
 
 class SolutionAll(ListView):
