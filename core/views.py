@@ -97,11 +97,35 @@ class StreamView(DetailView):
 	model = Stream
 
 
+def count_words(request):
+	queryset = Solution.objects.filter(task__lesson__module__name='Тексты')
+	return render(request, 'count_words.html', {'data': queryset})
+
+
 class SolutionAll(ListView):
+	#tasks =[2, 6, 8, 10, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
+	#		57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
+	#		94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 117, 120, 123, 125,
+	#		126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 
+	#		145, 146, 147, 148, 149, 150, 151, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
+	#10 - cit/links
+	#24 - adress
+	#48 - dictionaries
+	#50 - orfo rules
+	#117 - link
+	#138 - link
+	#141 - maybe link
+	#142 - time
+	#144 - vacancy/edit
+	#148 - link
+	#151 - speed typing
+	#153 - link
+
+
 	model = Solution
 
 	def get_queryset(self):
-		return Solution.objects.filter(task__lesson__module__name='Тексты').annotate(num_task=Count('task'))
+		return Task.objects.filter(lesson__module__name='Тексты').annotate(num_task=Count('solutions'))
 
 
 class ModuleListView(ListView):

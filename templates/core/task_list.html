@@ -1,0 +1,24 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Решения</h1>
+
+<ul>
+	{% for task in object_list %}
+		{% if task.num_task %}
+			<li>{{ task }} {{ task.num_task }}</li>
+				<ul>
+				{% for solution in task.solutions.all %}
+					<li>{{ solution.text}}</li>
+				{% endfor %}
+				</ul>
+
+		{% endif %}
+	{% endfor %}
+</ul>
+
+
+
+{% endblock %}

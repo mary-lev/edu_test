@@ -5,11 +5,9 @@
 {% block content %}
 <h1 class="display-4">Решения</h1>
 
-{{ object_list }}
-
 <ul>
-	{% for solution in object_list %}
-	<li>{{ solution }}</li>
+	{% for task in data %}
+		{{ task }}
 	{% endfor %}
 </ul>
 
