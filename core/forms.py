@@ -7,11 +7,6 @@ from django.forms import modelformset_factory
 from .models import Task, Solution, Variant, Question
 
 
-def create_solution_formset(task):
-	formset = []
-
-	return formset
-
 class MyModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.text
@@ -26,45 +21,22 @@ def make_question_formset(question, extra=0):
 			empty_label=None,
 			label=question.question_text
 			)
-		#form.fields['variants'].choices = []
 		
 		class Meta:
 			model = Question
 			fields = ['variants']
+		
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
 
+			self.fields['variants'].label_class='mb-0'
+
+			self.helper = FormHelper()
+			self.helper.form_method = 'POST'
+			self.helper.add_input(Submit('submit',
+				'Готово',
+				css_class='btn btn-info mt-4 mb-2'))
+
+			self.helper.form_class = 'card mt-4 mb-3'
+			self.helper.label_class = 'display-4'
 	return _VariantForm
-
-class VariantSomeForm(forms.ModelForm):
-	class Meta:
-		model = Variant
-		fields = "__all__"
-		widgets = {
-		'text': forms.RadioSelect(attrs={'class': 'mb-0'})
-		}
-
-
-class QuestionForm(forms.ModelForm):
-	variants = forms.ModelChoiceField(
-		queryset=Variant.objects.values_list('text', flat=True).distinct(),
-		widget=forms.RadioSelect)
-	class Meta:
-		model = Question
-		fields = ['variants']
-
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-		self.fields['variants'].label_class='mb-0'
-
-		self.helper = FormHelper()
-		self.helper.form_method = 'POST'
-		self.helper.add_input(Submit('submit',
-			'Готово',
-			css_class='btn btn-info mt-4 mb-2'))
-
-		self.helper.form_class = 'card mt-4 mb-3'
-		self.helper.label_class = 'display-4'
-
-
-
