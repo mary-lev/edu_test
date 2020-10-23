@@ -67,7 +67,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 class FeedbackAdmin(admin.ModelAdmin):
 	list_display = ('task', 'student', 'text', 'get_lesson', 'get_module')
-	list_filter = ('task__lesson',)
+	list_filter = ('task__lesson', 'student',)
 
 	def get_lesson(self, obj):
 		return obj.task.lesson
