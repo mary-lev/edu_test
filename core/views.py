@@ -32,23 +32,27 @@ def tone(request):
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
-	formsets = []
+	formset = []
+	solutions = []
 	for question in questions:
 		#if all.question_type=='Radiobutton':
-		VariantFormSet = make_question_formset(question)
+		VariantForm = make_question_formset(question)
 		if request.method == 'POST':
-			myformset = VariantFormSet(request.POST,
+			myformset = VariantForm(request.POST,
 				prefix=question.id)
+			formset.append(myformset)
 			if myformset.is_valid():
-				myformset.save()
-				return render(request, 'core/test.html', {'test': test})
+				#name = myformset.cleaned_data['variants'].is_right
+				name = request.POST
+				solutions.append(name)
+			return render(request, 'core/test.html', {'test': test})
 		else:
-			myformset = VariantFormSet(
+			myformset = VariantForm(
 				prefix=question.id)
-		formsets.append(myformset)
+			formset.append(myformset)
 	return render(request,
 		'solution1.html',
-		{'formset': formsets, 'questions': questions, 'task': task})
+		{'formset': formset, 'questions': questions, 'task': task})
 
 
 
