@@ -3,7 +3,7 @@ import string
 import pandas as pd
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
-from django.views.generic.detail import DetailView
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django import forms
 from django.db.models import Count
@@ -143,6 +143,22 @@ class SolutionAll(ListView):
 
 	def get_queryset(self):
 		return Task.objects.filter(lesson__module__name='Тексты').annotate(num_task=Count('solutions'))
+
+
+class SolutionStudent(SingleObjectMixin, ListView):
+
+
+	def get(self, request, *args, **kwargs):
+		self.object = self.get_object(queryset=Student.objects.all())
+		return super().get(request, *args, **kwargs)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['student'] = self.object
+		return context
+
+	def get_queryset(self):
+		return self.object.solutions.all()
 
 
 class ModuleListView(ListView):

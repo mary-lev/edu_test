@@ -3,13 +3,11 @@
 
 
 {% block content %}
-<h1 class="display-4">Решения</h1>
-
-{{ object_list }}
+<h1 class="display-4">Решения: {{ object }}</h1>
 
 <ul>
 	{% for solution in object_list %}
-	<li>{{ solution }}</li>
+	<li>{{ solution.text }}</li>
 	{% endfor %}
 </ul>
 
