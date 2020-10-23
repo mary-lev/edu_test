@@ -21,7 +21,7 @@
 {% endif %}
 
 {% load crispy_forms_tags %}
-<form method='POST'>
+<form class='form' action='' method='POST'>
   {% csrf_token %}
 {{ formset.management_form }}
 {% for form in formset %}

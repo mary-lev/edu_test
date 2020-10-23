@@ -47,7 +47,8 @@ def new_solution(request, task_id):
 			myformset = VariantFormSet(request.POST,
 				prefix=question.id)
 			if myformset.is_valid():
-				myformset.save()
+				test = myformset.get_variants_display()
+				return render(request, 'core/test.html', {'test': test})
 		else:
 			myformset = VariantFormSet(
 				prefix=question.id)

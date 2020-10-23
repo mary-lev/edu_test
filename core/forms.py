@@ -16,7 +16,7 @@ def create_solution_formset(task):
 
 def make_question_formset(question, extra=0):
 	class _VariantForm(forms.ModelForm):
-		variants = forms.ModelChoiceField(
+		variants = ModelChoiceField(
 			queryset=Variant.objects.filter(question=question).values_list('text', flat=True).distinct(),
 			widget=forms.RadioSelect(),
 			empty_label=None,
