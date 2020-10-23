@@ -47,7 +47,7 @@ def new_solution(request, task_id):
 			myformset = VariantFormSet(request.POST,
 				prefix=question.id)
 			if myformset.is_valid():
-				test = myformset.get_variants_display()
+				myformset.save()
 				return render(request, 'core/test.html', {'test': test})
 		else:
 			myformset = VariantFormSet(
@@ -146,7 +146,6 @@ class SolutionAll(ListView):
 
 
 class SolutionStudent(SingleObjectMixin, ListView):
-
 
 	def get(self, request, *args, **kwargs):
 		self.object = self.get_object(queryset=Student.objects.all())

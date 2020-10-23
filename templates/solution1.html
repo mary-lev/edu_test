@@ -27,6 +27,7 @@
 {% for form in formset %}
   {% for field in form %}
             <h5>{{ field.label_tag }}</h5> {{ field }}
+            {{ field.errors}}
         {% endfor %}
 {% endfor %}
 <input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />

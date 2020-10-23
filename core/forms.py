@@ -12,16 +12,21 @@ def create_solution_formset(task):
 
 	return formset
 
+class MyModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.text
 
 
 def make_question_formset(question, extra=0):
 	class _VariantForm(forms.ModelForm):
-		variants = ModelChoiceField(
-			queryset=Variant.objects.filter(question=question).values_list('text', flat=True).distinct(),
+		variants = MyModelChoiceField(
+			queryset=Variant.objects.filter(question=question).distinct(),
+			to_field_name='text',
 			widget=forms.RadioSelect(),
 			empty_label=None,
 			label=question.question_text
 			)
+		#form.fields['variants'].choices = []
 		
 		class Meta:
 			model = Question
