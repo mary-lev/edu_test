@@ -40,3 +40,10 @@ def make_question_formset(question, extra=0):
 			self.helper.form_class = 'card mt-4 mb-3'
 			self.helper.label_class = 'display-4'
 	return _VariantForm
+
+
+class QuestionForm(forms.ModelForm):
+	
+	class Meta:
+		model = Question
+		fields = ('question_text',)

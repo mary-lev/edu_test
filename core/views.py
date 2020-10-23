@@ -17,7 +17,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import QuestionForm, make_question_formset, create_solution_formset
+from .forms import make_question_formset, QuestionForm
 
 
 def index(request):
@@ -27,13 +27,6 @@ def index(request):
 def tone(request):
 	div = create_new_graph()
 	return render(request, 'tone.html', {'div': div})
-
-
-def get_solution(request, task_id):
-	task = Task.objects.get(id=task_id)
-	form = create_solution_formset(task)
-
-	return render(request, 'solution2.html', {'form': form, 'task': task})
 
 
 def new_solution(request, task_id):
