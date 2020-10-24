@@ -43,7 +43,24 @@ def make_question_formset(question, extra=0):
 
 
 class QuestionForm(forms.ModelForm):
-	
+	answer = forms.CharField(widget=forms.TextInput(attrs={'class': 'special'}))
 	class Meta:
 		model = Question
-		fields = ('question_text',)
+		fields = ('question_text', 'description',)
+		widgets = {
+			'answer': forms.TextInput(),
+		}
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		self.fields['answer'].initial = ''
+		self.fields['answer'].label = self.instance.question_text
+
+		self.helper = FormHelper()
+		self.helper.form_method = 'POST'
+		self.helper.add_input(Submit('submit',
+			'Готово',
+			css_class='btn btn-info mt-4 mb-2'))
+		self.helper.form_class = 'card mt-4 mb-3'
+		self.helper.label_class = 'display-4'

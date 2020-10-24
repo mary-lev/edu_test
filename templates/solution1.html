@@ -26,7 +26,8 @@
 {{ formset.management_form }}
 {% for form in formset %}
   {% for field in form %}
-            <h5>{{ field.label_tag }}</h5> {{ field }}
+            <h5>{{ field.label_tag }}</h5> 
+            {{ field }}
             {{ field.errors}}
         {% endfor %}
 {% endfor %}

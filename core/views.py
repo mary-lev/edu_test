@@ -35,8 +35,10 @@ def new_solution(request, task_id):
 	formset = []
 	solutions = []
 	for question in questions:
-		#if all.question_type=='Radiobutton':
-		VariantForm = make_question_formset(question)
+		if question.question_type == '1':
+			VariantForm = make_question_formset(question)
+		elif question.question_type == '3':
+			VariantForm = QuestionForm
 		if request.method == 'POST':
 			myformset = VariantForm(request.POST,
 				prefix=question.id)
@@ -45,11 +47,10 @@ def new_solution(request, task_id):
 				#name = myformset.cleaned_data['variants'].is_right
 				name = request.POST
 				solutions.append(name)
-			return render(request, 'core/test.html', {'test': test})
+				return render(request, 'core/test.html', {'test': test})
 		else:
-			myformset = VariantForm(
-				prefix=question.id)
-			formset.append(myformset)
+			myformset = VariantForm(prefix=question.id)
+			formset.append(myformset) 
 	return render(request,
 		'solution1.html',
 		{'formset': formset, 'questions': questions, 'task': task})

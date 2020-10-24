@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'tinymce',
     'crispy_forms',
+    'sheets',
 ]
 
 MIDDLEWARE = [
