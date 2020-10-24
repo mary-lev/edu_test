@@ -1,5 +1,4 @@
-from pprint import pprint
-
+import pandas as pd
 import httplib2
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
@@ -34,3 +33,7 @@ values = service.spreadsheets().values().get(
     range=titles[0]+"!A1:Y75",
     majorDimension='ROWS'
     ).execute()
+
+columns = values['values'][4] + ['proc']
+df = pd.DataFrame.from_records(values['values'][5:], columns=columns)
+df = df.to_html()
