@@ -86,6 +86,7 @@ class Question(models.Model):
 		)
 	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
 	question_text = models.CharField(max_length=300)
+	description = models.CharField(max_length=1000, null=True)
 	choice = models.CharField(max_length=300)
 	answers = models.CharField(max_length=200)
 	slug = models.SlugField()
