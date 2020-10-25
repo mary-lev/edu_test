@@ -36,10 +36,13 @@ titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
 start_feedback = titles[0] + "!A21:E22"
 help_feedback = titles[1] + "!E10:G10"
 razbor = titles[1] + "!B13:B14"
+task1_text = titles[2] + "!G3:G8"
+task1_image = titles[2] + "!B3"
 
 values = service.spreadsheets().values().get(
     spreadsheetId=spreadsheet_id,
-    range=razbor,
+    range=task1_image,
     #range=titles[1] + "!A1:YH75",
-    majorDimension='ROWS'
+    majorDimension='ROWS',
     ).execute()
+
