@@ -1,4 +1,5 @@
 import json
+import time
 import pandas as pd
 import httplib2
 import apiclient.discovery
@@ -33,45 +34,78 @@ spreadsheet = service.spreadsheets().get(
 #извлекаем листы из шита
 titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
 
-start_feedback = titles[0] + "!A21:E22"
-help_feedback = titles[1] + "!E10:G10"
-razbor = titles[1] + "!B13:B14"
-#task1
-task1_number = titles[2] + "!H2"
-task1_text = titles[2] + "!G3:G8"
-task1_image_title = titles[2] + "!B2"
-task1_image = titles[2] + "!B3"
-task1_answer = titles[2] + "!G10:H10"
-task1_mark = titles[2] + "!K28"
-task1_feedback = titles[2] + "!G31"
+first_lesson = {}
+start_feedback = titles[0] + "!E21:F21"
+help_feedback = titles[1] + "!E10:E11"
+razbor = titles[1] + "!B13:B13"
 
-task2_number = titles[3] + "!H2"
-task2_text = titles[3] + "!G3:G8"
-task2_image = titles[3] + "!B3"
-task2_answer = titles[3] + "!G10:H10"
-task2_mark = titles[3] + "!K28"
-task2_feedback = titles[3] + "!G31"
+ranges = {'start_feedback': start_feedback, 'help_feedback': help_feedback, 'razbor': razbor}
+for index, title in enumerate(titles[2:]):
+	task_index = 'task' + str(index)
+	task_number= task_index + '_number'
+	task_text = task_index + '_text'
+	task_alt_text = task_index + '_2text'
+	task_image_title = task_index + '_image_title'
+	task_image = task_index + '_image' #!
+	task_feedback = task_index + '_feedback'
+	task_mark = task_index + '_mark'
+	task_alt_mark = task_index + '_alt_mark'
+	task_answer = task_index + '_answer'
+	task_alt_answer = task_index + '_alt_answer'
+	task_podskazka = task_index + '_podskazka'
+	task_alt_podskazka = task_index + '_alt_podskazka'
+	task_answer_labels = task_index + '_answer_labels'
+	task_hyperlink = task_index + '_hyperlink'
 
-task3_answer = titles[4] + "!G10:G15"
-task3_answer_texts = titles[4] + "!H10:H15"
+	ranges[task_number] = title + "!H2"
+	ranges[task_text] = title + "!G3:G8"
+	ranges[task_alt_text] = title + "!H3:H8"
+	ranges[task_image_title] = title + "!B2"
+	ranges[task_image] = title + "!B3"
+	ranges[task_mark] = title + "!K28"
+	ranges[task_alt_mark] = title + "!J28"
+	ranges[task_feedback] = title + "!G31"
+	ranges[task_answer] = title + "!G10:H17"
+	ranges[task_alt_answer] = title + "!J10:K17"
+	ranges[task_podskazka] = title + "!Q10:Q17"
+	ranges[task_alt_podskazka] = title + "!P10:P17"
+	ranges[task_answer_labels] = title + "!J7:K7"
+	ranges[task_hyperlink] = title + '!B3'
 
+
+for name, range in ranges.items():
+	if 'hyperlink' in name:
+		values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=range, includeGridData=True).execute()
+		first_lesson['hyperlink'] = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
+	else:
+		values = service.spreadsheets().values().get(
+			spreadsheetId=spreadsheet_id,
+			range=range,
+			#range=titles[1] + "!A1:YH75",
+			majorDimension='ROWS',
+			).execute()
+		if 'values' in values.keys():
+			first_lesson[name] = values['values']
+	time.sleep(5)
+
+
+task11_answer_texts = titles[10] + "!H10:H17"
 
 #for task1_image
 #values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=task1_image, includeGridData=True).execute()
 #hyperlink = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
 
+
 #try for task1_answer
-#values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=task1_answer, includeGridData=True).execute()
+#for sheet in titles:
+#	sheet_range = sheet + "!A1:Z32"
+#	result = service.spreadsheets().get(
+#		spreadsheetId=spreadsheet_id,
+#		ranges=sheet_range,
+#		includeGridData=True
+#		).execute()
+#	values.append(result)
 
-values = service.spreadsheets().values().get(
-    spreadsheetId=spreadsheet_id,
-    range=task3_answer_texts,
-    #range=titles[1] + "!A1:YH75",
-    majorDimension='ROWS',
-    ).execute()
-
-if values['values']:
-	values = values['values']
 
 #for task1_answer
 #values = values['values'][0][0]
@@ -79,5 +113,5 @@ if values['values']:
 #for task1_mark:
 #values = values['values'][0][0]
 
-#print(values)
+values = first_lesson
 
