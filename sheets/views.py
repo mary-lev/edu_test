@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from .utils import values, df, students
+#from .utils import df, students
+from .lesson_1 import values, students
 
 def index(request):
-	return render(request, 'sheets/index.html', {'values': df, 'students': students})
+	return render(request, 'sheets/index.html', {'values': values, 'students': students})
