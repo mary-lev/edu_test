@@ -35,8 +35,11 @@ def get_lesson_feedback(lesson):
 
 	titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
 	first_lesson = list()
-	start_feedback = titles[0] + "!E21:F21"
-	help_feedback = titles[1] + "!E10:E11"
+	if lesson == 'lesson_5':
+		start_feedback = titles[0] + '!E16'
+	else:
+		start_feedback = titles[0] + "!E21:F21" #lessons 1-4
+	help_feedback = titles[1] + "!E10:E12"
 	razbor = titles[1] + "!B13:B13"
 
 	old_ranges = {'start_feedback': start_feedback, 'help_feedback': help_feedback}
@@ -47,40 +50,40 @@ def get_lesson_feedback(lesson):
 		old_ranges[task_feedback] = title + '!G31'
 
 	queries = [value for key, value in old_ranges.items()]
+	print(queries)
 
 	for index, student in enumerate(students):
 		spreadsheet_id = student[lesson]
 		print(spreadsheet_id)
-		try:
-			values = service.spreadsheets().values().batchGet(
-				spreadsheetId=spreadsheet_id,
-				ranges=queries,
-				#range=titles[1] + "!A1:YH75",
-				#majorDimension='ROWS',
-				).execute()
-				#if 'values' in values['valueRanges']:
-				#	feedback[key] = values['values']
-				#time.sleep(2)
-			values['student'] = index
-			first_lesson.append(values)
-		except:
-			pass
+		values = service.spreadsheets().values().batchGet(
+			spreadsheetId=spreadsheet_id,
+			ranges=queries,
+			#range=titles[1] + "!A1:YH75",
+			#majorDimension='ROWS',
+			).execute()
+			#if 'values' in values['valueRanges']:
+			#	feedback[key] = values['values']
+			#time.sleep(2)
+		values['student'] = index
+		first_lesson.append(values)
+		time.sleep(10)
 	result = []
+	print('Done!')
 	for all in first_lesson:
 		for value in all['valueRanges']:
 			if 'values' in value.keys():
 				new = {}
 				new['student'] = all['student']
-				new['lesson'] = '2'
+				new['lesson'] = '7'
 				task_number = value['range'].find('!')
 				new['task'] = value['range'][:task_number].replace("'", "")
 				new['feedback'] = value['values'][0]
 				result.append(new)
 	return result
 
-first_lesson = get_lesson_feedback('lesson_2')
+first_lesson = get_lesson_feedback('lesson_7')
 
-with open('mio4_lesson2.json', 'w') as f:
+with open('mio4_lesson7.json', 'w') as f:
 	json.dump(first_lesson, f)
 
 
