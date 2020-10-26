@@ -81,9 +81,9 @@ for task in tasks:
 	print(task)
 	new_task = dict()
 	for index, name in task.items():
-		if 'hyperlink' in task.keys():
+		if 'hyperlink' in index:
 			values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=name, includeGridData=True).execute()
-			first_lesson[name] = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
+			new_task[index] = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
 		else:
 			values = service.spreadsheets().values().get(
 				spreadsheetId=spreadsheet_id,
@@ -92,9 +92,9 @@ for task in tasks:
 				majorDimension='ROWS',
 				).execute()
 			if 'values' in values.keys():
-				new_task[index] = values['value']
+				new_task[index] = values['values']
 	first_lesson.append(new_task)
-	time.sleep(2)
+	time.sleep(3)
 
 
 task11_answer_texts = titles[10] + "!H10:H17"
