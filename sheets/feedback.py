@@ -34,7 +34,7 @@ def get_lesson_feedback(lesson):
 		).execute()
 
 	titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
-	first_lesson = list()
+	one_lesson = list()
 	if lesson == 'lesson_5':
 		start_feedback = titles[0] + '!E16'
 	else:
@@ -64,26 +64,35 @@ def get_lesson_feedback(lesson):
 			#if 'values' in values['valueRanges']:
 			#	feedback[key] = values['values']
 			#time.sleep(2)
-		values['student'] = index
-		first_lesson.append(values)
+		values['student_name'] = student['name']
+		values['student_family'] = student['family']
+		values['student_email'] = student['email']
+		one_lesson.append(values)
 		time.sleep(10)
 	result = []
 	print('Done!')
-	for all in first_lesson:
+	for all in one_lesson:
 		for value in all['valueRanges']:
 			if 'values' in value.keys():
 				new = {}
-				new['student'] = all['student']
-				new['lesson'] = '7'
+				new['student_name'] = all['student_name']
+				new['student_family'] = all['student_family']
+				new['student_email'] = all['student_email']
+				new['lesson'] = lesson[-1:]
 				task_number = value['range'].find('!')
 				new['task'] = value['range'][:task_number].replace("'", "")
 				new['feedback'] = value['values'][0]
 				result.append(new)
 	return result
 
-first_lesson = get_lesson_feedback('lesson_7')
+#first_lesson = get_lesson_feedback('lesson_7')
 
-with open('mio4_lesson7.json', 'w') as f:
-	json.dump(first_lesson, f)
+lessons_list = ['lesson_1', 'lesson_2', 'lesson_3', 'lesson_4', 'lesson_5', 'lesson_6']
+
+for one in lessons_list:
+	first_lesson = get_lesson_feedback(one)
+	file_name = 'mio4_' + one + '.json'
+	with open(file_name, 'w') as f:
+		json.dump(first_lesson, f)
 
 
