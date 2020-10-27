@@ -2,6 +2,23 @@
 
 {% block content %}
 
+
+  <form action="" method="POST" class='uniForm'>
+    {% csrf_token %}
+    {% for form in formset %}
+    Фидбэк
+    <p>Задача {{ form.task.initial }}. Урок {{ form.lesson.initial }}</p>
+    	{% for field in form %}
+   			<li>{{ field.value }}</li>
+   		{% endfor %}
+   {% endfor %}
+
+<div class='form-actions'>
+    <input type="submit" value="Submit" class="btn btn-primary">
+</div>
+  </form>
+
+
 {% for feedback in new_feedbacks %}
 <h3>Урок {{feedback.lesson}}. Задача {{ feedback.task}}</h3>
 {{ feedback.student_name}} {{feedback.student_family}} {{ feedback.student_email}}

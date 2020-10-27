@@ -63,6 +63,13 @@ def new_solution(request, task_id):
 		{'formset': formset, 'questions': questions, 'task': task})
 
 
+class FeedbackForm(forms.Form):
+	lesson = forms.CharField()
+	task = forms.CharField()
+	student = forms.CharField()
+	feedback = forms.CharField()
+
+
 def get_new_feedbacks(request):
 	new_feedbacks = list()
 	for filename in mio_filenames:
@@ -73,7 +80,33 @@ def get_new_feedbacks(request):
 					feedback = Feedback.objects.get(text=feedback['feedback'])
 				except Feedback.DoesNotExist:
 					new_feedbacks.append(feedback)
-	return render(request, 'new_feedbacks.html', {'new_feedbacks': new_feedbacks})
+	initial = []
+	for one in new_feedbacks:
+		new = {}
+		new['text'] = one['feedback'][0]
+		new['task'] = one['task']
+		new['lesson'] = one['lesson']
+		initial.append(new)
+	FeedbackFormSet = modelformset_factory(
+		Feedback,
+		extra=len(initial),
+		fields=['task', 'lesson', 'text'],
+		can_delete=True
+		)
+	if request.method == 'POST':
+		formset = FeedbackFormSet(
+			request.POST,
+			queryset=Feedback.objects.none(),
+			initial=initial,
+			extra=len(initial)
+			)
+		if formset.is_valid():
+			formset.save()
+			return redirect('core:new_feedbacks')
+	else:
+		formset = FeedbackFormSet(queryset=Feedback.objects.none(), initial=initial)
+			
+	return render(request, 'new_feedbacks.html', {'new_feedbacks': new_feedbacks, 'formset': formset})
 
 
 class StudentView(DetailView):
