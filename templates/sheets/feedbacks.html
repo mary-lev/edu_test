@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for feedback in feedbacks %}
+<pre>{{ feedback|pprint }}</pre>
+{% endfor %}
+
+{% endblock %}

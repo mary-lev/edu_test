@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django import forms
 from django.db.models import Count
   
@@ -18,6 +19,12 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 from .feedback import create_graph
 from .tone import create_new_graph
 from .forms import make_question_formset, QuestionForm
+
+
+mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',
+			'mio4_lesson_4.json', 'mio4_lesson_5.json', 'mio4_lesson_6.json',
+			'mio4_lesson_7.json'
+			]
 
 
 def index(request):
@@ -55,6 +62,18 @@ def new_solution(request, task_id):
 		'solution1.html',
 		{'formset': formset, 'questions': questions, 'task': task})
 
+
+def get_new_feedbacks(request):
+	new_feedbacks = list()
+	for filename in mio_filenames:
+		with open(filename, 'r') as f:
+			text = json.load(f)
+			for feedback in text:
+				try:
+					feedback = Feedback.objects.get(text=feedback['feedback'])
+				except Feedback.DoesNotExist:
+					new_feedbacks.append(feedback)
+	return render(request, 'new_feedbacks.html', {'new_feedbacks': new_feedbacks})
 
 
 class StudentView(DetailView):

@@ -11,6 +11,7 @@ urlpatterns = [
 	path('count_words/', views.count_words, name='count_words'),
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
 	path('students/', views.StudentListView.as_view(), name='students'),
+	path('new_feedbacks/', views.get_new_feedbacks, name='new_feedbacks'),
 	path('task/<pk>/', views.TaskView.as_view(), name='task'),
 	path('solutions/', views.SolutionAll.as_view(), name='solutions'),
 	path('student/<pk>/solutions/', views.SolutionStudent.as_view(), name='student_solutions'),

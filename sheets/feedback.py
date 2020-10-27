@@ -24,7 +24,7 @@ service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 with open('mio4.json', 'r') as f:
 	students = json.load(f)
 
-
+lessons_list = ['lesson_1', 'lesson_2', 'lesson_3', 'lesson_4', 'lesson_5', 'lesson_6']
 
 def get_lesson_feedback(lesson):
 	spreadsheet_id = students[0][lesson]
@@ -32,6 +32,7 @@ def get_lesson_feedback(lesson):
 	spreadsheet = service.spreadsheets().get(
 		spreadsheetId=spreadsheet_id,
 		).execute()
+	print('Get one sheet for titles')
 
 	titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
 	one_lesson = list()
@@ -52,7 +53,7 @@ def get_lesson_feedback(lesson):
 	queries = [value for key, value in old_ranges.items()]
 	print(queries)
 
-	for index, student in enumerate(students):
+	for student in students:
 		spreadsheet_id = student[lesson]
 		print(spreadsheet_id)
 		values = service.spreadsheets().values().batchGet(
@@ -61,38 +62,30 @@ def get_lesson_feedback(lesson):
 			#range=titles[1] + "!A1:YH75",
 			#majorDimension='ROWS',
 			).execute()
-			#if 'values' in values['valueRanges']:
-			#	feedback[key] = values['values']
-			#time.sleep(2)
-		values['student_name'] = student['name']
-		values['student_family'] = student['family']
-		values['student_email'] = student['email']
-		one_lesson.append(values)
-		time.sleep(10)
-	result = []
+		for answer in values['valueRanges']:
+			if 'values' in answer.keys():
+				student_lesson = {}
+				student_lesson['student_name'] = student['name']
+				student_lesson['student_family'] = student['family']
+				student_lesson['student_email'] = student['email']
+				student_lesson['lesson'] = lesson[-1:]
+				task_number = answer['range'].find('!')
+				student_lesson['task'] = answer['range'][:task_number].replace("'", "")
+				student_lesson['feedback'] = answer['values'][0]
+				one_lesson.append(student_lesson)
+		time.sleep(8)
 	print('Done!')
-	for all in one_lesson:
-		for value in all['valueRanges']:
-			if 'values' in value.keys():
-				new = {}
-				new['student_name'] = all['student_name']
-				new['student_family'] = all['student_family']
-				new['student_email'] = all['student_email']
-				new['lesson'] = lesson[-1:]
-				task_number = value['range'].find('!')
-				new['task'] = value['range'][:task_number].replace("'", "")
-				new['feedback'] = value['values'][0]
-				result.append(new)
-	return result
-
-#first_lesson = get_lesson_feedback('lesson_7')
-
-lessons_list = ['lesson_1', 'lesson_2', 'lesson_3', 'lesson_4', 'lesson_5', 'lesson_6']
-
-for one in lessons_list:
-	first_lesson = get_lesson_feedback(one)
-	file_name = 'mio4_' + one + '.json'
+	file_name = 'mio4_' + lesson + '.json'
 	with open(file_name, 'w') as f:
-		json.dump(first_lesson, f)
+		json.dump(one_lesson, f)
+	return one_lesson
+
+first_lesson = get_lesson_feedback('lesson_7')
+
+#for one in lessons_list[:2]:
+#	first_lesson = get_lesson_feedback(one)
+#	file_name = 'mio4_' + one + '.json'
+#	with open(file_name, 'w') as f:
+#		json.dump(first_lesson, f)
 
 

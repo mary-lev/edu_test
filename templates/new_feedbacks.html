@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for feedback in new_feedbacks %}
+<h3>Урок {{feedback.lesson}}. Задача {{ feedback.task}}</h3>
+{{ feedback.student_name}} {{feedback.student_family}} {{ feedback.student_email}}
+<p>{{ feedback.feedback.0 }}
+{% endfor %}
+
+{% endblock %}

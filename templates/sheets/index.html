@@ -2,11 +2,13 @@
 
 {% block content %}
 
+<pre>{{ students|pprint }}</pre>
+
+
+{% endblock %}
 {% for student in students %}
 <li>Студент {{ student.student }}. Урок {{ student.lesson }}. Задача {{ student.task }}</li>
 	<ul>
 		<li>{{ student.feedback.0 }}</li>
 	</ul>
-{% endfor %}
-
-{% endblock %}
+	{% endfor %}
