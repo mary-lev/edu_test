@@ -69,7 +69,7 @@ def analyze(sentences):
 		if len(similarity):
 			matrix.append(sum(similarity)/len(similarity))
 		else:
-			matrix.append("А нету ничего")
+			matrix.append("А нету ничего.")
 	return matrix
 
 

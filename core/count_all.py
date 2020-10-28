@@ -89,3 +89,23 @@ def count_words(solutions):
 	sentences = [all.text for all in solutions]
 	return zip(sentences, analyze(solutions))
 
+
+#индекс удобочитаемости: https://github.com/ivbeg/readability.io/wiki/API
+def difficulty(solutions):
+	result = list()
+	old = [all.text for all in solutions]
+	for all in solutions:
+		if all.text:
+			text = all.text.replace('//', ' ')
+			response = requests.post("http://api.plainrussian.ru/api/1.0/ru/measure/", data={"text":text})
+			result.append(response.json())
+		else:
+			result.append("Нечего считать.")
+	return zip(old, result)
+
+def analyze(one_student_solutions):
+	text_solutions = list()
+	for solution in one_student_solutions:
+		if solution.text:
+			text_solutions.append(solution.text)
+	return text_solutions

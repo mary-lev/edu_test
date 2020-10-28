@@ -19,7 +19,11 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 from .feedback import create_graph
 from .tone import create_new_graph
 from .forms import make_question_formset, QuestionForm
-from .count_all import is_link, compare_texts, get_address, count_words, compare_time
+from .count_all import (is_link, compare_texts,
+	get_address,
+	#count_words,
+	analyze,
+	compare_time, difficulty)
 
 
 mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',
@@ -77,7 +81,8 @@ def analyze_task(request, task_id):
 
 	#считаем остальные тексты
 	elif task.number in text_tasks:
-		answer = count_words(solutions)
+		#answer = count_words(solutions)
+		answer = difficulty(solutions)
 	else:
 		answer = 'Здесь не нужно было ничего писать'
 
@@ -156,6 +161,11 @@ def get_new_feedbacks(request):
 class StudentView(DetailView):
 	model = Student
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		analytics = analyze(self.object.solutions.all)
+		context['analytics'] = analytics
+		return context
 
 class TaskView(DetailView):
 	model = Task
