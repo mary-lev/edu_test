@@ -19,6 +19,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 from .feedback import create_graph
 from .tone import create_new_graph
 from .forms import make_question_formset, QuestionForm
+from .count_all import is_link, compare_texts, get_address, count_words, compare_time
 
 
 mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',
@@ -34,6 +35,55 @@ def index(request):
 def tone(request):
 	div = create_new_graph()
 	return render(request, 'tone.html', {'div': div})
+
+
+text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
+			57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
+			94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 120, 123, 125,
+			126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 139, 140, 142, 143, 144, 
+			145, 146, 147, 149, 150, 151, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
+	#10 - cit/links
+	#24 - adress
+	#48 - dictionaries
+	#50 - orfo rules
+	#117 - link
+	#138 - link
+	#141 - maybe link
+	#142 - time
+	#144 - vacancy/edit
+	#148 - link
+	#151 - speed typing
+	#153 - link
+
+def analyze_task(request, task_id):
+	task = Task.objects.get(id=task_id)
+	solutions = Solution.objects.filter(task=task)
+	answer = 'test'
+	#проверяем ссылку: 165
+	if str(task.number) in ['10', '117', '138', '141', '148', '153']:
+		answer = is_link(solutions)
+
+	#сравниваем тексты: 283
+	elif str(task.number) == '144':
+		answer = compare_texts(solutions)
+
+	#сравниваем время? 281
+	elif str(task.number) == '142':
+		answer = compare_time(solutions)
+
+	#извлекаем адрес: 178
+	elif str(task.number) == '24':
+		answer = get_address(solutions)
+
+	#считаем остальные тексты
+	elif task.number in text_tasks:
+		answer = count_words(solutions)
+	else:
+		answer = 'Здесь не нужно было ничего писать'
+
+	return render(request, 'analyze_task.html', {'task': task, 'result': answer})
+
+
 
 
 def new_solution(request, task_id):
@@ -63,13 +113,6 @@ def new_solution(request, task_id):
 		{'formset': formset, 'questions': questions, 'task': task})
 
 
-class FeedbackForm(forms.Form):
-	lesson = forms.CharField()
-	task = forms.CharField()
-	student = forms.CharField()
-	feedback = forms.CharField()
-
-
 def get_new_feedbacks(request):
 	new_feedbacks = list()
 	for filename in mio_filenames:
@@ -91,7 +134,8 @@ def get_new_feedbacks(request):
 		Feedback,
 		extra=len(initial),
 		fields=['task', 'lesson', 'text'],
-		can_delete=True
+		can_delete=True,
+		widgets={'DELETE': forms.CheckboxInput()}
 		)
 	if request.method == 'POST':
 		formset = FeedbackFormSet(
@@ -149,7 +193,7 @@ class StreamView(DetailView):
 	model = Stream
 
 TOLSTOY = 461688
-def count_words(request):
+def tolstoy(request):
 	stream = Stream.objects.filter(module__name='Тексты').values_list('students')
 	students = Student.objects.filter(id__in=stream)
 	solutions = Solution.objects.filter(task__lesson__module__name='Тексты')
@@ -162,33 +206,29 @@ def count_words(request):
 			s = all.translate(str.maketrans('', '', string.punctuation))
 			student_words += len(s.split(' '))
 		all_tolstoy += student_words
-		tolstoy = round((student_words*100)/TOLSTOY, 2)
-		students_texts.append([student, student_text, student_words, tolstoy])
+		one_tolstoy = round((student_words*100)/TOLSTOY, 2)
+		students_texts.append([student, student_text, student_words, one_tolstoy])
 	all_tolstoy = round((all_tolstoy*100)/TOLSTOY, 1)
 	students_texts = sorted(students_texts, key=lambda x: x[3], reverse=True)
 	return render(request, 'count_words.html', {'data': students_texts, 'tolstoy': all_tolstoy})
 
+class SolutionTask(SingleObjectMixin, ListView):
+	model = Solution
+
+	def get(self, request, *args, **kwargs):
+		self.object = self.get_object(queryset=Task.objects.all())
+		return super().get(request, *args, **kwargs)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['task'] = self.object
+		return context
+
+	def get_queryset(self):
+		return self.object.solutions.all()
+
 
 class SolutionAll(ListView):
-	#tasks =[2, 6, 8, 10, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
-	#		57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
-	#		94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 117, 120, 123, 125,
-	#		126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 
-	#		145, 146, 147, 148, 149, 150, 151, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
-	#10 - cit/links
-	#24 - adress
-	#48 - dictionaries
-	#50 - orfo rules
-	#117 - link
-	#138 - link
-	#141 - maybe link
-	#142 - time
-	#144 - vacancy/edit
-	#148 - link
-	#151 - speed typing
-	#153 - link
-
-
 	model = Solution
 
 	def get_queryset(self):

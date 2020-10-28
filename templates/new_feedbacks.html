@@ -8,9 +8,12 @@
     {% for form in formset %}
     Фидбэк
     <p>Задача {{ form.task.initial }}. Урок {{ form.lesson.initial }}</p>
-    	{% for field in form %}
-   			<li>{{ field.value }}</li>
-   		{% endfor %}
+    <p>	{{ form.text.initial }}
+    <div class="form-check">
+  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+ <li><label>{{ form.DELETE.field.field }} {{ form.DELETE.field.label }}</label></li>
+</div>
+   		
    {% endfor %}
 
 <div class='form-actions'>

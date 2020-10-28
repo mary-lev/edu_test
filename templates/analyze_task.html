@@ -1,0 +1,30 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Задача {{ task.number }} ({{ task }}) </h1>
+
+<p>{{ task.text }}</p>
+<p><a href="{% url 'core:analyze_task' task.next_task %}">Следующая задача</a></p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Текст</th>
+			<th>Ссылка</th>
+			<th>Проверка</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for text in result %}
+<tr>
+	<td>{{ text.0 }}</td>
+	<td>{{ text.1 }} </td>
+	<td>{{ text.2 }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
