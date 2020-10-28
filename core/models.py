@@ -70,7 +70,11 @@ class Task(models.Model):
 		return self.lesson.module.name + " " + str(self.number)
 
 	def next_task(self):
-		return Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id
+		try:
+			result = Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id
+		except:
+			result = Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson.number +1).id
+		return result
 
 
 	class Meta:
