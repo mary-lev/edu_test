@@ -4,8 +4,21 @@ from django import forms
 from django.forms import ModelChoiceField
 from django.forms import modelformset_factory
 
-from .models import Task, Solution, Variant, Question
+from .models import Task, Solution, Variant, Question, Feedback
 
+
+class FeedbackForm(forms.ModelForm):
+	class Meta:
+		model = Feedback
+		fields = ('task', 'lesson', 'text', 'student',)
+
+
+FeedbackFormSet = modelformset_factory(
+	Feedback,
+	form = FeedbackForm,
+	can_delete=True,
+	widgets={'DELETE': forms.CheckboxInput()}
+	)
 
 class MyModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):

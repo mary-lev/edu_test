@@ -18,7 +18,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import make_question_formset, QuestionForm
+from .forms import make_question_formset, QuestionForm, FeedbackForm
 from .count_all import (is_link, compare_texts,
 	get_address,
 	count_words,
@@ -121,6 +121,46 @@ def new_solution(request, task_id):
 		{'formset': formset, 'questions': questions, 'task': task})
 
 
+class Feedbackadding(CreateView):
+	model = Feedback
+	form_class = FeedbackForm
+	template_name = 'add_feedbacks.html'
+	success_url = '/add_feedbacks'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		new_feedbacks = list()
+		for filename in mio_filenames:
+			with open(filename, 'r') as f:
+				text = json.load(f)
+				for feedback in text:
+					try:
+						feedback = Feedback.objects.get(text=feedback['feedback'])
+					except Feedback.DoesNotExist:
+						new_feedbacks.append(feedback)
+
+		new = {}
+		new['text'] = new_feedbacks[1]['feedback'][0]
+		new['task'] = new_feedbacks[1]['task']
+		new['lesson'] = new_feedbacks[1]['lesson']
+		student, create = Student.objects.get_or_create(
+			first_name=new_feedbacks[1]['student_name'],
+			last_name=new_feedbacks[1]['student_family'],
+			email=new_feedbacks[1]['student_email']
+			)
+		new['student'] = student.id
+		form = FeedbackForm
+		context['form'] = form(initial=new)
+		#lesson = Lesson.objects.get(module='')
+		#task = Task.objects.get(number=new, lesson)
+		return context
+
+		def post(self, request, *args, **kwargs):
+			form = FeedbackForm(request.POST, initial=new)
+			if form.is_valid():
+				return self.form_valid(form)
+
+
 def get_new_feedbacks(request):
 	new_feedbacks = list()
 	for filename in mio_filenames:
@@ -150,11 +190,13 @@ def get_new_feedbacks(request):
 			request.POST,
 			queryset=Feedback.objects.none(),
 			initial=initial,
-			extra=len(initial)
+			#extra=len(initial)
 			)
 		if formset.is_valid():
 			formset.save()
 			return redirect('core:new_feedbacks')
+		else:
+			print(formset)
 	else:
 		formset = FeedbackFormSet(queryset=Feedback.objects.none(), initial=initial)
 			

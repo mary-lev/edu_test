@@ -12,6 +12,7 @@ urlpatterns = [
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
 	path('students/', views.StudentListView.as_view(), name='students'),
 	path('new_feedbacks/', views.get_new_feedbacks, name='new_feedbacks'),
+	path('add_feedbacks/', views.Feedbackadding.as_view(), name='add_feedbacks'),
 	path('task/<pk>/', views.TaskView.as_view(), name='task'),
 	path('task/<int:task_id>/analyze', views.analyze_task, name='analyze_task'),
 	path('solutions/', views.SolutionAll.as_view(), name='solutions'),
