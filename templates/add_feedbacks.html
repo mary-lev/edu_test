@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+  <form action="" method="POST" class='uniForm'>
+    {% csrf_token %}
+    {% for field in form %}
+    <li>{{ field.value }}</li>
+    {% endfor %}
+<div class='form-actions'>
+    <input type="submit" value="Submit" class="btn btn-primary">
+</div>
+  </form>
+
+
+{% endblock %}
