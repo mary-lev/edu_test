@@ -5,6 +5,23 @@ from django.db import models
 from .models import Student, Stream, Module, Task, Lesson, Feedback, Solution, Question, Variant
 
 
+class VariantInline(admin.TabularInline):
+	model = Variant
+
+
+class QuestionAdmin(admin.ModelAdmin):
+	model = Question
+	list_display = ('task', 'get_lesson', 'question_type', 'question_text', 'choice', 'answers',)
+	list_filter = ('task',)
+	inlines = (VariantInline,)
+
+	def get_lesson(self, obj):
+		return obj.task.lesson
+
+class QuestionInline(admin.TabularInline):
+	model = Question
+
+
 class StudentAdmin(admin.ModelAdmin):
 	list_display = ('first_name', 'last_name', 'email')
 	list_filter = ('stream__name', 'stream__module__name',)
@@ -16,6 +33,20 @@ class LessonAdmin(admin.ModelAdmin):
 
 class StreamAdmin(admin.ModelAdmin):
 	list_display = ('name', 'module')
+
+
+class StreamInline(admin.TabularInline):
+	model = Stream
+
+
+class LessonInline(admin.TabularInline):
+	model = Lesson
+
+
+class ModuleAdmin(admin.ModelAdmin):
+	model = Module
+	inlines = (StreamInline, LessonInline,)
+
 
 class TaskForm1(forms.ModelForm):
 	class Meta:
@@ -30,6 +61,7 @@ class TaskForm1(forms.ModelForm):
 			)
 		}
 
+
 class TaskForm(forms.ModelForm):
 	class Meta:
 		fields = '__all__'
@@ -39,30 +71,18 @@ class TaskForm(forms.ModelForm):
 
 		}
 
+
 class TaskAdmin(admin.ModelAdmin):
 	model = Task
 	form = TaskForm
 	list_display = ('number', 'name', 'lesson')
 	list_filter = ('lesson',)
+	inlines = (QuestionInline,)
 
 	def formfield_for_dbfield(self, db_field, request=None, **kwargs):
 		if db_field.name == 'question_type':
 			kwargs['widget'].choices = (('', '---------'), ('1', 'Choice1'), ('2', 'Choice2'))
 		return super().formfield_for_dbfield(db_field, request, **kwargs)
-
-
-class VariantInline(admin.TabularInline):
-	model = Variant
-
-class QuestionAdmin(admin.ModelAdmin):
-	model = Question
-	list_display = ('task', 'get_lesson', 'question_type', 'question_text', 'choice', 'answers',)
-	list_filter = ('task',)
-	inlines = (VariantInline,)
-
-	def get_lesson(self, obj):
-		return obj.task.lesson
-
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -81,10 +101,9 @@ class SolutionAdmin(admin.ModelAdmin):
 	list_filter = ('task__lesson', 'task')
 
 
-
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Stream, StreamAdmin)
-admin.site.register(Module)
+admin.site.register(Module, ModuleAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Feedback, FeedbackAdmin)
