@@ -48,18 +48,7 @@ text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 4
 			94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 120, 123, 125,
 			126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 139, 140, 142, 143, 144, 
 			145, 146, 147, 149, 150, 151, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
-	#10 - cit/links
-	#24 - adress
-	#48 - dictionaries
-	#50 - orfo rules
-	#117 - link
-	#138 - link
-	#141 - maybe link
-	#142 - time
-	#144 - vacancy/edit
-	#148 - link
-	#151 - speed typing
-	#153 - link
+
 
 def analyze_task(request, task_id):
 	task = Task.objects.get(id=task_id)
@@ -159,48 +148,6 @@ class Feedbackadding(CreateView):
 			form = FeedbackForm(request.POST, initial=new)
 			if form.is_valid():
 				return self.form_valid(form)
-
-
-def get_new_feedbacks(request):
-	new_feedbacks = list()
-	for filename in mio_filenames:
-		with open(filename, 'r') as f:
-			text = json.load(f)
-			for feedback in text:
-				try:
-					feedback = Feedback.objects.get(text=feedback['feedback'])
-				except Feedback.DoesNotExist:
-					new_feedbacks.append(feedback)
-	initial = []
-	for one in new_feedbacks:
-		new = {}
-		new['text'] = one['feedback'][0]
-		new['task'] = one['task']
-		new['lesson'] = one['lesson']
-		initial.append(new)
-	FeedbackFormSet = modelformset_factory(
-		Feedback,
-		extra=len(initial),
-		fields=['task', 'lesson', 'text'],
-		can_delete=True,
-		widgets={'DELETE': forms.CheckboxInput()}
-		)
-	if request.method == 'POST':
-		formset = FeedbackFormSet(
-			request.POST,
-			queryset=Feedback.objects.none(),
-			initial=initial,
-			#extra=len(initial)
-			)
-		if formset.is_valid():
-			formset.save()
-			return redirect('core:new_feedbacks')
-		else:
-			print(formset)
-	else:
-		formset = FeedbackFormSet(queryset=Feedback.objects.none(), initial=initial)
-			
-	return render(request, 'new_feedbacks.html', {'new_feedbacks': new_feedbacks, 'formset': formset})
 
 
 class StudentView(DetailView):
