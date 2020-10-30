@@ -25,7 +25,7 @@ def spellcheck(sentences):
 
 
 def clean_all(sentences):
-	clean_sentences = [all.text.replace('\n', ' ').replace('  ', ' ').replace('//', ' ').strip() for all in sentences]
+	clean_sentences = [all.replace('\n', ' ').replace('  ', ' ').replace('//', ' ').strip() for all in sentences]
 	checked_sentences = spellcheck(clean_sentences)
 	just_words = [all.translate(str.maketrans('', '', string.punctuation)) for all in checked_sentences]
 	return just_words
@@ -67,11 +67,7 @@ def analyze(sentences):
 				except:
 					pass
 		if len(similarity):
-			matrix.append(sum(similarity)/len(similarity))
+			matrix.append(round(sum(similarity)/len(similarity), 2))
 		else:
 			matrix.append("А нету ничего.")
 	return matrix
-
-
-
-

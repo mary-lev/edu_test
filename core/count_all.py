@@ -1,5 +1,6 @@
 from urlextract import URLExtract
 import requests
+import string
 from .from_navec import analyze
 
 from natasha import (
@@ -49,8 +50,8 @@ def is_link(solutions):
 					test_url = requests.get(url, headers=headers).status_code
 				except UnicodeEncodeError:
 					test_url = 'Что-то не так'
-			else:
-				test_url = 'А ссылочку?'
+		if not urls:
+			urls = 'А ссылочку?'
 		test.append([all.text, urls, test_url])
 	return test
 
@@ -87,25 +88,41 @@ def get_address(solutions):
 
 def count_words(solutions):
 	sentences = [all.text for all in solutions]
-	return zip(sentences, analyze(solutions))
+	return analyze(sentences)
 
+
+def analyze_student(solutions):
+	sentences = [all.text for all in solutions]
+	result = ''
 
 #индекс удобочитаемости: https://github.com/ivbeg/readability.io/wiki/API
 def difficulty(solutions):
 	result = list()
-	old = [all.text for all in solutions]
+	old = []
 	for all in solutions:
 		if all.text:
-			text = all.text.replace('//', ' ')
-			response = requests.post("http://api.plainrussian.ru/api/1.0/ru/measure/", data={"text":text})
-			result.append(response.json())
+			text = all.text.replace('//', ' ').replace('  ', ' ')
+			if all.text:
+				response = requests.post("http://api.plainrussian.ru/api/1.0/ru/measure/", data={"text":text})
+				print(response.json())
+				old.append(text)
+				result.append(response.json())
 		else:
 			result.append("Нечего считать.")
-	return zip(old, result)
+	return list(zip(old, result))
 
-def analyze(one_student_solutions):
-	text_solutions = list()
-	for solution in one_student_solutions:
-		if solution.text:
-			text_solutions.append(solution.text)
-	return text_solutions
+
+def analyze_one_student(one_student_solutions):
+	return difficulty(one_student_solutions)
+
+
+TOLSTOY = 461688
+def count_tolstoy(student):
+	student_text = student.solutions.all().values_list('text', flat=True)
+	student_words = 0
+	for all in student_text:
+		s = all.translate(str.maketrans('', '', string.punctuation))
+		student_words += len(s.split(' '))
+	one_tolstoy = round((student_words*100)/TOLSTOY, 2)
+	result = [student_words, one_tolstoy]
+	return result

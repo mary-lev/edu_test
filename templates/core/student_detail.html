@@ -8,6 +8,30 @@
 <li>{{ stream.module.name }}. {{ stream.name }}</li>
 {% endfor %}
 
+<h4 class="display-4">Решения</h4>
+<p>Индекс удобочитаемости по всем текстам: {{ analytics.1 }}.</p>
+<p>Индекс Толстого: {{ analytics.2.0 }} слова, примерно {{ analytics.2.1 }}% от «Войны и мира».</p>
+<p>Индекс непохожести: 0.78. </p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Текст</th>
+			<th>Ссылка</th>
+			<th>Проверка</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for text in analytics.0 %}
+<tr>
+	<td>{{ text.0 }}</td>
+	<td>{% if text.1.metrics %} {{ text.1.indexes.grade_SMOG }} {% else %} {{ text.1 }} {% endif %}</td>
+	<td>По формуле SMOG</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+
 <h4 class='display-4'>Feedbacks</h4>
 {% for feedback in object.feedbacks.all %}
 <li><b>{{ feedback.task.lesson.module.name }}. Задача {{ feedback.task.number }}</b>.</li>
@@ -15,12 +39,5 @@
 <li> {{ feedback.text }}</li>
 </ul>
 {% endfor %}
-
-<h4 class="display-4">Решения</h4>
-{% for solution in object.solutions.all %}
-<li><b>{{ solution.task.lesson.module.name }}</b>. <i>Задача {{ solution.task.number }}</i>. {{ solution.text }}</li>
-{% endfor %}
-
-{{ analytics }}
 
 {% endblock %}

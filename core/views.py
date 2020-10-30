@@ -21,8 +21,10 @@ from .tone import create_new_graph
 from .forms import make_question_formset, QuestionForm
 from .count_all import (is_link, compare_texts,
 	get_address,
-	#count_words,
+	count_words,
 	analyze,
+	analyze_one_student,
+	count_tolstoy,
 	compare_time, difficulty)
 
 
@@ -63,6 +65,7 @@ def analyze_task(request, task_id):
 	task = Task.objects.get(id=task_id)
 	solutions = Solution.objects.filter(task=task)
 	answer = 'test'
+	strange = ''
 	#проверяем ссылку: 165
 	if str(task.number) in ['10', '117', '138', '141', '148', '153']:
 		answer = is_link(solutions)
@@ -81,12 +84,12 @@ def analyze_task(request, task_id):
 
 	#считаем остальные тексты
 	elif task.number in text_tasks:
-		#answer = count_words(solutions)
+		strange = count_words(solutions)
 		answer = difficulty(solutions)
 	else:
 		answer = 'Здесь не нужно было ничего писать'
 
-	return render(request, 'analyze_task.html', {'task': task, 'result': answer})
+	return render(request, 'analyze_task.html', {'task': task, 'result': answer, 'strange': strange})
 
 
 
@@ -163,9 +166,15 @@ class StudentView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		analytics = analyze(self.object.solutions.all)
-		context['analytics'] = analytics
+		analytics = analyze_one_student(self.object.solutions.all())
+		grads = [all[1]['indexes']['grade_SMOG'] for all in analytics]
+		result = max(set(grads), key=grads.count)
+		tolstoy = count_tolstoy(self.object)
+		result = [analytics, result, tolstoy]
+		context['analytics'] = result
+		#context['grads'] = max(set(grads), key=grads.count)
 		return context
+
 
 class TaskView(DetailView):
 	model = Task
@@ -286,7 +295,7 @@ def index1(request):
     	'percents': percents.to_html()})
 
 
-def parse(request):
+def parse4(request):
 	with open('sce_solutions2.json', 'r') as f:
 		solutions = json.load(f)
 	for solution in solutions:
@@ -298,25 +307,28 @@ def parse(request):
 		new_solution = Solution.objects.create(task=task, student=student, text=solution['text'])
 	return render(request, 'parse.html', {'data': solutions})
 
-def parse3(request):
-	with open('scen_task.json', 'r') as f:
+def parse(request):
+	with open('text_task.json', 'r') as f:
 		tasks = json.load(f)
 	for all in tasks:
-		text_tasks = Task.objects.filter(lesson__module__name='Сценарии')
-		task = text_tasks.get(number=int(all['number']))
-		task.name = all['title']
-		task.text = all['text']
-		task.save()
+		try:
+			text_tasks = Task.objects.filter(lesson__module__name='Тексты')
+			task = text_tasks.get(number=int(all['number']))
+			task.name = all['title']
+			task.text = all['text']
+			task.save()
+		except:
+			print(all['number'])
 	return render(request, 'parse.html', {'data': tasks})
 
-def parse2(request):
-	with open('texts1.json', 'r') as f:
+def parse3(request):
+	with open('texts2.json', 'r') as f:
 		users = json.load(f)
 	tasks = list()
 	for all in users:
 		module, create = Module.objects.get_or_create(name='Тексты')
 		stream, create = Stream.objects.get_or_create(
-			name='Июнь', module=module)
+			name='Сентябрь', module=module)
 		lesson, create = Lesson.objects.get_or_create(module=module, number=int(all['lesson']))
 		student, create = Student.objects.get_or_create(
 			email=all['email'],
@@ -325,7 +337,7 @@ def parse2(request):
 			)
 		student.stream.add(stream)
 		task, create = Task.objects.get_or_create(
-			number='task'+all['number'], lesson=lesson)
+			number=int(all['number']), lesson=lesson)
 		if all['solution']:
 			solution, create = Solution.objects.get_or_create(
 				task=task,

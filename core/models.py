@@ -71,9 +71,12 @@ class Task(models.Model):
 
 	def next_task(self):
 		try:
-			result = Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson).id
+			result = Task.objects.get(number=str(int(self.number) + 1), lesson__module=self.lesson.module).id
 		except:
-			result = Task.objects.get(number=str(int(self.number) + 1), lesson=self.lesson.number +1).id
+			result = Task.objects.get(
+				number=str(int(self.number) + 1),
+				lesson__number=self.lesson.number +1,
+				lesson__module=self.lesson.module).id
 		return result
 
 

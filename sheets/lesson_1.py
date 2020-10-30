@@ -94,7 +94,7 @@ for task in tasks:
 			if 'values' in values.keys():
 				new_task[index] = values['values']
 	first_lesson.append(new_task)
-	time.sleep(3)
+	time.sleep(5)
 
 
 task11_answer_texts = titles[10] + "!H10:H17"
