@@ -140,8 +140,8 @@ class Feedbackadding(CreateView):
 		new['student'] = student.id
 		form = FeedbackForm
 		context['form'] = form(initial=new)
-		#lesson = Lesson.objects.get(module='')
-		#task = Task.objects.get(number=new, lesson)
+		#lesson = Lesson.objects.get(module__slug='mio', number=new['lesson'])
+		#task = Task.objects.get(number=new, lesson=lesson)
 		return context
 
 		def post(self, request, *args, **kwargs):
