@@ -1,38 +1,9 @@
-from urlextract import URLExtract
 import requests
 import string
+from urlextract import URLExtract
+from natasha import MorphVocab, AddrExtractor
+
 from .from_navec import analyze
-
-from natasha import (
-    Segmenter,
-    MorphVocab,
-    
-    NewsEmbedding,
-    NewsMorphTagger,
-    NewsSyntaxParser,
-    NewsNERTagger,
-    
-    PER,
-    NamesExtractor,
-    DatesExtractor,
-    MoneyExtractor,
-    AddrExtractor,
-
-    Doc
-)
-
-segmenter = Segmenter()
-morph_vocab = MorphVocab()
-
-emb = NewsEmbedding()
-morph_tagger = NewsMorphTagger(emb)
-syntax_parser = NewsSyntaxParser(emb)
-ner_tagger = NewsNERTagger(emb)
-
-names_extractor = NamesExtractor(morph_vocab)
-dates_extractor = DatesExtractor(morph_vocab)
-money_extractor = MoneyExtractor(morph_vocab)
-addr_extractor = AddrExtractor(morph_vocab)
 
 
 def is_link(solutions):
@@ -79,6 +50,8 @@ def compare_time(solutions):
 
 def get_address(solutions):
 	test = []
+	morph_vocab = MorphVocab()
+	addr_extractor = AddrExtractor(morph_vocab)
 	for all in solutions:
 		if all.text != ' //  //  // ':
 			text = all.text
@@ -91,9 +64,11 @@ def count_words(solutions):
 	return analyze(sentences)
 
 
-def analyze_student(solutions):
-	sentences = [all.text for all in solutions]
-	result = ''
+def analyze_student(student):
+	for all in student.solutions.all():
+		task = all.task
+		solutions = all.task.solutions.all()
+	
 
 #индекс удобочитаемости: https://github.com/ivbeg/readability.io/wiki/API
 def difficulty(solutions):
@@ -115,7 +90,7 @@ def difficulty(solutions):
 def analyze_one_student(one_student_solutions):
 	return difficulty(one_student_solutions)
 
-
+#Индекс Толстого
 TOLSTOY = 461688
 def count_tolstoy(student):
 	student_text = student.solutions.all().values_list('text', flat=True)
