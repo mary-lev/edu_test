@@ -62,7 +62,8 @@ class Task(models.Model):
 	text = models.TextField(blank=True) # формулировка задачи
 	question_type = models.TextField(blank=True) # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор
-	picture = models.ImageField(blank=True) # картинка из шаблона
+	picture = models.URLField(blank=True, null=True) # картинка из шаблона
+	picture_title = models.CharField(blank=True, null=True, max_length=200)
 	our_solution = models.TextField(blank=True) # образцовое решение
 	mark = models.IntegerField(blank=True, null=True) # количество баллов за задачу (здесь или в Solution?)
 

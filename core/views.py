@@ -283,6 +283,35 @@ def index1(request):
     	'df': df.itertuples(),
     	'percents': percents.to_html()})
 
+#parse mio lesson
+def parse(request):
+	with open('mio_lesson_9.json', 'r') as f:
+		tasks = json.load(f)
+	module = Module.objects.get(name='Информационные ожидания')
+	lesson, create = Lesson.objects.get_or_create(number=9, module=module)
+	for index, task in enumerate(tasks):
+		task_number = index + 88
+		task_image_key = str(task_number) + '_hyperlink'
+		task_image_title_key = str(task_number) + '_image_title'
+		task_answer_key = str(task_number) + '_answer'
+		task_text_key = str(task_number) + '_text'
+		if not task_text_key in task.keys():
+			task_text_key = str(task_number) + '_2text'
+		if not task_image_key in task.keys():
+			task[task_image_key] = ''
+		if not task_image_title_key in task.keys():
+			task[task_image_title_key] = [['']]
+
+		new_task, create = Task.objects.get_or_create(
+			number=task_number,
+			lesson=lesson,
+			name=task[task_text_key][0][0],
+			picture=task[task_image_key],
+			picture_title=task[task_image_title_key][0][0],
+			text=task[task_text_key],
+			)
+	return render(request, 'parse.html', {'data': tasks})
+
 
 def parse4(request):
 	with open('sce_solutions2.json', 'r') as f:
@@ -296,7 +325,7 @@ def parse4(request):
 		new_solution = Solution.objects.create(task=task, student=student, text=solution['text'])
 	return render(request, 'parse.html', {'data': solutions})
 
-def parse(request):
+def parse5(request):
 	with open('text_task.json', 'r') as f:
 		tasks = json.load(f)
 	for all in tasks:
