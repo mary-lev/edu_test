@@ -24,7 +24,7 @@ service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 with open('mio4.json', 'r') as f:
 	students = json.load(f)
 
-spreadsheet_id = students[0]['lesson_1']
+spreadsheet_id = students[0]['lesson_9']
 
 # читаем шит
 spreadsheet = service.spreadsheets().get(
@@ -42,7 +42,7 @@ razbor = titles[1] + "!B13:B13"
 old_ranges = {'start_feedback': start_feedback, 'help_feedback': help_feedback, 'razbor': razbor}
 tasks = []
 for index, title in enumerate(titles[2:]):
-	task_index = str(index+1)
+	task_index = str(index+88)
 	task = dict()
 	task_number= task_index + '_number'
 	task_text = task_index + '_text'
@@ -82,8 +82,11 @@ for task in tasks:
 	new_task = dict()
 	for index, name in task.items():
 		if 'hyperlink' in index:
-			values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=name, includeGridData=True).execute()
-			new_task[index] = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
+			try:
+				values = service.spreadsheets().get(spreadsheetId=spreadsheet_id, ranges=name, includeGridData=True).execute()
+				new_task[index] = values['sheets'][0]['data'][0]['rowData'][0]['values'][0]['hyperlink']
+			except:
+				pass
 		else:
 			values = service.spreadsheets().values().get(
 				spreadsheetId=spreadsheet_id,
@@ -94,10 +97,10 @@ for task in tasks:
 			if 'values' in values.keys():
 				new_task[index] = values['values']
 	first_lesson.append(new_task)
-	time.sleep(5)
+	time.sleep(10)
 
 
-task11_answer_texts = titles[10] + "!H10:H17"
+#task11_answer_texts = titles[10] + "!H10:H17"
 
 
 #for task1_answer
@@ -105,6 +108,8 @@ task11_answer_texts = titles[10] + "!H10:H17"
 
 #for task1_mark:
 #values = values['values'][0][0]
+with open('mio_lesson_9.json', 'w') as f:
+	json.dump(first_lesson, f)
 
 values = first_lesson
 
