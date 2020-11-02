@@ -5,6 +5,7 @@ from django.shortcuts import render
 #from .lesson_1 import values, students
 #from .parse_sheets import result
 #from .feedback import first_lesson
+from .statistics import students, values
 
 
 mio_filenames = ['mio4_lesson1.json', 'mio4_lesson2.json', 'mio4_lesson3.json',
