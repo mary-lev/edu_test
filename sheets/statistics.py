@@ -80,7 +80,7 @@ students = service.spreadsheets().values().get(
 students = [all[0] for all in students]
 data = dict()
 
-for task in text_tasks[:10]:
+for task in text_tasks[:5]:
 	answers = str(task) + "!I6:I42"
 	values = service.spreadsheets().values().get(
 		spreadsheetId=spreadsheet_id,
@@ -104,19 +104,35 @@ for index, student in enumerate(students):
 
 title_new = 'Текстовые индексы'
 cells = title_new + "!E6:E41"
-new_values = [[value[0]] for key, value in students_texts.items()]
-print(new_values)
-body = {'values': new_values}
+#new_values = [{'values': [[value[0]]]} for key, value in students_texts.items()]
+new_values = dict()
+new_values['values'] = list()
 
-request = service.spreadsheets().values().update(
+new_cells = title_new + "!D6:D41"
+values_d = dict()
+
+for i, v in students_texts.items():
+	new_values['values'].append([v[0]])
+	values_d['values'].append([v[1]])
+
+
+query = service.spreadsheets().values().update(
 	spreadsheetId=spreadsheet_id,
-	valueInputOption='USER_ENTERED',
+	valueInputOption='RAW',
 	range=cells,
-	body=body,
+	body=new_values,
 	).execute()
 
-values = data
+query = service.spreadsheets().values().update(
+	spreadsheetId=spreadsheet_id,
+	valueInputOption='RAW',
+	range=new_cells,
+	body=values_d,
+	).execute()
 
-students = students_texts
+
+values = query
+
+students = new_values
 
 
