@@ -53,7 +53,7 @@ def difficulty(solutions):
 				if response.json()['indexes']['grade_SMOG'] != 'неизвестно (0)':
 					result.append(response.json()['indexes']['grade_SMOG'])
 		else:
-			result.append("Нечего считать.")
+			result.append("—")
 	result = max(set(result), key=result.count)
 	return result
 
@@ -108,12 +108,18 @@ cells = title_new + "!E6:E41"
 new_values = dict()
 new_values['values'] = list()
 
-new_cells = title_new + "!D6:D41"
-values_d = dict()
+cells_f = title_new + "!F6:F41"
+values_f = dict()
+values_f['values'] = list()
+
+cells_g = title_new + "!G6:G41"
+values_g = dict()
+values_g['values'] = list()
 
 for i, v in students_texts.items():
 	new_values['values'].append([v[0]])
-	values_d['values'].append([v[1]])
+	values_f['values'].append([v[1][0]])
+	values_g['values'].append([v[1][1]])
 
 
 query = service.spreadsheets().values().update(
@@ -126,10 +132,16 @@ query = service.spreadsheets().values().update(
 query = service.spreadsheets().values().update(
 	spreadsheetId=spreadsheet_id,
 	valueInputOption='RAW',
-	range=new_cells,
-	body=values_d,
+	range=cells_f,
+	body=values_f,
 	).execute()
 
+query = service.spreadsheets().values().update(
+	spreadsheetId=spreadsheet_id,
+	valueInputOption='RAW',
+	range=cells_g,
+	body=values_g,
+	).execute()
 
 values = query
 
