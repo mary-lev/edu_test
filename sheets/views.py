@@ -6,6 +6,7 @@ from django.shortcuts import render
 #from .parse_sheets import result
 #from .feedback import first_lesson
 from .statistics import students, values
+#from .statistics_edit import query
 
 
 mio_filenames = ['mio4_lesson1.json', 'mio4_lesson2.json', 'mio4_lesson3.json',
@@ -16,7 +17,7 @@ mio_filenames = ['mio4_lesson1.json', 'mio4_lesson2.json', 'mio4_lesson3.json',
 def index(request):
 	return render(request, 'sheets/index.html', {
 		'values': values,
-		'students': students,
+		'students': query,
 		})
 
 def get_feedbacks(request):
