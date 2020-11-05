@@ -2,10 +2,10 @@ import json
 import time
 import string
 import requests
-import pandas as pd
 import httplib2
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
+from sheets.from_navec import analyze_one
 
 
 
@@ -40,6 +40,10 @@ text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 4
 			126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 139, 140, 142, 143, 144, 
 			145, 146, 147, 149, 150, 151, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
 
+difficulty_tasks = [2, 6, 8, 12, 16, 21, 25, 29, 36, 37, 38, 46, 52, 56, 57, 60, 63, 64, 66,
+					67, 68, 69, 75, 79, 80, 86, 88, 89, 90, 92, 94, 95, 97, 99, 104, 105, 106, 107, 108,
+					109, 110, 111, 114, 115, 125]
+
 #подсчет удобочитаемости
 def difficulty(solutions):
 	result = list()
@@ -49,13 +53,22 @@ def difficulty(solutions):
 			print(text)
 			if text:
 				response = requests.post("http://api.plainrussian.ru/api/1.0/ru/measure/", data={"text":text})
-				print(response.json())
+				#print(response.json())
 				if response.json()['indexes']['grade_SMOG'] != 'неизвестно (0)':
 					result.append(response.json()['indexes']['grade_SMOG'])
-		else:
-			result.append("—")
+			else:
+				result.append("—")
 	result = max(set(result), key=result.count)
 	return result
+
+def one_difficulty(text):
+	response = requests.post("http://api.plainrussian.ru/api/1.0/ru/measure/", data={"text":text})
+	#print(response.json())
+	if response.json()['indexes']['grade_SMOG'] != 'неизвестно (0)':
+		print(response.json()['indexes']['grade_SMOG'])
+		return response.json()['indexes']['grade_SMOG']
+	else:
+		return '-'
 
 #Индекс Толстого
 TOLSTOY = 461688
@@ -69,6 +82,10 @@ def count_tolstoy(solutions):
 	result = [student_words, one_tolstoy]
 	return result
 
+
+
+
+
 #emails: C6:C42
 #answers: I6:I42
 students = service.spreadsheets().values().get(
@@ -80,7 +97,7 @@ students = service.spreadsheets().values().get(
 students = [all[0] for all in students]
 data = dict()
 
-for task in text_tasks[:5]:
+for task in text_tasks:
 	answers = str(task) + "!I6:I42"
 	values = service.spreadsheets().values().get(
 		spreadsheetId=spreadsheet_id,
@@ -92,14 +109,75 @@ for task in text_tasks[:5]:
 
 students_texts = dict()
 
+with open('texts_2_indexes.json', 'r') as f:
+	old_data = json.load(f)
+
+#old_data = dict()
+
+def get_matrix(task, student, old_data):
+	all_texts = list()
+	student_text = old_data[student][task]['solution'][0]
+	for k, v in old_data.items():
+		try:
+			all_texts.append(v[task]['solution'][0])
+		except:
+			pass
+	matrix = analyze_one(student_text, all_texts)
+	print(matrix)
+	return matrix
+
+
 for index, student in enumerate(students):
 	student_texts = list()
+	all_matrix = 0
+	count = 0
+	df = list()
+	if not student in old_data.keys():
+		old_data[student] = dict()
 	for task, value in data.items():
 		try:
-			student_texts.append(data[task]['values'][index])
+			solution = data[task]['values'][index]
+			student_texts.append(solution)
+			if not task in old_data[student].keys():
+				old_data[student][task] = dict()
+				old_data[student][task]['solution'] = solution
+				if int(task) in difficulty_tasks:
+					if solution:
+						df_text = one_difficulty(solution)
+						old_data[student][task]['difficulty'] = df_text
+			else:
+				if old_data[student][task]['solution'] != solution:
+					if solution:
+						old_data[student][task]['solution'] = solution
+					if int(task) in difficulty_tasks:
+						df_text = one_difficulty(solution)
+						old_data[student][task]['difficulty'] = df_text
 		except:
 			student_texts.append([''])
-	students_texts[student] = [difficulty(student_texts), count_tolstoy(student_texts)]
+		if solution:
+			matrix = get_matrix(task, student, old_data)
+			print('Matrix: ', matrix)
+			all_matrix += matrix
+			count += 1
+			old_data[student][task]['matrix'] = matrix
+		else:
+			pass
+
+	old_data[student]['tolstoy'] = count_tolstoy(student_texts)
+	with open('texts_2_indexes.json', 'w') as f:
+		json.dump(old_data, f)
+	for k, v in old_data[student].items():
+		try:
+			if 'difficulty' in v.keys():
+				df.append(v['difficulty'])
+		except:
+			pass
+	result = max(set(df), key=df.count)
+	if count:
+		count = all_matrix/count
+	students_texts[student] = [result, count_tolstoy(student_texts), count]
+	print(students_texts[student])
+	print(student)
 
 
 title_new = 'Текстовые индексы'
@@ -116,35 +194,46 @@ cells_g = title_new + "!G6:G41"
 values_g = dict()
 values_g['values'] = list()
 
+cells_m = title_new + "!D6:D41"
+values_m = dict()
+values_m['values'] = list()
+
 for i, v in students_texts.items():
 	new_values['values'].append([v[0]])
 	values_f['values'].append([v[1][0]])
 	values_g['values'].append([v[1][1]])
+	values_m['values'].append([v[2]])
 
 
 query = service.spreadsheets().values().update(
-	spreadsheetId=spreadsheet_id,
-	valueInputOption='RAW',
-	range=cells,
-	body=new_values,
-	).execute()
+		spreadsheetId=spreadsheet_id,
+		valueInputOption='RAW',
+		range=cells,
+		body=new_values,
+		).execute()
 
 query = service.spreadsheets().values().update(
-	spreadsheetId=spreadsheet_id,
-	valueInputOption='RAW',
-	range=cells_f,
-	body=values_f,
-	).execute()
+		spreadsheetId=spreadsheet_id,
+		valueInputOption='RAW',
+		range=cells_f,
+		body=values_f,
+		).execute()
 
 query = service.spreadsheets().values().update(
-	spreadsheetId=spreadsheet_id,
-	valueInputOption='RAW',
-	range=cells_g,
-	body=values_g,
-	).execute()
+		spreadsheetId=spreadsheet_id,
+		valueInputOption='RAW',
+		range=cells_g,
+		body=values_g,
+		).execute()
+
+#matrix
+query = service.spreadsheets().values().update(
+		spreadsheetId=spreadsheet_id,
+		valueInputOption='RAW',
+		range=cells_m,
+		body=values_m,
+		).execute()
 
 values = query
 
 students = new_values
-
-

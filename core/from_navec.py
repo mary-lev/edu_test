@@ -71,3 +71,18 @@ def analyze(sentences):
 		else:
 			matrix.append("А нету ничего.")
 	return matrix
+
+def analyze_one(one_sentence, sentences):
+	sentences = delete_words(morphologize(clean_all(sentences)))
+	similarity = list()
+	for sentence in sentences:
+		if sentence != one_sentence:
+			try:
+				c = navec.n_similarity(one_sentence, sentence)
+				similarity.append(c)
+			except:
+				pass
+	if len(similarity):
+		return round(sum(similarity)/len(similarity), 2)
+	else:
+		return 0

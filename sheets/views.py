@@ -17,7 +17,7 @@ mio_filenames = ['mio4_lesson1.json', 'mio4_lesson2.json', 'mio4_lesson3.json',
 def index(request):
 	return render(request, 'sheets/index.html', {
 		'values': values,
-		'students': query,
+		'students': students,
 		})
 
 def get_feedbacks(request):
