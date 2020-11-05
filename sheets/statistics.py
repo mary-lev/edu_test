@@ -154,12 +154,13 @@ for index, student in enumerate(students):
 						old_data[student][task]['difficulty'] = df_text
 		except:
 			student_texts.append([''])
-		if solution:
-			matrix = get_matrix(task, student, old_data)
-			print('Matrix: ', matrix)
-			all_matrix += matrix
-			count += 1
-			old_data[student][task]['matrix'] = matrix
+		if int(task) in difficulty_tasks:
+			if not old_data[student][task]['matrix'] and old_data[student][task]['solution']:
+				matrix = get_matrix(task, student, old_data)
+				print('Matrix: ', matrix)
+				all_matrix += matrix
+				count += 1
+				old_data[student][task]['matrix'] = matrix
 		else:
 			pass
 
@@ -174,7 +175,17 @@ for index, student in enumerate(students):
 			pass
 	result = max(set(df), key=df.count)
 	if count:
-		count = all_matrix/count
+		count = round(1 - all_matrix/count, 2)
+	else:
+		old_matrix = list()
+		for k, v in old_data[student].items():
+			try:
+				if 'matrix' in v.keys():
+					old_matrix.append(v['matrix'])
+			except:
+				pass
+		count = round(1 - old_matrix/len(old_matrix), 2)
+
 	students_texts[student] = [result, count_tolstoy(student_texts), count]
 	print(students_texts[student])
 	print(student)
