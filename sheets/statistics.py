@@ -152,14 +152,19 @@ for index, student in enumerate(students):
 					if int(task) in difficulty_tasks:
 						df_text = one_difficulty(solution)
 						old_data[student][task]['difficulty'] = df_text
+			if int(task) in difficulty_tasks:
+				if not 'matrix' in old_data[student][task].keys() and old_data[student][task]['solution']:
+					matrix = get_matrix(task, student, old_data)
+					print('Matrix: ', matrix)
+					all_matrix += matrix
+					count += 1
+					old_data[student][task]['matrix'] = matrix
+				elif 'matrix' in old_data[student][task].keys():
+					all_matrix += old_data[student][task]['matrix']
+					count += 1
 		except:
 			student_texts.append([''])
-		if solution:
-			matrix = get_matrix(task, student, old_data)
-			print('Matrix: ', matrix)
-			all_matrix += matrix
-			count += 1
-			old_data[student][task]['matrix'] = matrix
+
 		else:
 			pass
 
@@ -174,26 +179,40 @@ for index, student in enumerate(students):
 			pass
 	result = max(set(df), key=df.count)
 	if count:
-		count = all_matrix/count
+		count = round(1 - all_matrix/count, 2)
+	else:
+		old_matrix = list()
+		for k, v in old_data[student].items():
+			try:
+				if 'matrix' in v.keys():
+					old_matrix.append(v['matrix'])
+			except:
+				pass
+		count = round(1 - old_matrix/len(old_matrix), 2)
+
 	students_texts[student] = [result, count_tolstoy(student_texts), count]
 	print(students_texts[student])
 	print(student)
 
 
 title_new = 'Текстовые индексы'
+
+#Индекс читабельности
 cells = title_new + "!E6:E41"
-#new_values = [{'values': [[value[0]]]} for key, value in students_texts.items()]
 new_values = dict()
 new_values['values'] = list()
 
+#Индекс Толстого: слова
 cells_f = title_new + "!F6:F41"
 values_f = dict()
 values_f['values'] = list()
 
+#ВиМ, проценты
 cells_g = title_new + "!G6:G41"
 values_g = dict()
 values_g['values'] = list()
 
+#матрица матриц
 cells_m = title_new + "!D6:D41"
 values_m = dict()
 values_m['values'] = list()
@@ -202,7 +221,10 @@ for i, v in students_texts.items():
 	new_values['values'].append([v[0]])
 	values_f['values'].append([v[1][0]])
 	values_g['values'].append([v[1][1]])
-	values_m['values'].append([v[2]])
+	if v[0] != '-':
+		values_m['values'].append([str(round(v[2]*100, 1)) + '%'])
+	else:
+		values_m['values'].append(['-'])
 
 
 query = service.spreadsheets().values().update(
