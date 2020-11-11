@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
@@ -10,10 +9,9 @@ router.register(r'modules', views.ModuleViewSet)
 router.register(r'streams', views.StreamViewSet)
 router.register(r'lessons', views.LessonViewSet)
 
-app_name ='core'
+app_name = 'core'
 urlpatterns = [
 	path('', views.index, name='index'),
-	path('parse/', views.parse, name='parse'),
 	path('tone/', views.tone, name='tone'),
 	path('count_words/', views.tolstoy, name='count_words'),
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
@@ -31,6 +29,6 @@ urlpatterns = [
 	path('modules/', views.ModuleListView.as_view(), name='modules'),
 	path('stream/<pk>/', views.StreamView.as_view(), name='stream'),
 	path('streams/', views.StreamListView.as_view(), name='streams'),
-    path('telegram/', views.DateGraph.as_view(), name='telegram'),
-    path('api/', include(router.urls)),
-    ]
+	path('telegram/', views.DateGraph.as_view(), name='telegram'),
+	path('api/', include(router.urls)),
+]
