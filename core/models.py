@@ -81,6 +81,9 @@ class Task(models.Model):
 				lesson__module=self.lesson.module).id
 		return result
 
+	def show_picture(self):
+		return self.picture.replace('open?id=', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+
 
 	class Meta:
 		ordering = ['number']

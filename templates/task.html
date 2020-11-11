@@ -10,7 +10,7 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       <p>{{ object.text }}</p>
-      {% if picture_url %}<img src="{{ picture_url }}" width=500 />{% endif %}
+      <img src="{{ object.show_picture }}" width=500 />
       <footer class="blockquote-footer"><a href="{% url 'core:lesson' object.lesson.id %}">Урок {{ object.lesson.number }}</a> <cite title="Source Title">{{ object.lesson.module.name }}</cite></footer>
     </blockquote>
   </div>
@@ -22,6 +22,8 @@
     {% endif %}
   </div>
 </div>
+
+{{ form }}
 
 <h3 class="display-4">Feedback</h3>
 {% for feedback in object.feedbacks.all %}

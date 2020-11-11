@@ -2,7 +2,7 @@ import json
 
 from django.shortcuts import render
 
-from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedback
+from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedback, Question, Variant
 
 
 # parse mio lesson
@@ -16,8 +16,10 @@ def index(request):
         task_image_key = str(task_number) + '_hyperlink'
         task_image_title_key = str(task_number) + '_image_title'
         task_answer_key = str(task_number) + '_answer'
+        task_alt_answer_key = str(task_number) + '_alt_answer'
         task_text_key = str(task_number) + '_text'
         task_mark_key = str(task_number) + '_mark'
+        task_answer_label_key = str(task_number) + '_answer_labels'
         if not task_text_key in task.keys():
             task_text_key = str(task_number) + '_2text'
         if not task_image_key in task.keys():
@@ -33,8 +35,29 @@ def index(request):
             picture_title=task[task_image_title_key][0][0],
             text=task[task_text_key],
         )
-        new_task.answer = task[task_answer_key]
-        new_task.mark = task[task_mark_key]
+        if task_answer_key in task.keys():
+            question, create = Question.objects.get_or_create(
+                task=new_task,
+                question_text=task[task_answer_key]
+                )
+            for var in task[task_answer_key]:
+                variant, create = Variant.objects.get_or_create(
+                    question=question,
+                    text=var,
+                    is_right=False
+                    )
+        elif task_alt_answer_key in task.keys():
+            question, create = Question.objects.get_or_create(
+                task=new_task,
+                question_text=task[task_alt_answer_key],
+                )
+            for var in task[task_alt_answer_key]:
+                variant, create = Variant.objects.get_or_create(
+                    question=question,
+                    text=var,
+                    is_right=False
+                    )
+        new_task.mark = task[task_mark_key][0][0]
         new_task.save()
     return render(request, 'index.html', {'data': tasks})
 
