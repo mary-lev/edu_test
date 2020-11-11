@@ -164,6 +164,15 @@ class TaskView(DetailView):
 	model = Task
 	template_name = 'task.html'
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		pic = self.object.picture
+		url = pic.replace('open?', 'uc?')
+		#https://drive.google.com/file/d/11i1AwjisPq-wLNHXlwsqSVUMnp0HgmQr/view
+		url = url.replace('file/d/', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+		context['picture_url'] = url
+		return context
+
 
 class TaskSolution(FormMixin, DetailView):
 	model = Task

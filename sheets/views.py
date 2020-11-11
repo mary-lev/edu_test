@@ -5,7 +5,7 @@ from django.shortcuts import render
 #from .lesson_1 import values, students
 #from .parse_sheets import result
 #from .feedback import first_lesson
-from .statistics import students, values
+#from .statistics import students, values
 #from .statistics_edit import query
 
 
