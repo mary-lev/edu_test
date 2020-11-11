@@ -141,7 +141,7 @@ for index, student in enumerate(students):
 			if not task in old_data[student].keys():
 				old_data[student][task] = dict()
 				old_data[student][task]['solution'] = solution
-				if int(task) in difficulty_tasks:
+				if int(task) in text_tasks:
 					if solution:
 						df_text = one_difficulty(solution)
 						old_data[student][task]['difficulty'] = df_text
@@ -152,7 +152,7 @@ for index, student in enumerate(students):
 					if int(task) in difficulty_tasks:
 						df_text = one_difficulty(solution)
 						old_data[student][task]['difficulty'] = df_text
-			if int(task) in difficulty_tasks:
+			if int(task) in text_tasks:
 				if not 'matrix' in old_data[student][task].keys() and old_data[student][task]['solution']:
 					matrix = get_matrix(task, student, old_data)
 					print('Matrix: ', matrix)
