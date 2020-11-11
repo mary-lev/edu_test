@@ -1,7 +1,14 @@
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 
 from . import views
+
+router = routers.DefaultRouter()
+router.register(r'students', views.StudentViewSet)
+router.register(r'modules', views.ModuleViewSet)
+router.register(r'streams', views.StreamViewSet)
+router.register(r'lessons', views.LessonViewSet)
 
 app_name ='core'
 urlpatterns = [
@@ -25,4 +32,5 @@ urlpatterns = [
 	path('stream/<pk>/', views.StreamView.as_view(), name='stream'),
 	path('streams/', views.StreamListView.as_view(), name='streams'),
     path('telegram/', views.DateGraph.as_view(), name='telegram'),
+    path('api/', include(router.urls)),
     ]

@@ -1,5 +1,6 @@
 import json
 import string
+import csv
 import pandas as pd
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, CreateView
@@ -11,8 +12,13 @@ from django.db.models import Count
   
 from django.contrib import messages
 from django.forms import modelformset_factory
-import csv
 
+from rest_framework import viewsets
+
+from .serializers import (
+    StudentSerializer, StreamSerializer, ModuleSerializer,
+    LessonSerializer
+    )
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question, Variant
 
@@ -412,3 +418,23 @@ class DateGraph(TemplateView):
         context['date_div'] = date_div
         context['dn'] = dn
         return context
+
+
+#API
+class StudentViewSet(viewsets.ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+
+class StreamViewSet(viewsets.ModelViewSet):
+    queryset = Stream.objects.all()
+    serializer_class = StreamSerializer
+
+
+class ModuleViewSet(viewsets.ModelViewSet):
+    queryset = Module.objects.all()
+    serializer_class = ModuleSerializer
+
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
