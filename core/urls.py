@@ -8,6 +8,7 @@ router.register(r'students', views.StudentViewSet)
 router.register(r'modules', views.ModuleViewSet)
 router.register(r'streams', views.StreamViewSet)
 router.register(r'lessons', views.LessonViewSet)
+router.register(r'tasks', views.TaskViewSet)
 
 app_name = 'core'
 urlpatterns = [

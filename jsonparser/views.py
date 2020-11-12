@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 
 from django.shortcuts import render
 
@@ -6,7 +7,7 @@ from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedbac
 
 
 # parse mio lesson
-def index(request):
+def index1(request):
     with open('mio_lesson_9.json', 'r') as f:
         tasks = json.load(f)
     module = Module.objects.get(name='Информационные ожидания')
@@ -122,7 +123,7 @@ def parse3(request):
     return render(request, 'parse.html', {'data': tasks})
 
 
-def parse1(request):
+def index(request):
     df = pd.read_json('scenario1.json')
     users = list()
     for index, row in df.iterrows():
@@ -135,17 +136,15 @@ def parse1(request):
             first_name=row['name'],
             last_name=row['last_name'])
         for x in range(1, 156):
-            if x == 131:
-                one = 'task' + str(x)
-                task, create = Task.objects.get_or_create(
-                    number=one,
+            task, create = Task.objects.get_or_create(
+                number=x,
+                
                 )
-                if row[one]:
-                    feedback, create = Feedback.objects.get_or_create(
-                        student=student,
-                        task=task,
-                        text=row[one])
-
+            if row[x]:
+                feedback, create = Feedback.objects.get_or_create(
+                    student=student,
+                    task=task,
+                    text=row[x])
         users.append(row['email'])
 
-    return render(request, 'parse.html', {'data': users})
+    return render(request, 'index.html', {'data': users})

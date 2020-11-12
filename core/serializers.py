@@ -43,3 +43,13 @@ class LessonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Lesson
         fields = "__all__"
+
+
+class TaskSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='core:task')
+    lesson = LessonSerializer(read_only=False)
+
+    class Meta:
+        model = Task
+        fields = "__all__"

@@ -15,7 +15,12 @@ from django.forms import modelformset_factory
 
 from rest_framework import viewsets
 
-from .serializers import StudentSerializer, StreamSerializer, ModuleSerializer, LessonSerializer
+from .serializers import (StudentSerializer,
+	StreamSerializer,
+	ModuleSerializer,
+	LessonSerializer,
+	TaskSerializer
+	)
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question, Variant
 
@@ -313,3 +318,8 @@ class ModuleViewSet(viewsets.ModelViewSet):
 class LessonViewSet(viewsets.ModelViewSet):
 	queryset = Lesson.objects.all()
 	serializer_class = LessonSerializer
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+	queryset = Task.objects.all()
+	serializer_class = TaskSerializer

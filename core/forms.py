@@ -33,8 +33,9 @@ def make_task_formset(task, extra=0):
     class _QuestionForm(forms.ModelForm):
         questions = QuestionModelChoiceField(
             queryset=Question.objects.filter(task=task).distinct(),
-            to_field_name='question_text',
+            #to_field_name='question_text',
             widget=forms.RadioSelect(),
+            empty_label=None,
             )
 
         class Meta:
