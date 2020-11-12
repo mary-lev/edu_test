@@ -19,7 +19,8 @@ from .serializers import (StudentSerializer,
 	StreamSerializer,
 	ModuleSerializer,
 	LessonSerializer,
-	TaskSerializer
+	TaskSerializer,
+	FeedbackSerializer,
 	)
 from .visual import date_div, dn
 from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Question, Variant
@@ -175,6 +176,10 @@ class TaskView(DetailView):
 	template_name = 'task.html'
 
 
+class FeedbackView(DetailView):
+	model = Feedback
+
+
 class TaskSolution(FormMixin, DetailView):
 	model = Task
 	form_class = QuestionForm
@@ -323,3 +328,8 @@ class LessonViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
 	queryset = Task.objects.all()
 	serializer_class = TaskSerializer
+
+
+class FeedbackViewSet(viewsets.ModelViewSet):
+	queryset = Feedback.objects.all()
+	serializer_class = FeedbackSerializer

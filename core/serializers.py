@@ -53,3 +53,14 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Task
         fields = "__all__"
+
+
+class FeedbackSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='core:feedback')
+    task = TaskSerializer(read_only=True)
+    student = StudentSerializer(read_only=True)
+
+    class Meta:
+        model = Feedback
+        fields = ('student', 'task', 'text', 'url',)

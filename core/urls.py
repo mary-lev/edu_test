@@ -9,6 +9,7 @@ router.register(r'modules', views.ModuleViewSet)
 router.register(r'streams', views.StreamViewSet)
 router.register(r'lessons', views.LessonViewSet)
 router.register(r'tasks', views.TaskViewSet)
+router.register(r'feedbacks', views.FeedbackViewSet)
 
 app_name = 'core'
 urlpatterns = [
@@ -19,6 +20,7 @@ urlpatterns = [
 	path('students/', views.StudentListView.as_view(), name='students'),
 	path('add_feedbacks/', views.Feedbackadding.as_view(), name='add_feedbacks'),
 	path('task/<pk>/', views.TaskView.as_view(), name='task'),
+    path('feedback/<pk>/', views.FeedbackView.as_view(), name='feedback'),
 	path('task/<int:task_id>/analyze', views.analyze_task, name='analyze_task'),
 	path('solutions/', views.SolutionAll.as_view(), name='solutions'),
 	path('student/<pk>/solutions/', views.SolutionStudent.as_view(), name='student_solutions'),
