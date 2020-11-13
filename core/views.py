@@ -91,13 +91,10 @@ def analyze_task(request, task_id):
 	return render(request, 'analyze_task.html', {'task': task, 'result': answer, 'strange': strange})
 
 
-
-
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
 	formset = []
-	solutions = []
 	"""feedbackform = TaskFeedbackForm()"""
 	student = Student.objects.get(id=128)
 	for question in questions:
@@ -109,25 +106,30 @@ def new_solution(request, task_id):
 			"""feedbackform = TaskFeedbackForm(request.POST)
 												formset.append(feedbackform)"""
 			if myformset.is_valid():
-				#name = myformset.cleaned_data['variants'].is_right
-				name = myformset.cleaned_data['variants']
 				try:
 					solution = Solution.objects.get(student=student, task=task)
 					solution.mark = 0
 					solution.variant.clear()
 				except:
 					pass
-				for answer in name:
-					new_solution, create = Solution.objects.get_or_create(
+				new_solution, create = Solution.objects.get_or_create(
 						student=student,
 						task=task,
 						)
-					new_solution.variant.add(answer)
-					new_solution.mark += answer.mark
-					new_solution.save()
+				if question.question_type == '3':
+					name = myformset.cleaned_data['answer']
+					new_solution.text = name
+					if name:
+						new_solution.mark += question.mark
+					#new_solution.mark += name.mark
+				elif question.question_type == '2' or question.question_type == '1':
+					name = myformset.cleaned_data['variants']
+					for answer in name:
+						if answer:
+							new_solution.variant.add(answer)
+				new_solution.save()
 				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
 				return render(request, 'solution1.html', {
-					'test': solutions,
 					'task': task,
 					'formset': formset,
 					'questions': questions
@@ -208,7 +210,6 @@ class FeedbackView(DetailView):
 	model = Feedback
 	
 
-
 """class TaskSolution(FormMixin, DetailView):
 	model = Task
 	form_class = QuestionForm
@@ -239,6 +240,7 @@ class ModuleView(DetailView):
 class StreamView(DetailView):
 	model = Stream
 
+
 TOLSTOY = 461688
 def tolstoy(request):
 	stream = Stream.objects.filter(module__name='Тексты').values_list('students')
@@ -258,6 +260,7 @@ def tolstoy(request):
 	all_tolstoy = round((all_tolstoy*100)/TOLSTOY, 1)
 	students_texts = sorted(students_texts, key=lambda x: x[3], reverse=True)
 	return render(request, 'count_words.html', {'data': students_texts, 'tolstoy': all_tolstoy})
+
 
 class SolutionTask(SingleObjectMixin, ListView):
 	model = Solution
@@ -323,7 +326,7 @@ def index1(request):
 		'percents': percents.to_html()})
 
 
-
+"""рисуем граф телеграма"""
 class DateGraph(TemplateView):
 	template_name = 'telegram.html'
 

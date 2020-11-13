@@ -19,7 +19,7 @@ class VariantAdmin(admin.ModelAdmin):
 
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
-    list_display = ('task', 'get_lesson', 'question_type', 'question_text', 'choice', 'answers',)
+    list_display = ('task', 'get_lesson', 'question_type', 'question_text', 'mark', 'answers',)
     list_filter = ('task',)
     inlines = (VariantInline,)
 

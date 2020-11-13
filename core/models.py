@@ -99,7 +99,7 @@ class Question(models.Model):
 	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
 	question_text = models.CharField(max_length=1000)
 	description = models.CharField(max_length=1000, null=True, blank=True)
-	choice = models.CharField(max_length=300)
+	mark = models.IntegerField(default=0)
 	answers = models.CharField(max_length=200)
 	slug = models.SlugField()
 
@@ -122,7 +122,7 @@ class Solution(models.Model): # решение конкретной задачи
 	text = models.CharField(max_length=100, null=True, blank=True) # решение
 	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='solutions') # связь со студентом
 	mark = models.IntegerField(default=0) # количество полученных баллов
-	variant = models.ManyToManyField(Variant)
+	variant = models.ManyToManyField(Variant, related_name='solutions')
 
 
 class Feedback(models.Model):
