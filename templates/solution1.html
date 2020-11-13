@@ -10,33 +10,46 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       <p>{{ task.text }}</p>
-
-
-      <footer class="blockquote-footer"><a href="{% url 'core:lesson' task.lesson.id %}">Урок {{ task.lesson.number }}</a> <cite title="Source Title">{{ task.lesson.module.name }}</cite></footer>
-    </blockquote>
-  </div>
-</div>
-
+      <div class="container">
+      	<div class="row">
+      		<div class="col">{% if task.picture %}<img class="img-fluid" src="{{ task.show_picture }}"/>{% endif %}</div>
+      		<div class="col">
+      			{% load crispy_forms_tags %}
 {% if messages %}
-    {% for message in messages %}
-     {% if message %}<div class="alert alert-{{message.tags}}" role="alert">{{ message }}</div>{% endif %}
+	{% for message in messages %}
+		{% if message %}
+			<div class="alert alert-{{message.tags}}" role="alert">{{ message }}</div>
+		{% endif %}
     {% endfor %}
 {% endif %}
 
-{% load crispy_forms_tags %}
 <form class='form' action='' method='POST'>
   {% csrf_token %}
 {{ formset.management_form }}
 {% for form in formset %}
   {% for field in form %}
-            <h5>{{ field.label }}</h5> 
-            {{ field }}
-            {{ field.errors}}
+           <p>{{ field|as_crispy_field:"bootstrap" }}</p>
+           {{ field.errors}}
         {% endfor %}
 {% endfor %}
 <input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />
 </form>
 
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    {{ task.hint }}
+  </div>
+</div>
+<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Хочу подсказку</a></p>
+
+      		</div>
+      	</div>
+      </div>
+ 
+      <footer class="blockquote-footer"><a href="{% url 'core:lesson' task.lesson.id %}">Урок {{ task.lesson.number }}</a> <cite title="Source Title">{{ task.lesson.module.name }}</cite></footer>
+    </blockquote>
+  </div>
+</div>
 
 
 <div class="card">
