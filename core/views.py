@@ -2,11 +2,13 @@ import json
 import string
 import csv
 import pandas as pd
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+from django.urls import reverse_lazy
 from django import forms
 from django.db.models import Count
   
@@ -27,7 +29,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import make_question_formset, make_task_formset, QuestionForm, FeedbackForm
+from .forms import make_question_formset, QuestionForm, FeedbackForm
 #from .count_all import (is_link, compare_texts, get_address, count_words,
 	#analyze, analyze_one_student, count_tolstoy, compare_time, difficulty)
 
@@ -98,7 +100,7 @@ def new_solution(request, task_id):
 		elif question.question_type == '3':
 			VariantForm = QuestionForm
 		else:
-			VariantForm = make_task_formset(task)
+			VariantForm = make_question_formset(question)
 		if request.method == 'POST':
 			myformset = VariantForm(request.POST,
 				prefix=question.id)
@@ -107,7 +109,14 @@ def new_solution(request, task_id):
 				#name = myformset.cleaned_data['variants'].is_right
 				name = request.POST
 				solutions.append(name)
-				return render(request, 'core/test.html', {'test': test})
+				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
+				return render(request, 'solution1.html', {
+					'test': solutions,
+					'task': task,
+					'formset': formset,
+					'questions': questions
+					})
+				#return reverse_lazy('core:solution1', args=(task.id,))
 		else:
 			myformset = VariantForm(prefix=question.id)
 			formset.append(myformset) 
@@ -178,6 +187,7 @@ class TaskView(DetailView):
 
 class FeedbackView(DetailView):
 	model = Feedback
+	
 
 
 class TaskSolution(FormMixin, DetailView):

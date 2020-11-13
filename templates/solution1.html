@@ -16,8 +16,11 @@
     </blockquote>
   </div>
 </div>
-{% if messages.success %} 
-          <p class="alert alert-info" role="alert">Ответ принят!</p>
+
+{% if messages %}
+    {% for message in messages %}
+     {% if message %}<div class="alert alert-{{message.tags}}" role="alert">{{ message }}</div>{% endif %}
+    {% endfor %}
 {% endif %}
 
 {% load crispy_forms_tags %}
