@@ -29,7 +29,13 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import make_question_formset, make_task_form, FeedbackForm
+from .forms import (
+	make_question_formset,
+	make_task_form,
+	make_checkbox_formset,
+	FeedbackForm,
+	TaskFeedbackForm
+	)
 #from .count_all import (is_link, compare_texts, get_address, count_words,
 	#analyze, analyze_one_student, count_tolstoy, compare_time, difficulty)
 
@@ -94,9 +100,13 @@ def new_solution(request, task_id):
 	questions = Question.objects.filter(task=task)
 	formset = []
 	solutions = []
+	"""feedbackform = TaskFeedbackForm()"""
+	student = Student.objects.get(id=128)
 	for question in questions:
 		if question.question_type == '1':
 			VariantForm = make_question_formset(question)
+		elif question.question_type == '2':
+			VariantForm = make_checkbox_formset(question)
 		elif question.question_type == '3':
 			VariantForm = make_task_form(question)
 		else:
@@ -105,10 +115,20 @@ def new_solution(request, task_id):
 			myformset = VariantForm(request.POST,
 				prefix=question.id)
 			formset.append(myformset)
+			"""feedbackform = TaskFeedbackForm(request.POST)
+												formset.append(feedbackform)"""
 			if myformset.is_valid():
 				#name = myformset.cleaned_data['variants'].is_right
-				name = request.POST
-				solutions.append(name)
+				name = myformset.cleaned_data['variants']
+				for answer in name:
+					if answer.is_right:
+						mark = 10
+					new_solution = Solution.objects.create(
+						student=student,
+						task=task,
+						text=answer,
+						mark=mark
+						)
 				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
 				return render(request, 'solution1.html', {
 					'test': solutions,
@@ -116,10 +136,13 @@ def new_solution(request, task_id):
 					'formset': formset,
 					'questions': questions
 					})
-				#return reverse_lazy('core:solution1', args=(task.id,))
+			"""if feedbackform.is_valid():
+				messages.add_message(request, messages.SUCCESS, "Спасибо!")"""
 		else:
 			myformset = VariantForm(prefix=question.id)
-			formset.append(myformset) 
+			formset.append(myformset)
+			"""feedbackform = TaskFeedbackForm()
+												formset.append(feedbackform)"""
 	return render(request,
 		'solution1.html',
 		{'formset': formset, 'questions': questions, 'task': task})
@@ -190,9 +213,9 @@ class FeedbackView(DetailView):
 	
 
 
-class TaskSolution(FormMixin, DetailView):
+"""class TaskSolution(FormMixin, DetailView):
 	model = Task
-	#form_class = QuestionForm
+	form_class = QuestionForm
 	template_name = 'solution.html'
 
 	def get_context_data(self, **kwargs):
@@ -201,7 +224,7 @@ class TaskSolution(FormMixin, DetailView):
 			question=self.object.questions.all()[0].id).values_list('text', flat=True)
 		context['form'].fields['variants'].label = self.object.questions.all()[0].question_text
 		context['form'].fields['variants'].label_class = 'mb-0'
-		return context
+		return context"""
 
 
 class LessonView(DetailView):

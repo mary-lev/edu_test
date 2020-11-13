@@ -97,7 +97,7 @@ class Question(models.Model):
 		('3', 'TextArea'),
 		)
 	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
-	question_text = models.CharField(max_length=300)
+	question_text = models.CharField(max_length=1000)
 	description = models.CharField(max_length=1000, null=True, blank=True)
 	choice = models.CharField(max_length=300)
 	answers = models.CharField(max_length=200)
@@ -108,6 +108,9 @@ class Variant(models.Model):
 	question = models.ForeignKey(Question, related_name='variants', on_delete=models.CASCADE)
 	is_right = models.BooleanField(verbose_name='Верный ответ?')
 	text = models.CharField(max_length=300)
+
+	def __str__(self):
+		return self.text
 
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом

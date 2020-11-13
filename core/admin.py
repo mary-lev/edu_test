@@ -8,6 +8,10 @@ class VariantInline(admin.TabularInline):
     model = Variant
 
 
+class VariantAdmin(admin.ModelAdmin):
+    model = Variant
+
+
 class QuestionAdmin(admin.ModelAdmin):
     model = Question
     list_display = ('task', 'get_lesson', 'question_type', 'question_text', 'choice', 'answers',)
@@ -109,3 +113,4 @@ admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Feedback, FeedbackAdmin)
 admin.site.register(Solution, SolutionAdmin)
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Variant, VariantAdmin)
