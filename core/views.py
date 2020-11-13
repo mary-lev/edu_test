@@ -29,7 +29,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 
 from .feedback import create_graph
 from .tone import create_new_graph
-from .forms import make_question_formset, QuestionForm, FeedbackForm
+from .forms import make_question_formset, make_task_form, FeedbackForm
 #from .count_all import (is_link, compare_texts, get_address, count_words,
 	#analyze, analyze_one_student, count_tolstoy, compare_time, difficulty)
 
@@ -98,7 +98,7 @@ def new_solution(request, task_id):
 		if question.question_type == '1':
 			VariantForm = make_question_formset(question)
 		elif question.question_type == '3':
-			VariantForm = QuestionForm
+			VariantForm = make_task_form(question)
 		else:
 			VariantForm = make_question_formset(question)
 		if request.method == 'POST':
@@ -192,7 +192,7 @@ class FeedbackView(DetailView):
 
 class TaskSolution(FormMixin, DetailView):
 	model = Task
-	form_class = QuestionForm
+	#form_class = QuestionForm
 	template_name = 'solution.html'
 
 	def get_context_data(self, **kwargs):

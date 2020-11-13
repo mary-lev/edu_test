@@ -56,27 +56,24 @@ def make_question_formset(question, extra=0):
 
     return _VariantForm
 
+def make_task_form(question, extra=0):
+    class _QuestionForm(forms.ModelForm):
+        answer = forms.CharField(
+            widget=forms.Textarea(attrs={"rows":5, "cols":40, 'class': 'mb-0'}),
+            label=question.question_text
+            )
+        class Meta:
+            model = Question
+            fields = ('answer',)
 
-class QuestionForm(forms.ModelForm):
-    answer = forms.CharField(widget=forms.TextInput(attrs={'class': 'special'}))
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 
-    class Meta:
-        model = Question
-        fields = ('question_text', 'description',)
-        widgets = {
-            'answer': forms.TextInput(),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['answer'].initial = ''
-        self.fields['answer'].label = self.instance.question_text
-
-        self.helper = FormHelper()
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit',
-                                     'Готово',
-                                     css_class='btn btn-info mt-4 mb-2'))
-        self.helper.form_class = 'card mt-4 mb-3'
-        self.helper.label_class = 'display-4'
+            self.helper = FormHelper()
+            self.helper.form_method = 'POST'
+            self.helper.add_input(Submit('submit',
+                'Готово',
+                css_class='btn btn-info mt-4 mb-2'))
+            self.helper.form_class = 'card mt-4 mb-3'
+            self.helper.label_class = 'display-4'
+    return _QuestionForm

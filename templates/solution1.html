@@ -29,7 +29,7 @@
 {{ formset.management_form }}
 {% for form in formset %}
   {% for field in form %}
-            <h5>{{ field.label_tag }}</h5> 
+            <h5>{{ field.label }}</h5> 
             {{ field }}
             {{ field.errors}}
         {% endfor %}
@@ -41,7 +41,7 @@
 
 <div class="card">
   <div class="card-body">{% if task.next_task %}
-    <a href="{% url 'core:solution' task.next_task %}">Следующая задача</a>
+    <a href="{% url 'core:solution1' task.next_task %}">Следующая задача</a>
     {% endif %}
   </div>
 </div>
