@@ -30,9 +30,7 @@ from .models import Student, Lesson, Module, Stream, Task, Feedback, Solution, Q
 from .feedback import create_graph
 from .tone import create_new_graph
 from .forms import (
-	make_question_formset,
-	make_task_form,
-	make_checkbox_formset,
+	choice_form,
 	FeedbackForm,
 	TaskFeedbackForm
 	)
@@ -103,14 +101,7 @@ def new_solution(request, task_id):
 	"""feedbackform = TaskFeedbackForm()"""
 	student = Student.objects.get(id=128)
 	for question in questions:
-		if question.question_type == '1':
-			VariantForm = make_question_formset(question)
-		elif question.question_type == '2':
-			VariantForm = make_checkbox_formset(question)
-		elif question.question_type == '3':
-			VariantForm = make_task_form(question)
-		else:
-			VariantForm = make_question_formset(question)
+		VariantForm = choice_form(question)
 		if request.method == 'POST':
 			myformset = VariantForm(request.POST,
 				prefix=question.id)
@@ -120,15 +111,20 @@ def new_solution(request, task_id):
 			if myformset.is_valid():
 				#name = myformset.cleaned_data['variants'].is_right
 				name = myformset.cleaned_data['variants']
+				try:
+					solution = Solution.objects.get(student=student, task=task)
+					solution.mark = 0
+					solution.variant.clear()
+				except:
+					pass
 				for answer in name:
-					if answer.is_right:
-						mark = 10
-					new_solution = Solution.objects.create(
+					new_solution, create = Solution.objects.get_or_create(
 						student=student,
 						task=task,
-						text=answer,
-						mark=mark
 						)
+					new_solution.variant.add(answer)
+					new_solution.mark += answer.mark
+					new_solution.save()
 				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
 				return render(request, 'solution1.html', {
 					'test': solutions,

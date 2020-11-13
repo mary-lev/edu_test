@@ -10,6 +10,11 @@ class VariantInline(admin.TabularInline):
 
 class VariantAdmin(admin.ModelAdmin):
     model = Variant
+    list_display = ('text', 'question', 'get_task', )
+    list_filter = ('question__task',)
+
+    def get_task(self, obj):
+        return obj.question.task
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -100,9 +105,15 @@ class FeedbackAdmin(admin.ModelAdmin):
         return obj.task.lesson.module
 
 
+class SolutionVariantInline(admin.TabularInline):
+    model = Solution.variant.through
+
+
 class SolutionAdmin(admin.ModelAdmin):
     list_display = ('task', 'student', 'text')
     list_filter = ('task__lesson', 'task')
+    inlines = (SolutionVariantInline,)
+    exclude = ('variant',)
 
 
 admin.site.register(Student, StudentAdmin)

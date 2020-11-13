@@ -7,35 +7,18 @@ from django.forms import modelformset_factory
 from .models import Variant, Question, Feedback, Task
 
 
-class TaskFeedbackForm(forms.ModelForm):
-    class Meta:
-        model = Feedback
-        fields = ('text',)
+"""forms for task solutions"""
+def choice_form(question):
+    if question.question_type == '1':
+        VariantForm = make_question_formset(question)
+    elif question.question_type == '2':
+        VariantForm = make_checkbox_formset(question)
+    elif question.question_type == '3':
+        VariantForm = make_task_form(question)
+    else:
+        VariantForm = make_question_formset(question)
+    return VariantForm
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['text'].label_class = 'mb-0'
-        self.fields['text'].label = "Комментарий к задаче (пишите всё, что хотите):"
-        self.helper = FormHelper()
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit',
-            'Готово',
-            css_class='btn btn-info mt-4 mb-2'))
-        self.helper.form_class = 'card mt-4 mb-3'
-
-
-class FeedbackForm(forms.ModelForm):
-    class Meta:
-        model = Feedback
-        fields = ('task', 'lesson', 'text', 'student',)
-
-
-FeedbackFormSet = modelformset_factory(
-    Feedback,
-    form=FeedbackForm,
-    can_delete=True,
-    widgets={'DELETE': forms.CheckboxInput()}
-)
 
 
 class VariantModelChoiceField(ModelChoiceField):
@@ -130,3 +113,35 @@ def make_task_form(question, extra=0):
             self.helper.form_class = 'card mt-4 mb-3'
             self.helper.label_class = 'display-4'
     return _QuestionForm
+
+
+"""other forms"""
+class TaskFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ('text',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label_class = 'mb-0'
+        self.fields['text'].label = "Комментарий к задаче (пишите всё, что хотите):"
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit',
+            'Готово',
+            css_class='btn btn-info mt-4 mb-2'))
+        self.helper.form_class = 'card mt-4 mb-3'
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ('task', 'lesson', 'text', 'student',)
+
+
+FeedbackFormSet = modelformset_factory(
+    Feedback,
+    form=FeedbackForm,
+    can_delete=True,
+    widgets={'DELETE': forms.CheckboxInput()}
+    )

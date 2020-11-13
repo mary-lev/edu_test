@@ -103,11 +103,15 @@ class Question(models.Model):
 	answers = models.CharField(max_length=200)
 	slug = models.SlugField()
 
+	def __str__(self):
+		return self.question_text
+
 
 class Variant(models.Model):
 	question = models.ForeignKey(Question, related_name='variants', on_delete=models.CASCADE)
 	is_right = models.BooleanField(verbose_name='Верный ответ?')
 	text = models.CharField(max_length=300)
+	mark = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.text
@@ -115,9 +119,10 @@ class Variant(models.Model):
 
 class Solution(models.Model): # решение конкретной задачи конкретным студентом
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='solutions') # связь с задачей
-	text = models.CharField(max_length=100) # решение
+	text = models.CharField(max_length=100, null=True, blank=True) # решение
 	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='solutions') # связь со студентом
 	mark = models.IntegerField(default=0) # количество полученных баллов
+	variant = models.ManyToManyField(Variant)
 
 
 class Feedback(models.Model):
