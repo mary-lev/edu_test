@@ -9,7 +9,7 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       <p>{{ object.text }}</p>
-      <img src="{{ object.show_picture }}" width=500 />
+      {% if object.picture %}<img src="{{ object.show_picture }}" width=500 />{% endif %}
       <footer class="blockquote-footer"><a href="{% url 'core:lesson' object.lesson.id %}">Урок {{ object.lesson.number }}</a> <cite title="Source Title">{{ object.lesson.module.name }}</cite></footer>
     </blockquote>
   </div>

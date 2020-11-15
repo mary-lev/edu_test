@@ -38,12 +38,6 @@ from .forms import (
 	#analyze, analyze_one_student, count_tolstoy, compare_time, difficulty)
 
 
-mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',
-			'mio4_lesson_4.json', 'mio4_lesson_5.json', 'mio4_lesson_6.json',
-			'mio4_lesson_7.json'
-			]
-
-
 def index(request):
 	streams = Stream.objects.all()
 	return render(request, 'index.html', {'streams': streams})
@@ -244,10 +238,10 @@ class LessonView(DetailView):
 class ModuleView(DetailView):
 	model = Module
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['div'] = create_graph(self.object)
-		return context
+	"""def get_context_data(self, **kwargs):
+					context = super().get_context_data(**kwargs)
+					context['div'] = create_graph(self.object)
+					return context"""
 
 
 class StreamView(DetailView):

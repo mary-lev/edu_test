@@ -4,13 +4,25 @@
 
 <h1 class="display-4">Модуль «{{ object }}»</h1>
 
-<div style="width:1200;height:900">
-{{ div|safe }}
-</div>
 
-{% for lesson in object.lessons.all %}
-<li><a href="{% url 'core:lesson' lesson.id %}">Урок {{ lesson.number }}</a></li>
-{% endfor %}
+<nav id="navbar-example2" class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">Содержание</a>
+  <ul class="nav nav-pills">
+  	{% for lesson in object.lessons.all %}
+    <li class="nav-item">
+      <a class="nav-link" href="#{{ lesson.number }}">Урок {{ lesson.number }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+<div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+	{% for lesson in object.lessons.all %}
+  <h4 id="{{ lesson.number }}"><a href="{% url 'core:lesson' lesson.id %}">Урок {{ lesson.number }}</a></h4>
+  {% for task in lesson.tasks.all %}
+  <p>Задача {{task.number}}. <a href="{% url 'core:task' task.id %}">{{ task.name }}</a></p>
+  {% endfor %}
+  {% endfor %}
+</div>
 
 <h2 class="display-4">Потоки по модулю</h2>
 {% for stream in object.streams.all %}
