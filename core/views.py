@@ -94,53 +94,58 @@ def analyze_task(request, task_id):
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
+	print(questions, len(questions))
 	formset = []
-	"""feedbackform = TaskFeedbackForm()"""
 	student = Student.objects.get(id=128)
-	for question in questions:
-		VariantForm = choice_form(question)
-		if request.method == 'POST':
-			myformset = VariantForm(request.POST,
-				prefix=question.id)
+	VariantForm = choice_form(questions)
+	print(type(VariantForm))
+	if request.method == 'POST':
+		try:
+			myformset = VariantForm(request.POST, prefix=questions[0].id)
 			formset.append(myformset)
-			"""feedbackform = TaskFeedbackForm(request.POST)
-												formset.append(feedbackform)"""
-			if myformset.is_valid():
-				try:
-					solution = Solution.objects.get(student=student, task=task)
-					solution.mark = 0
-					solution.variant.clear()
-				except:
-					pass
-				new_solution, create = Solution.objects.get_or_create(
-						student=student,
-						task=task,
-						)
-				if question.question_type == '3':
-					name = myformset.cleaned_data['answer']
-					new_solution.text = name
-					if name:
-						new_solution.mark += question.mark
+		except:
+			myformset = VariantForm
+		if myformset.is_valid():
+			try:
+				solution = Solution.objects.get(student=student, task=task)
+				solution.mark = 0
+				solution.variant.clear()
+			except:
+				pass
+			new_solution, create = Solution.objects.get_or_create(
+				student=student,
+				task=task,
+				)
+			
+			if questions[0].question_type == '3':
+				name = myformset.cleaned_data['answer']
+				new_solution.text = name
+				if name:
+					new_solution.mark += questions[0].mark
 					#new_solution.mark += name.mark
-				elif question.question_type == '2' or question.question_type == '1':
-					name = myformset.cleaned_data['variants']
-					for answer in name:
-						if answer:
-							new_solution.variant.add(answer)
-				new_solution.save()
-				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
-				return render(request, 'solution1.html', {
-					'task': task,
-					'formset': formset,
-					'questions': questions
-					})
-			"""if feedbackform.is_valid():
-				messages.add_message(request, messages.SUCCESS, "Спасибо!")"""
-		else:
-			myformset = VariantForm(prefix=question.id)
+			elif questions[0].question_type == '2':
+				name = myformset.cleaned_data['variants']
+				for answer in name:
+					if answer:
+						new_solution.variant.add(answer)
+			else:
+				answer = myformset.cleaned_data['variants']
+				for a in answer:
+					new_solution.variant.add(a)
+				
+			new_solution.save()
+			messages.add_message(request, messages.SUCCESS, "Ответ принят!")
+		return render(request, 'solution1.html', {
+			'task': task,
+			'formset': formset,
+			'questions': questions
+			})
+	else:
+		try:
+			myformset = VariantForm(prefix=questions[0].id)
 			formset.append(myformset)
-			"""feedbackform = TaskFeedbackForm()
-												formset.append(feedbackform)"""
+		except:
+			formset = VariantForm
 	return render(request,
 		'solution1.html',
 		{'formset': formset, 'questions': questions, 'task': task})

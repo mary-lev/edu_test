@@ -24,14 +24,16 @@
 {% endif %}
 
 <form class='form' action='' method='POST'>
-  {% csrf_token %}
-{{ formset.management_form }}
-{% for form in formset %}
-  {% for field in form %}
+    {% csrf_token %}
+      {{ formset.management_form }}
+      {% for form in formset %}
+        {% for field in form %}
+        {{ field.label }}
            <p>{{ field|as_crispy_field:"bootstrap" }}</p>
            {{ field.errors}}
         {% endfor %}
-{% endfor %}
+      {% endfor %}
+
 <input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />
 </form>
 
