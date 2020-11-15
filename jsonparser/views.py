@@ -7,35 +7,49 @@ from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedbac
 
 
 # parse mio lesson
-def index1(request):
-    with open('mio_lesson_9.json', 'r') as f:
+def index(request):
+    with open('mio_lesson_8.json', 'r') as f:
         tasks = json.load(f)
     module = Module.objects.get(name='Информационные ожидания')
-    lesson, create = Lesson.objects.get_or_create(number=9, module=module)
+    lesson, create = Lesson.objects.get_or_create(number=7, module=module)
     for n, task in enumerate(tasks):
-        task_number = n + 88
+        task_number = n + 77
         task_image_key = str(task_number) + '_hyperlink'
         task_image_title_key = str(task_number) + '_image_title'
         task_answer_key = str(task_number) + '_answer'
         task_alt_answer_key = str(task_number) + '_alt_answer'
         task_text_key = str(task_number) + '_text'
         task_mark_key = str(task_number) + '_mark'
+        task_mark_alt_key = str(task_number) + '_alt_mark'
         task_answer_label_key = str(task_number) + '_answer_labels'
+        task_hint = str(task_number) + '_podskazka'
         if not task_text_key in task.keys():
             task_text_key = str(task_number) + '_2text'
         if not task_image_key in task.keys():
             task[task_image_key] = ''
         if not task_image_title_key in task.keys():
             task[task_image_title_key] = [['']]
+        try:
+            mark = int(task[task_mark_key][0][0])
+        except:
+            try:
+                mark = int(task[task_mark_alt_key][0][0])
+            except:
+                mark = 0
 
         new_task, create = Task.objects.get_or_create(
             number=task_number,
-            lesson=lesson,
-            name=task[task_text_key][0][0],
-            picture=task[task_image_key],
-            picture_title=task[task_image_title_key][0][0],
-            text=task[task_text_key],
-        )
+            lesson=lesson)
+        new_task.name=task[task_text_key][0][0]
+        new_task.picture=task[task_image_key]
+        new_task.picture_title=task[task_image_title_key][0][0]
+        new_task.text=task[task_text_key]
+        try:
+            new_task.hint=task[task_hint]
+        except:
+            pass
+        new_task.mark = mark
+
         if task_answer_key in task.keys():
             question, create = Question.objects.get_or_create(
                 task=new_task,
@@ -58,7 +72,7 @@ def index1(request):
                     text=var,
                     is_right=False
                     )
-        new_task.mark = task[task_mark_key][0][0]
+        new_task.mark = mark
         new_task.save()
     return render(request, 'index.html', {'data': tasks})
 
@@ -123,7 +137,7 @@ def parse3(request):
     return render(request, 'parse.html', {'data': tasks})
 
 
-def index(request):
+def index1(request):
     df = pd.read_json('scenario1.json')
     users = list()
     for index, row in df.iterrows():

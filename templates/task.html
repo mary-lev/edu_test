@@ -4,9 +4,8 @@
 
 
 <div class="card">
-  <div class="card-header">
-    Задача {{ object.number }}. {{ object.name }}
-  </div>
+	<div class="card-header">Модуль «{{ object.lesson.module.name }}». Урок {{ object.lesson.number }} </div>
+  <div class="card-header">Задача {{ object.number }}. {{ object.name }} </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       <p>{{ object.text }}</p>
