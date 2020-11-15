@@ -36,8 +36,13 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ('stream__name', 'stream__module__name',)
 
 
+class TaskInline(admin.TabularInline):
+    model = Task
+
+
 class LessonAdmin(admin.ModelAdmin):
     list_display = ('number', 'module')
+    inlines = (TaskInline,)
 
 
 class StreamAdmin(admin.ModelAdmin):
@@ -57,27 +62,12 @@ class ModuleAdmin(admin.ModelAdmin):
     inlines = (StreamInline, LessonInline,)
 
 
-class TaskForm1(forms.ModelForm):
-    class Meta:
-        fields = '__all__'
-        model = Task
-        widgets = {
-            'question_type': forms.widgets.Select(
-                choices=(
-                    (0, 'A'),
-                    (1, 'B'),
-                )
-            )
-        }
-
-
 class TaskForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
         model = Task
         widgets = {
             'question_type': forms.widgets.TextInput(),
-
         }
 
 
