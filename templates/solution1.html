@@ -28,7 +28,6 @@
       {{ formset.management_form }}
       {% for form in formset %}
         {% for field in form %}
-        {{ field.label }}
            <p>{{ field|as_crispy_field:"bootstrap" }}</p>
            {{ field.errors}}
         {% endfor %}

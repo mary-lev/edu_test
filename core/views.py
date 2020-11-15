@@ -94,47 +94,55 @@ def analyze_task(request, task_id):
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
-	print(questions, len(questions))
 	formset = []
 	student = Student.objects.get(id=128)
 	VariantForm = choice_form(questions)
-	print(type(VariantForm))
-	if request.method == 'POST':
+	if request.method == 'POST' or None:
+		try:
+			solution = Solution.objects.get(student=student, task=task)
+			solution.mark = 0
+			solution.variant.clear()
+		except:
+			pass
+		new_solution, create = Solution.objects.get_or_create(
+			student=student,
+			task=task,
+			)
 		try:
 			myformset = VariantForm(request.POST, prefix=questions[0].id)
 			formset.append(myformset)
+			if myformset.is_valid():
+				if questions[0].question_type == '3':
+					name = myformset.cleaned_data['answer']
+					new_solution.text = name
+					if name:
+						new_solution.mark += questions[0].mark
+						#new_solution.mark += name.mark
+						new_solution.save()
+						messages.add_message(request, messages.SUCCESS, "Ответ принят!")
+				elif questions[0].question_type == '2':
+					mark = 0
+					name = myformset.cleaned_data['variants']
+					for answer in name:
+						if answer:
+							new_solution.variant.add(answer)
+							mark += answer.mark
+					new_solution.mark = mark
+					new_solution.save()
+					messages.add_message(
+						request,
+						messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(mark, questions[0].mark))
 		except:
-			myformset = VariantForm
-		if myformset.is_valid():
-			try:
-				solution = Solution.objects.get(student=student, task=task)
-				solution.mark = 0
-				solution.variant.clear()
-			except:
-				pass
-			new_solution, create = Solution.objects.get_or_create(
-				student=student,
-				task=task,
-				)
-			
-			if questions[0].question_type == '3':
-				name = myformset.cleaned_data['answer']
-				new_solution.text = name
-				if name:
-					new_solution.mark += questions[0].mark
-					#new_solution.mark += name.mark
-			elif questions[0].question_type == '2':
-				name = myformset.cleaned_data['variants']
-				for answer in name:
-					if answer:
-						new_solution.variant.add(answer)
-			else:
-				answer = myformset.cleaned_data['variants']
-				for a in answer:
-					new_solution.variant.add(a)
+			formset = VariantForm
+			for form in formset:
+				print(form['variants'])
+				print(form['id'])
+				answer = form['id'].value()
+				print(answer)
+				new_solution.variant.add(Variant.objects.get(id=answer))
+				new_solution.save()
+				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
 				
-			new_solution.save()
-			messages.add_message(request, messages.SUCCESS, "Ответ принят!")
 		return render(request, 'solution1.html', {
 			'task': task,
 			'formset': formset,

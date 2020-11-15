@@ -11,7 +11,6 @@ from .models import Variant, Question, Feedback, Task
 def choice_form(questions):
     if len(questions) != 1:
         VariantForm = create_formset2(questions)
-        print("questions", questions)
     else:
         if questions[0].question_type == '2':
             VariantForm = make_checkbox_formset(questions[0])
@@ -44,7 +43,7 @@ def create_formset(questions):
 def create_formset2(questions, extra=0):
     class _VariantForm(CrispyModelForm):
         variants = VariantModelChoiceField(
-            queryset=Variant.objects.filter(question=questions[0]),
+            queryset=Variant.objects.none(),
             to_field_name='text',
             widget=forms.RadioSelect(),
             empty_label=None,
@@ -54,14 +53,17 @@ def create_formset2(questions, extra=0):
         class Meta:
             model = Question
             fields = ['variants']
-    
-    class _BaseQuestionFormSet(BaseModelFormSet):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.queryset = Variant.objects.filter(question=self.obj)
 
-    QuestionFormSet = modelformset_factory(Question, _VariantForm, extra=0)
+    QuestionFormSet = modelformset_factory(
+        Question,
+        _VariantForm,
+        extra=0
+        )
+
     formset = QuestionFormSet(queryset=questions)
+    for n, form in enumerate(formset.forms):
+        form.fields['variants'].queryset = Variant.objects.filter(question=questions[n])
+        form.fields['variants'].label = questions[n].question_text
     return formset
 
 """create crispy design for all modelforms"""
