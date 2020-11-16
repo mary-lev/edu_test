@@ -173,16 +173,21 @@ FeedbackFormSet = modelformset_factory(
     widgets={'DELETE': forms.CheckboxInput()}
     )
 
-class BaseVariantFormSet(BaseInlineFormSet):
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-        variants = VariantModelChoiceField(
-            queryset=Variant.objects.filter(question=form.instance),
-            to_field_name='text',
-            widget=forms.RadioSelect,
-            #empty_label=None,
-            #label=question.question_text
-            )
+class VariantForm(forms.ModelForm):
+    variants = VariantModelChoiceField(
+        queryset=Variant.objects.none(),
+        to_field_name='text',
+        widget=forms.RadioSelect,
+        #empty_label=None,
+        #label=question.question_text
+        )
+    class Meta:
+        model = Question
+        fields = ['variants']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['variants'].queryset = Variant.objects.filter(question=self.instance)
 
 
 VariantFormSet = inlineformset_factory(
@@ -192,17 +197,19 @@ VariantFormSet = inlineformset_factory(
     fields=('text',),
     extra=0,
     can_delete=False,
+    #widgets={'text': forms.RadioSelect},
     )
 
 class BaseQuestionFormSet(BaseInlineFormSet):
     def add_fields(self, form, index):
         super().add_fields(form, index)
-        form.nested = VariantFormSet(
+        form.nested = VariantForm(
             instance=form.instance,
             data=form.data if form.is_bound else None,
-            prefix='variant-%s-%s' % (
+            prefix='variant-%s' % (
                 form.prefix,
-                VariantFormSet.get_default_prefix()),
+                #VariantForm.get_default_prefix()
+                ),
             )
 
     def is_valid(self):
@@ -218,9 +225,9 @@ class BaseQuestionFormSet(BaseInlineFormSet):
         for form in self.forms:
             if hasattr(form, 'nested'):
                 #print(form.fields['id'].bound_data())
-                print(form.cleaned_data)
-                for f in form.nested.forms:
-                    print(f.cleaned_data)
+                print(form.fields)
+                #for f in form.nested.forms:
+                #    print(f.cleaned_data)
                 #print(form.fields['id'].has_changed())
                 form.nested.save(commit=commit)
         return result

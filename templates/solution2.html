@@ -10,7 +10,8 @@
 
   		<h5>{{ question }}</h5>
   			{{ question.nested.management_form }}
-  			{% for q in question.nested.forms %}
+  			Test: {{ question.nested.data }}
+  			{% for q in question.nested %}
 		  		<p>{{ q }}</p>
 
 	  		{% endfor %}
