@@ -1,30 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h4 class='display-4'>Задача {{ task.number }}</h4>
 
+<form class='form' action='' method='POST'>
+    {% csrf_token %}
+{{ questions.management_form }}
+	{% for question in questions.forms %}
 
-<div class="card">
-  <div class="card-header">
-    Задача {{ task.number }}. {{ task.name }}
-  </div>
-  <div class="card-body">
-    <blockquote class="blockquote mb-0">
-      <p>{{ task.text }}</p>
+  		<h5>{{ question }}</h5>
+  			{{ question.nested.management_form }}
+  			{% for q in question.nested.forms %}
+		  		<p>{{ q }}</p>
 
+	  		{% endfor %}
 
-      <footer class="blockquote-footer"><a href="{% url 'core:lesson' task.lesson.id %}">Урок {{ task.lesson.number }}</a> <cite title="Source Title">{{ task.lesson.module.name }}</cite></footer>
-    </blockquote>
-  </div>
-</div>
+	{% endfor %}
 
-{{ form }}
-
-
-<div class="card">
-  <div class="card-body">{% if task.next_task %}
-    <a href="{% url 'core:solution' task.next_task %}">Следующая задача</a>
-    {% endif %}
-  </div>
-</div>
+<input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />
+</form>
 
 {% endblock %}

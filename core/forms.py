@@ -2,7 +2,13 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 from django.forms import ModelChoiceField, ModelMultipleChoiceField
-from django.forms import modelformset_factory, formset_factory, BaseModelFormSet
+from django.forms import (
+    modelformset_factory,
+    formset_factory,
+    inlineformset_factory,
+    BaseModelFormSet,
+    BaseInlineFormSet
+    )
 
 from .models import Variant, Question, Feedback, Task
 
@@ -166,3 +172,77 @@ FeedbackFormSet = modelformset_factory(
     can_delete=True,
     widgets={'DELETE': forms.CheckboxInput()}
     )
+
+class BaseVariantFormSet(BaseInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+        variants = VariantModelChoiceField(
+            queryset=Variant.objects.filter(question=form.instance),
+            to_field_name='text',
+            widget=forms.RadioSelect,
+            #empty_label=None,
+            #label=question.question_text
+            )
+
+
+VariantFormSet = inlineformset_factory(
+    Question,
+    Variant,
+    #formset=BaseVariantFormSet,
+    fields=('text',),
+    extra=0,
+    can_delete=False,
+    )
+
+class BaseQuestionFormSet(BaseInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+        form.nested = VariantFormSet(
+            instance=form.instance,
+            data=form.data if form.is_bound else None,
+            prefix='variant-%s-%s' % (
+                form.prefix,
+                VariantFormSet.get_default_prefix()),
+            )
+
+    def is_valid(self):
+        result = super().is_valid()
+        if self.is_bound:
+            for form in self.forms:
+                if hasattr(form, 'nested'):
+                    result = result and form.nested.is_valid()
+        return result
+
+    def save(self, commit=True):
+        result = super().save(commit=commit)
+        for form in self.forms:
+            if hasattr(form, 'nested'):
+                #print(form.fields['id'].bound_data())
+                print(form.cleaned_data)
+                for f in form.nested.forms:
+                    print(f.cleaned_data)
+                #print(form.fields['id'].has_changed())
+                form.nested.save(commit=commit)
+        return result
+
+QuestionFormSet = inlineformset_factory(
+    Task,
+    Question,
+    formset=BaseQuestionFormSet,
+    fields=('question_text',),
+    can_delete=False,
+    extra=0)
+
+"""['__class__', '__deepcopy__', '__delattr__', '__dict__', '__dir__', 
+'__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', 
+'__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', 
+'__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', 
+'__subclasshook__', '__weakref__', '_get_choices', '_get_queryset', '_queryset', 
+'_set_choices', '_set_queryset', 'bound_data', 'choices', 'clean', 'default_error_messages',
+'default_validators', 'disabled', 'empty_label', 'empty_values', 'error_messages', 
+'get_bound_field', 'get_limit_choices_to', 'has_changed', 'help_text', 'hidden_widget', 
+'initial', 'iterator', 'label', 'label_from_instance', 'label_suffix', 'limit_choices_to', 
+'localize', 'prepare_value', 'queryset', 'required', 'run_validators', 'show_hidden_initial',
+ 'to_field_name', 'to_python', 'valid_value', 'validate', 'validators', 'widget', 'widget_attrs']"""
+
+"""['Meta', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__gt__', '__hash__', '__html__', '__init__', '__init_subclass__', '__iter__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_bound_fields_cache', '_clean_fields', '_clean_form', '_errors', '_get_validation_exclusions', '_html_output', '_meta', '_post_clean', '_save_m2m', '_update_errors', '_validate_unique', 'add_error', 'add_initial_prefix', 'add_prefix', 'as_p', 'as_table', 'as_ul', 'auto_id', 'base_fields', 'changed_data', 'clean', 'cleaned_data', 'data', 'declared_fields', 'default_renderer', 'empty_permitted', 'error_class', 'errors', 'field_order', 'fields', 'files', 'full_clean', 'get_initial_for_field', 'has_changed', 'has_error', 'hidden_fields', 'initial', 'instance', 'is_bound', 'is_multipart', 'is_valid', 'label_suffix', 'media', 'nested', 'non_field_errors', 'order_fields', 'prefix', 'renderer', 'save', 'use_required_attribute', 'validate_unique', 'visible_fields']"""

@@ -34,11 +34,12 @@ class RegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #self.fields.pop('username')
+        self.fields['username'] = forms.EmailField()
 
         for fieldname in ['username', 'password1', 'password2', ]:
             self.fields[fieldname].help_text = None
 
-        #self.fields['username'].label = 'E-mail'
+        self.fields['username'].label = 'E-mail'
 
         self.helper = FormHelper()
         self.helper.form_method = 'POST'

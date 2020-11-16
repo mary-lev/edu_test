@@ -12,6 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db.models import Count
   
 from django.contrib import messages
@@ -34,7 +35,9 @@ from .tone import create_new_graph
 from .forms import (
 	choice_form,
 	FeedbackForm,
-	TaskFeedbackForm
+	TaskFeedbackForm,
+	QuestionFormSet,
+
 	)
 from .user_forms import LoginForm, RegisterForm
 #from .count_all import (is_link, compare_texts, get_address, count_words,
@@ -61,6 +64,24 @@ def tone(request):
 	div = create_new_graph()
 	return render(request, 'tone.html', {'div': div})
 
+
+def solution2(request, task_id):
+	task = Task.objects.get(id=task_id)
+	if request.method == 'POST':
+		try:
+			formset = QuestionFormSet(request.POST, instance=task)
+		except ValidationError:
+			formset = None
+		if formset and formset.is_valid():
+			rooms = formset.save()
+			return render(request, 'solution2.html', {
+				'task': task,
+				'questions': formset,
+				})
+	else:
+		formset = QuestionFormSet(instance=task)
+
+	return render(request, 'solution2.html', {'task': task, 'questions': formset})
 
 text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
 			57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,

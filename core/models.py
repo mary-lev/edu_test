@@ -57,6 +57,11 @@ class Lesson(models.Model):
 
 
 class Task(models.Model):
+	TASK_TYPES = (
+		('1', 'Radiobutton'),
+		('2', 'Checkbutton'),
+		('3', 'TextArea'),
+		)
 	number = models.IntegerField()
 	name = models.CharField(max_length=200, blank=True)
 	#module = models.ForeignKey(Module, default=1, on_delete=models.CASCADE)
@@ -68,7 +73,7 @@ class Task(models.Model):
 							) # связь с группой задач
 	text = models.TextField(blank=True) # формулировка задачи
 	hint = models.CharField(blank=True, null=True, max_length=500)
-	question_type = models.TextField(blank=True) # тип задачи (сделать список: выбор, вписать ответ)
+	task_type = models.CharField(choices = TASK_TYPES, blank=True, null=True, max_length=1) # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор
 	picture = models.URLField(blank=True, null=True) # картинка из шаблона
 	picture_title = models.CharField(blank=True, null=True, max_length=200)
@@ -89,8 +94,10 @@ class Task(models.Model):
 		return result
 
 	def show_picture(self):
-		return self.picture.replace('open?id=', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
-
+		if 'open?id=' in self.picture:
+			return self.picture.replace('open?id=', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+		else:
+			return self.picture.replace('file/d/', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
 
 	class Meta:
 		ordering = ['number']
