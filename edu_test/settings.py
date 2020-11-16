@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'tinymce',
     'crispy_forms',
     'rest_framework',
-    'social_django',
     
     'sheets',
     'core',
@@ -99,20 +98,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '313115661148-9d2fdge5bptoglachpe9hak3dvtcgv87.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'bZA-SyFDv6DY8MUp0pfKaR2K'
-
-LOGIN_URL = '/login/'
-
+LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/'
+
 LOGOUT_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
+#SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
 REST_FRAMEWORK = {

@@ -3,6 +3,8 @@ import string
 import csv
 import pandas as pd
 from django.shortcuts import render, redirect
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormMixin
@@ -34,8 +36,21 @@ from .forms import (
 	FeedbackForm,
 	TaskFeedbackForm
 	)
+from .user_forms import LoginForm, RegisterForm
 #from .count_all import (is_link, compare_texts, get_address, count_words,
 	#analyze, analyze_one_student, count_tolstoy, compare_time, difficulty)
+
+
+class MySignupView(CreateView):
+    form_class = RegisterForm
+    success_url = reverse_lazy('core:login')
+    template_name = 'register.html'
+
+
+class MyLoginView(LoginView):
+    form_class = LoginForm
+    template_name = 'login.html'
+    success_url = '/'
 
 
 def index(request):
@@ -85,6 +100,7 @@ def analyze_task(request, task_id):
 	return render(request, 'analyze_task.html', {'task': task, 'result': answer, 'strange': strange})
 
 
+@login_required
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	questions = Question.objects.filter(task=task)
@@ -152,6 +168,10 @@ def new_solution(request, task_id):
 		'solution1.html',
 		{'formset': formset, 'questions': questions, 'task': task})
 
+mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',	
+			'mio4_lesson_4.json', 'mio4_lesson_5.json', 'mio4_lesson_6.json',	
+			'mio4_lesson_7.json'	
+			]
 
 class Feedbackadding(CreateView):
 	model = Feedback

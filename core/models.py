@@ -1,6 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from tinymce.models import HTMLField
+
+
+"""class MyUser(AbstractUser):
+	email = models.EmailField(max_length=64)
+	first_name = models.CharField(max_length=64)
+	last_name = models.CharField(max_length=64)
+	password = models.CharField(max_length=64)"""
 
 
 class Company(models.Model):

@@ -1,7 +1,9 @@
 from django.urls import path, include
+from django.contrib.auth.views import LogoutView
 from rest_framework import routers
 
 from . import views
+
 
 router = routers.DefaultRouter()
 router.register(r'students', views.StudentViewSet)
@@ -14,6 +16,9 @@ router.register(r'feedbacks', views.FeedbackViewSet)
 app_name = 'core'
 urlpatterns = [
 	path('', views.index, name='index'),
+	path('register', views.MySignupView.as_view(), name='register'),
+    path('login', views.MyLoginView.as_view(), name='login'),
+    path('logout', LogoutView.as_view(), name='logout'),
 	path('tone/', views.tone, name='tone'),
 	path('count_words/', views.tolstoy, name='count_words'),
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
