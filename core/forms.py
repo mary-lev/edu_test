@@ -224,10 +224,11 @@ class BaseQuestionFormSet(BaseInlineFormSet):
         result = super().save(commit=commit)
         for form in self.forms:
             if hasattr(form, 'nested'):
-                #print(form.fields['id'].bound_data())
-                print(form.fields)
-                #for f in form.nested.forms:
-                #    print(f.cleaned_data)
+                #print(form.nested)
+                #print(form.nested.fields['variants'])
+                #for f in form.nested.cleaned_data:
+                #    print(f)
+                print(form.nested.cleaned_data['variants'])
                 #print(form.fields['id'].has_changed())
                 form.nested.save(commit=commit)
         return result
