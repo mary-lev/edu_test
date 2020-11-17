@@ -136,34 +136,23 @@ def new_solution(request, task_id):
 	if request.method == 'POST':
 		solution.mark = 0
 		solution.variant.clear()
-		new_solution, create = Solution.objects.get_or_create(
-			student=student,
-			task=task,
-			)
 		if task.task_type != '1':
 			myformset = VariantForm(request.POST, prefix=questions[0].id)
 			formset.append(myformset)
 			if myformset.is_valid():
 				if questions[0].question_type == '3':
-					name = myformset.cleaned_data['answer']
-					new_solution.text = name
-					if name:
-						new_solution.mark += questions[0].mark
-						#new_solution.mark += name.mark
-						new_solution.save()
-						messages.add_message(request, messages.SUCCESS, "Ответ принят!")
+					solution.text = myformset.cleaned_data['answer']
+					solution.mark = questions[0].mark
 				elif questions[0].question_type == '2':
-					mark = 0
 					name = myformset.cleaned_data['variants']
 					for answer in name:
 						if answer:
-							new_solution.variant.add(answer)
-							mark += answer.mark
-					new_solution.mark = mark
-					new_solution.save()
-					messages.add_message(
-						request,
-						messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(mark, questions[0].mark))
+							solution.variant.add(answer)
+							solution.mark += answer.mark
+				solution.save()
+				messages.add_message(
+					request,
+					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, questions[0].mark))
 		else:
 			try:
 				formset = QuestionFormSet(request.POST, instance=task)
@@ -175,8 +164,6 @@ def new_solution(request, task_id):
 					request,
 					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
 					)
-
-
 		return render(request, template, {
 			'task': task,
 			'formset': formset,
