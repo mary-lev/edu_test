@@ -14,8 +14,6 @@ from django.urls import reverse_lazy
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-  
-from django.contrib import messages
 from django.forms import modelformset_factory
 
 from rest_framework import viewsets
@@ -67,6 +65,7 @@ def tone(request):
 
 def solution2(request, task_id):
 	task = Task.objects.get(id=task_id)
+	#formset = QuestionFormSet(instance=task)
 	if request.method == 'POST':
 		try:
 			formset = QuestionFormSet(request.POST, instance=task)
@@ -76,12 +75,12 @@ def solution2(request, task_id):
 			rooms = formset.save()
 			return render(request, 'solution2.html', {
 				'task': task,
-				'questions': formset,
+				'formset': formset,
 				})
 	else:
 		formset = QuestionFormSet(instance=task)
 
-	return render(request, 'solution2.html', {'task': task, 'questions': formset})
+	return render(request, 'solution2.html', {'task': task, 'formset': formset})
 
 text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
 			57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
@@ -124,11 +123,16 @@ def analyze_task(request, task_id):
 @login_required
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
-	questions = Question.objects.filter(task=task)
 	formset = []
+	if task.task_type == '1':
+		template = 'solution2.html'
+		formset = QuestionFormSet(instance=task)
+	else:
+		template = 'solution1.html'
+		VariantForm = choice_form(task)
+	questions = Question.objects.filter(task=task)
 	student = Student.objects.get(id=128)
-	VariantForm = choice_form(questions)
-	if request.method == 'POST' or None:
+	if request.method == 'POST':
 		try:
 			solution = Solution.objects.get(student=student, task=task)
 			solution.mark = 0
@@ -139,7 +143,7 @@ def new_solution(request, task_id):
 			student=student,
 			task=task,
 			)
-		try:
+		if task.task_type != '1':
 			myformset = VariantForm(request.POST, prefix=questions[0].id)
 			formset.append(myformset)
 			if myformset.is_valid():
@@ -163,18 +167,16 @@ def new_solution(request, task_id):
 					messages.add_message(
 						request,
 						messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(mark, questions[0].mark))
-		except:
-			formset = VariantForm
-			for form in formset:
-				print(form['variants'])
-				print(form['id'])
-				answer = form['id'].value()
-				print(answer)
-				new_solution.variant.add(Variant.objects.get(id=answer))
-				new_solution.save()
+		else:
+			try:
+				formset = QuestionFormSet(request.POST, instance=task)
+			except ValidationError:
+				formset = None
+			if formset and formset.is_valid():
+				rooms = formset.save()
 				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
-				
-		return render(request, 'solution1.html', {
+
+		return render(request, template, {
 			'task': task,
 			'formset': formset,
 			'questions': questions
@@ -184,9 +186,9 @@ def new_solution(request, task_id):
 			myformset = VariantForm(prefix=questions[0].id)
 			formset.append(myformset)
 		except:
-			formset = VariantForm
+			formset = QuestionFormSet(instance=task)
 	return render(request,
-		'solution1.html',
+		template,
 		{'formset': formset, 'questions': questions, 'task': task})
 
 mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json',	

@@ -1,24 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h4 class='display-4'>Задача {{ task.number }}</h4>
+
+<div class="card">
+  <div class="card-header">
+    Задача {{ task.number }}. {{ task.name }} solution2
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p>{{ task.text }}</p>
+      <div class="container">
+      	<div class="row">
+      		<div class="col">{% if task.picture %}<img class="img-fluid" src="{{ task.show_picture }}"/>{% endif %}</div>
+      		<div class="col">
+      			{% load crispy_forms_tags %}
+{% if messages %}
+	{% for message in messages %}
+		{% if message %}
+			<div class="alert alert-{{message.tags}}" role="alert">{{ message }}</div>
+		{% endif %}
+    {% endfor %}
+{% endif %}
 
 <form class='form' action='' method='POST'>
     {% csrf_token %}
-{{ questions.management_form }}
-	{% for question in questions.forms %}
 
-  		<h5>{{ question }}</h5>
-  			{{ question.nested.management_form }}
-  			Test: {{ question.nested.data }}
-  			{% for q in question.nested %}
-		  		<p>{{ q }}</p>
-
+{{ formset.management_form }}
+	{% for form in formset.forms %}
+  		<h5>{{ form.initial.question_text }} {{ form }}</h5>
+  			{{ form.nested.management_form }}
+  			{% for f in form.nested %}
+		  		<p>{{ f }}</p>
 	  		{% endfor %}
-
+	
 	{% endfor %}
 
 <input class="btn btn-info mt-4 mb-2" type="submit" value="Готово" />
 </form>
+
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    {{ task.hint }}
+  </div>
+</div>
+<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Хочу подсказку</a></p>
+
+
+
+      		</div>
+      	</div>
+      </div>
+ 
+      <footer class="blockquote-footer"><a href="{% url 'core:lesson' task.lesson.id %}">Урок {{ task.lesson.number }}</a> <cite title="Source Title">{{ task.lesson.module.name }}</cite></footer>
+    </blockquote>
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-body">{% if task.next_task %}
+    <a href="{% url 'core:solution1' task.next_task %}">Следующая задача</a>
+    {% endif %}
+  </div>
+</div>
 
 {% endblock %}
