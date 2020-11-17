@@ -132,13 +132,10 @@ def new_solution(request, task_id):
 		VariantForm = choice_form(task)
 	questions = Question.objects.filter(task=task)
 	student = Student.objects.get(id=128)
+	solution, create = Solution.objects.get_or_create(student=student, task=task)
 	if request.method == 'POST':
-		try:
-			solution = Solution.objects.get(student=student, task=task)
-			solution.mark = 0
-			solution.variant.clear()
-		except:
-			pass
+		solution.mark = 0
+		solution.variant.clear()
 		new_solution, create = Solution.objects.get_or_create(
 			student=student,
 			task=task,
@@ -174,7 +171,11 @@ def new_solution(request, task_id):
 				formset = None
 			if formset and formset.is_valid():
 				rooms = formset.save()
-				messages.add_message(request, messages.SUCCESS, "Ответ принят!")
+				messages.add_message(
+					request,
+					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
+					)
+
 
 		return render(request, template, {
 			'task': task,

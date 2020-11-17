@@ -14,6 +14,21 @@ from django.forms import (
 from .models import Variant, Question, Feedback, Task, Solution
 
 
+"""forms for task solutions"""
+def choice_form(task):
+    if task.task_type == 1:
+        VariantForm = QuestionFormSet(instance=task)
+        print(VariantForm)
+    elif task.task_type == '2':
+        print(task.questions.all())
+        VariantForm = make_checkbox_formset(task.questions.all()[0])
+    elif task.task_type == '3':
+        VariantForm = make_task_form(task.questions.all()[0])
+    else:
+        VariantForm = make_question_formset(task.questions.all()[0])
+    return VariantForm
+
+
 def create_formset(questions):
     class _NormalForm(forms.Form):
         question = forms.CharField()
@@ -188,6 +203,12 @@ VariantFormSet = inlineformset_factory(
     )
 
 class BaseQuestionFormSet(BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
+            form.fields['question_text'].required = False
+
     def add_fields(self, form, index):
         super().add_fields(form, index)
         form.nested = VariantForm(
@@ -216,10 +237,7 @@ class BaseQuestionFormSet(BaseInlineFormSet):
         for form in self.forms:
             if hasattr(form, 'nested'):
                 print('Question: ', form.cleaned_data['id'].id)
-                print(form.nested)
-                print(form.nested.cleaned_data['variants'])
-                print(form.nested.cleaned_data['variants'].id)
-                print(form.nested.cleaned_data['variants'].mark)
+                answer = form.nested.cleaned_data['variants']
                 solution.variant.add(form.nested.cleaned_data['variants'])
                 mark += form.nested.cleaned_data['variants'].mark
                 print(mark)
@@ -234,32 +252,3 @@ QuestionFormSet = inlineformset_factory(
     fields=('question_text',),
     can_delete=False,
     extra=0)
-
-"""['__class__', '__deepcopy__', '__delattr__', '__dict__', '__dir__', 
-'__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', 
-'__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', 
-'__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', 
-'__subclasshook__', '__weakref__', '_get_choices', '_get_queryset', '_queryset', 
-'_set_choices', '_set_queryset', 'bound_data', 'choices', 'clean', 'default_error_messages',
-'default_validators', 'disabled', 'empty_label', 'empty_values', 'error_messages', 
-'get_bound_field', 'get_limit_choices_to', 'has_changed', 'help_text', 'hidden_widget', 
-'initial', 'iterator', 'label', 'label_from_instance', 'label_suffix', 'limit_choices_to', 
-'localize', 'prepare_value', 'queryset', 'required', 'run_validators', 'show_hidden_initial',
- 'to_field_name', 'to_python', 'valid_value', 'validate', 'validators', 'widget', 'widget_attrs']"""
-
-"""['Meta', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__gt__', '__hash__', '__html__', '__init__', '__init_subclass__', '__iter__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_bound_fields_cache', '_clean_fields', '_clean_form', '_errors', '_get_validation_exclusions', '_html_output', '_meta', '_post_clean', '_save_m2m', '_update_errors', '_validate_unique', 'add_error', 'add_initial_prefix', 'add_prefix', 'as_p', 'as_table', 'as_ul', 'auto_id', 'base_fields', 'changed_data', 'clean', 'cleaned_data', 'data', 'declared_fields', 'default_renderer', 'empty_permitted', 'error_class', 'errors', 'field_order', 'fields', 'files', 'full_clean', 'get_initial_for_field', 'has_changed', 'has_error', 'hidden_fields', 'initial', 'instance', 'is_bound', 'is_multipart', 'is_valid', 'label_suffix', 'media', 'nested', 'non_field_errors', 'order_fields', 'prefix', 'renderer', 'save', 'use_required_attribute', 'validate_unique', 'visible_fields']"""
-
-
-"""forms for task solutions"""
-def choice_form(task):
-    if task.task_type == 1:
-        VariantForm = QuestionFormSet(instance=task)
-        print(VariantForm)
-    elif task.task_type == '2':
-        print(task.questions.all())
-        VariantForm = make_checkbox_formset(task.questions.all()[0])
-    elif task.task_type == '3':
-        VariantForm = make_task_form(task.questions.all()[0])
-    else:
-        VariantForm = make_question_formset(task.questions.all()[0])
-    return VariantForm
