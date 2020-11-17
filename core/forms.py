@@ -10,7 +10,7 @@ from django.forms import (
     BaseInlineFormSet
     )
 
-from .models import Variant, Question, Feedback, Task
+from .models import Variant, Question, Feedback, Task, Solution
 
 
 """forms for task solutions"""
@@ -222,15 +222,19 @@ class BaseQuestionFormSet(BaseInlineFormSet):
 
     def save(self, commit=True):
         result = super().save(commit=commit)
+        solution, create = Solution.objects.get_or_create(student=128, task=self.instance)
+        mark = 0
         for form in self.forms:
             if hasattr(form, 'nested'):
-                #print(form.nested)
-                #print(form.nested.fields['variants'])
-                #for f in form.nested.cleaned_data:
-                #    print(f)
+                print('Question: ', form.cleaned_data['id'].id)
                 print(form.nested.cleaned_data['variants'])
-                #print(form.fields['id'].has_changed())
-                form.nested.save(commit=commit)
+                print(form.nested.cleaned_data['variants'].id)
+                print(form.nested.cleaned_data['variants'].mark)
+                solution.variant.add(form.nested.cleaned_data['variants'])
+                mark += form.nested.cleaned_data['variants'].mark
+                print(mark)
+        solution.mark = mark
+        solution.save()
         return result
 
 QuestionFormSet = inlineformset_factory(
