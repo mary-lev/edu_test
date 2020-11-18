@@ -14,21 +14,6 @@ from django.forms import (
 from .models import Variant, Question, Feedback, Task, Solution
 
 
-"""forms for task solutions"""
-def choice_form(task):
-    if task.task_type == 1:
-        VariantForm = QuestionFormSet(instance=task)
-        print(VariantForm)
-    elif task.task_type == '2':
-        print(task.questions.all())
-        VariantForm = make_checkbox_formset(task.questions.all()[0])
-    elif task.task_type == '3':
-        VariantForm = make_task_form(task.questions.all()[0])
-    else:
-        VariantForm = make_question_formset(task.questions.all()[0])
-    return VariantForm
-
-
 """create crispy design for all modelforms"""
 class CrispyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -106,6 +91,21 @@ def make_task_form(question, extra=0):
             fields = ('answer',)
 
     return _QuestionForm
+
+
+"""forms for task solutions"""
+def choice_form(task):
+    if task.task_type == 1:
+        VariantForm = QuestionFormSet(instance=task)
+        print(VariantForm)
+    elif task.task_type == '2':
+        print(task.questions.all())
+        VariantForm = make_checkbox_formset(task.questions.all()[0])
+    elif task.task_type == '3':
+        VariantForm = make_task_form(task.questions.all()[0])
+    else:
+        VariantForm = make_question_formset(task.questions.all()[0])
+    return VariantForm
 
 
 """other forms"""
