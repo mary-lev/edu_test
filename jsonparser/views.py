@@ -7,10 +7,10 @@ from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedbac
 
 
 def index(request):
-    with open('texts_2_feedback.json', 'r') as f:
+    with open('mio_4_feedback.json', 'r') as f:
         feedbacks = json.load(f)
-    module = Module.objects.get(name='Тексты')
-    stream = Stream.objects.get(id=3)
+    module = Module.objects.get(name='Информационные ожидания')
+    stream = Stream.objects.get(id=4)
     for feedback in feedbacks:
         try:
             lesson_number = int(feedback['lesson'])
