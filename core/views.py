@@ -55,7 +55,7 @@ class MyLoginView(LoginView):
 
 
 def index(request):
-	streams = Stream.objects.all()
+	streams = Stream.objects.all().order_by('module__name', 'name')
 	return render(request, 'index.html', {'streams': streams})
 
 def show_profile(request):
@@ -64,6 +64,23 @@ def show_profile(request):
 		new=Count('lessons__tasks__feedbacks__seen'))
 	students = Module.objects.filter(author=request.user).annotate(num_students=Count('streams__students'))
 	return render(request, 'profile.html', {'feedbacks': feedbacks, 'students': students})
+
+
+class TaskFeedbackView(SingleObjectMixin, ListView):
+	model = Feedback
+
+	def get(self, request, *args, **kwargs):
+		self.object = self.get_object(queryset=Task.objects.all())
+		return super().get(request, *args, **kwargs)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['task'] = self.object
+		return context
+
+	def get_queryset(self):
+		return self.object.feedbacks.all()
+
 
 
 @login_required
@@ -179,16 +196,16 @@ class Feedbackadding(CreateView):
 class StudentView(DetailView):
 	model = Student
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		analytics = analyze_one_student(self.object.solutions.all())
-		grads = [all[1]['indexes']['grade_SMOG'] for all in analytics]
-		result = max(set(grads), key=grads.count)
-		tolstoy = count_tolstoy(self.object)
-		result = [analytics, result, tolstoy]
-		context['analytics'] = result
-		#context['grads'] = max(set(grads), key=grads.count)
-		return context
+	"""def get_context_data(self, **kwargs):
+					context = super().get_context_data(**kwargs)
+					analytics = analyze_one_student(self.object.solutions.all())
+					grads = [all[1]['indexes']['grade_SMOG'] for all in analytics]
+					result = max(set(grads), key=grads.count)
+					tolstoy = count_tolstoy(self.object)
+					result = [analytics, result, tolstoy]
+					context['analytics'] = result
+					#context['grads'] = max(set(grads), key=grads.count)
+					return context"""
 
 
 class TaskView(DetailView):

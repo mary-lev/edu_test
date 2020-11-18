@@ -1,0 +1,16 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Feedbacks: задача {{ object.number }}. {{ object.name }}</h1>
+
+<ul>
+	{% for feedback in object_list %}
+	<li>{{ feedback.text }}</li>
+	{% endfor %}
+</ul>
+
+
+
+{% endblock %}

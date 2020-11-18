@@ -42,6 +42,12 @@ class CrispyModelForm(forms.ModelForm):
         self.helper.label_class = 'display-4'
 
 
+"""form for unseen feedbacks"""
+class FeedbackForm(CrispyModelForm):
+    model = Feedback
+    fields = "__all__"
+
+
 """form for radiobuttons"""
 class VariantModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
