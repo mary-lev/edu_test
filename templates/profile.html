@@ -1,0 +1,26 @@
+{% extends 'profile_base.html' %}
+
+{% block content %}
+<div class="container">
+ Мой адрес {{ user.username }}.
+  {% if perms.core %}
+    {% if perms.core.add_task %}
+    <p>Это автор</p>
+    <h3>Feedback по модулям:</h3>
+    	<ul>
+    	{% for f in feedbacks %}
+    		<li>{{ f.name }}: {{f.num_feedbacks}} <button type="button" class="btn btn-outline-info btn-sm">{{f.new}}</button> </li>
+    	{% endfor %}
+		</ul>
+	<h3>Студентов в модулях:</h3>
+	<ul>
+		{% for s in students %}
+		<li>{{ s.name }}: {{ s.num_students }}</li>
+		{% endfor %}
+	</ul>
+    {% else %} 
+      <p>Это студент</p>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

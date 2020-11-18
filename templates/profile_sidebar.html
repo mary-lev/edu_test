@@ -1,0 +1,19 @@
+  <main class="container mt-3 pb-5">
+    <div class="row mt-5">
+      <div class="col-12 col-lg-4">
+        <aside class="pt-3 pb-4 px-4 mb-5 card">
+          <h1 class="h4 pt-2 pb-2">Dashboard</h1>
+          <div class="nav flex-column nav-pills">
+            <a class="nav-link active" href="{% url 'core:profile' %}">Профиль</a>
+            {% for module in user.modules.all %}
+            <a class="nav-link" href="{% url 'core:module' module.id %}">{{ module.name }}</a>
+            {% endfor %}
+            <a class="nav-link" href="{% url 'core:streams' %}">2. Мои студенты</a>
+            <a class="nav-link" href="{% url 'core:streams' %}">3. Статистика</a>
+            <a class="nav-link" href="{% url 'core:streams' %}">4. Feedback</a>
+            {% for module in user.modules.all %}
+            <a class="nav-link" href="{% url 'core:streams' %}">Feedback по модулю {{ module.name }}</a>
+            {% endfor %}
+          </div>
+        </aside>
+      </div>

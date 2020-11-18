@@ -29,51 +29,6 @@ def choice_form(task):
     return VariantForm
 
 
-def create_formset(questions):
-    class _NormalForm(forms.Form):
-        question = forms.CharField()
-        variants = forms.ChoiceField(widget=forms.RadioSelect(), choices=(1, 2, 3))
-
-    initial = list()
-    for question in questions:
-        point = dict()
-        point['question'] = question.question_text
-        point['label'] = question.question_text
-        point['variants'] = {}
-        point['variants']['choices'] = [(var.id, var.text) for var in (Variant.objects.filter(question=question))]
-        initial.append(point)
-    print(initial)
-
-    QuestionFormSet = formset_factory(_NormalForm, extra=0)
-    formset = QuestionFormSet(initial=initial)
-    return formset
-
-def create_formset2(questions, extra=0):
-    class _VariantForm(CrispyModelForm):
-        variants = VariantModelChoiceField(
-            queryset=Variant.objects.none(),
-            to_field_name='text',
-            widget=forms.RadioSelect(),
-            empty_label=None,
-            #label=question.question_text
-        )
-
-        class Meta:
-            model = Question
-            fields = ['variants']
-
-    QuestionFormSet = modelformset_factory(
-        Question,
-        _VariantForm,
-        extra=0
-        )
-
-    formset = QuestionFormSet(queryset=questions)
-    for n, form in enumerate(formset.forms):
-        form.fields['variants'].queryset = Variant.objects.filter(question=questions[n])
-        form.fields['variants'].label = questions[n].question_text
-    return formset
-
 """create crispy design for all modelforms"""
 class CrispyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -85,6 +40,7 @@ class CrispyModelForm(forms.ModelForm):
             css_class='btn btn-info mt-4 mb-2'))
         self.helper.form_class = 'card mt-4 mb-3'
         self.helper.label_class = 'display-4'
+
 
 """form for radiobuttons"""
 class VariantModelChoiceField(ModelChoiceField):
@@ -108,6 +64,7 @@ def make_question_formset(question, extra=0):
 
     return _VariantForm
 
+
 """form for checkbox multiple select"""
 class VariantModelMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
@@ -129,6 +86,7 @@ def make_checkbox_formset(question, extra=0):
             fields = ['variants']
 
     return _VariantForm
+
 
 """form for textarea"""
 def make_task_form(question, extra=0):
@@ -175,13 +133,13 @@ FeedbackFormSet = modelformset_factory(
     widgets={'DELETE': forms.CheckboxInput()}
     )
 
+
+"""inlineformset for task with radiobuttons"""
 class VariantForm(forms.ModelForm):
     variants = VariantModelChoiceField(
         queryset=Variant.objects.none(),
         to_field_name='text',
         widget=forms.RadioSelect,
-        #empty_label=None,
-        #label=question.question_text
         )
     class Meta:
         model = Question
@@ -191,16 +149,6 @@ class VariantForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['variants'].queryset = Variant.objects.filter(question=self.instance)
 
-
-VariantFormSet = inlineformset_factory(
-    Question,
-    Variant,
-    #formset=BaseVariantFormSet,
-    fields=('text',),
-    extra=0,
-    can_delete=False,
-    #widgets={'text': forms.RadioSelect},
-    )
 
 class BaseQuestionFormSet(BaseInlineFormSet):
 
@@ -216,7 +164,6 @@ class BaseQuestionFormSet(BaseInlineFormSet):
             data=form.data if form.is_bound else None,
             prefix='variant-%s' % (
                 form.prefix,
-                #VariantForm.get_default_prefix()
                 ),
             )
 
@@ -238,9 +185,10 @@ class BaseQuestionFormSet(BaseInlineFormSet):
             if hasattr(form, 'nested'):
                 print('Question: ', form.cleaned_data['id'].id)
                 answer = form.nested.cleaned_data['variants']
-                solution.variant.add(form.nested.cleaned_data['variants'])
-                mark += form.nested.cleaned_data['variants'].mark
-                print(mark)
+                solution.variant.add(answer)
+                if answer.is_right:
+                    mark += answer.mark
+                    print(mark)
         solution.mark = mark        
         solution.save()
         return result

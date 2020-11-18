@@ -51,7 +51,7 @@
       </li>
     </ul>
         
-      {% if user.is_authenticated %}<a class="nav-link" href=""><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Мой профиль</button></a>{% else %}<a class="nav-link" href="{% url 'core:login' %}"><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Вход</button></a>{% endif %}
+      {% if user.is_authenticated %}<a class="nav-link" href="{% url 'core:profile' %}"><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Мой профиль</button></a>{% else %}<a class="nav-link" href="{% url 'core:login' %}"><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Вход</button></a>{% endif %}
     
   </div>
 </nav>

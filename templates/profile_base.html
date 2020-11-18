@@ -1,0 +1,29 @@
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% include 'nav.html' %}
+
+<div class="container">
+{% include 'profile_sidebar.html' %}
+<div class="col-12 col-lg-8">
+        <div class="card">
+          <div class="card-body px-4 pb-4">
+            <!-- Tab -->
+            <section class="tab-pane fade show active">
+              <h2 class="h4 pt-2 pb-3">Что-нибудь</h2>
+
+              
+               {% block content %} {% endblock %}
+              </section>
+            <!-- END Tab -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+</div>
+
+{% include 'footer.html' %}

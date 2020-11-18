@@ -6,8 +6,33 @@ from django.shortcuts import render
 from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedback, Question, Variant
 
 
-# parse mio lesson
 def index(request):
+    with open('texts_2_feedback.json', 'r') as f:
+        feedbacks = json.load(f)
+    module = Module.objects.get(name='Тексты')
+    stream = Stream.objects.get(id=3)
+    for feedback in feedbacks:
+        try:
+            lesson_number = int(feedback['lesson'])
+            lesson = Lesson.objects.get(number=int(feedback['lesson']), module=module)
+        except:
+            lesson = Lesson.objects.create(number=11, module=module)
+        task, create = Task.objects.get_or_create(lesson=lesson, number=int(feedback['task']))
+        student, create = Student.objects.get_or_create(
+            email=feedback['email'],
+            first_name=feedback['name'],
+            last_name=feedback['family']
+            )
+        if stream not in student.stream.all():
+            student.stream.add(stream)
+        new_feedback, create = Feedback.objects.get_or_create(student=student, task=task)
+        new_feedback.text = feedback['feedback']
+        new_feedback.save()
+    return render(request, 'index.html', {'data': feedbacks})
+
+
+# parse mio lesson
+def index1(request):
     with open('mio_lesson_8.json', 'r') as f:
         tasks = json.load(f)
     module = Module.objects.get(name='Информационные ожидания')

@@ -58,69 +58,16 @@ def index(request):
 	streams = Stream.objects.all()
 	return render(request, 'index.html', {'streams': streams})
 
-def tone(request):
-	div = create_new_graph()
-	return render(request, 'tone.html', {'div': div})
-
-
-def solution2(request, task_id):
-	task = Task.objects.get(id=task_id)
-	#formset = QuestionFormSet(instance=task)
-	if request.method == 'POST':
-		try:
-			formset = QuestionFormSet(request.POST, instance=task)
-		except ValidationError:
-			formset = None
-		if formset and formset.is_valid():
-			rooms = formset.save()
-			return render(request, 'solution2.html', {
-				'task': task,
-				'formset': formset,
-				})
-	else:
-		formset = QuestionFormSet(instance=task)
-
-	return render(request, 'solution2.html', {'task': task, 'formset': formset})
-
-text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
-			57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
-			94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 120, 123, 125,
-			126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 139, 140, 142, 143, 144, 
-			145, 146, 147, 149, 150, 151, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
-links = ['10', '117', '138', '141', '148', '153']
-
-def analyze_task(request, task_id):
-	task = Task.objects.get(id=task_id)
-	solutions = Solution.objects.filter(task=task)
-	answer = 'test'
-	strange = ''
-	#проверяем ссылку: 165
-	if str(task.number) in ['10', '117', '138', '141', '148', '153']:
-		answer = is_link(solutions)
-
-	#сравниваем тексты: 283
-	elif str(task.number) == '144':
-		answer = compare_texts(solutions)
-
-	#сравниваем время? 281
-	elif str(task.number) == '142':
-		answer = compare_time(solutions)
-
-	#извлекаем адрес: 178
-	elif str(task.number) == '24':
-		answer = get_address(solutions)
-
-	#считаем остальные тексты
-	elif task.number in text_tasks:
-		strange = count_words(solutions)
-		answer = difficulty(solutions)
-	else:
-		answer = 'Здесь не нужно было ничего писать'
-
-	return render(request, 'analyze_task.html', {'task': task, 'result': answer, 'strange': strange})
+def show_profile(request):
+	feedbacks = Module.objects.filter(author=request.user).annotate(
+		num_feedbacks=Count('lessons__tasks__feedbacks')).annotate(
+		new=Count('lessons__tasks__feedbacks__seen'))
+	students = Module.objects.filter(author=request.user).annotate(num_students=Count('streams__students'))
+	return render(request, 'profile.html', {'feedbacks': feedbacks, 'students': students})
 
 
 @login_required
+@permission_required('core.add_solution')
 def new_solution(request, task_id):
 	task = Task.objects.get(id=task_id)
 	formset = []
@@ -164,6 +111,7 @@ def new_solution(request, task_id):
 				formset = None
 			if formset and formset.is_valid():
 				rooms = formset.save()
+				solution = Solution.objects.get(task=task, student=student)
 				messages.add_message(
 					request,
 					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
@@ -250,20 +198,6 @@ class TaskView(DetailView):
 
 class FeedbackView(DetailView):
 	model = Feedback
-	
-
-"""class TaskSolution(FormMixin, DetailView):
-	model = Task
-	form_class = QuestionForm
-	template_name = 'solution.html'
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['form'].fields['variants'].queryset = Variant.objects.filter(
-			question=self.object.questions.all()[0].id).values_list('text', flat=True)
-		context['form'].fields['variants'].label = self.object.questions.all()[0].question_text
-		context['form'].fields['variants'].label_class = 'mb-0'
-		return context"""
 
 
 class LessonView(DetailView):
@@ -304,6 +238,7 @@ def tolstoy(request):
 	return render(request, 'count_words.html', {'data': students_texts, 'tolstoy': all_tolstoy})
 
 
+"""show all solutions for one task"""
 class SolutionTask(SingleObjectMixin, ListView):
 	model = Solution
 
@@ -320,6 +255,7 @@ class SolutionTask(SingleObjectMixin, ListView):
 		return self.object.solutions.all()
 
 
+"""show all solutions for module Texts"""
 class SolutionAll(ListView):
 	model = Solution
 
@@ -327,6 +263,7 @@ class SolutionAll(ListView):
 		return Task.objects.filter(lesson__module__name='Тексты').annotate(num_task=Count('solutions'))
 
 
+"""show all solutions if one student"""
 class SolutionStudent(SingleObjectMixin, ListView):
 
 	def get(self, request, *args, **kwargs):
@@ -377,6 +314,49 @@ class DateGraph(TemplateView):
 		context['date_div'] = date_div
 		context['dn'] = dn
 		return context
+
+
+def tone(request):
+	div = create_new_graph()
+	return render(request, 'tone.html', {'div': div})
+
+
+text_tasks = [2, 6, 8, 12, 16, 21, 24, 25, 29, 30, 31, 32, 33, 36, 37, 38, 46, 48, 50, 52, 56, 
+			57, 60, 62, 63, 64, 66, 67, 68, 69, 70, 71, 73, 75, 76, 79, 80, 86, 88, 89, 90, 92,
+			94, 95, 97, 98, 99, 104, 105, 106, 107, 108, 109, 110, 111, 114, 115, 120, 123, 125,
+			126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 139, 140, 142, 143, 144, 
+			145, 146, 147, 149, 150, 151, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165]
+links = ['10', '117', '138', '141', '148', '153']
+
+def analyze_task(request, task_id):
+	task = Task.objects.get(id=task_id)
+	solutions = Solution.objects.filter(task=task)
+	answer = 'test'
+	strange = ''
+	#проверяем ссылку: 165
+	if str(task.number) in ['10', '117', '138', '141', '148', '153']:
+		answer = is_link(solutions)
+
+	#сравниваем тексты: 283
+	elif str(task.number) == '144':
+		answer = compare_texts(solutions)
+
+	#сравниваем время? 281
+	elif str(task.number) == '142':
+		answer = compare_time(solutions)
+
+	#извлекаем адрес: 178
+	elif str(task.number) == '24':
+		answer = get_address(solutions)
+
+	#считаем остальные тексты
+	elif task.number in text_tasks:
+		strange = count_words(solutions)
+		answer = difficulty(solutions)
+	else:
+		answer = 'Здесь не нужно было ничего писать'
+
+	return render(request, 'analyze_task.html', {'task': task, 'result': answer, 'strange': strange})
 
 
 #API

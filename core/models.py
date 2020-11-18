@@ -3,13 +3,6 @@ from django.contrib.auth.models import User, Group
 from tinymce.models import HTMLField
 
 
-"""class MyUser(AbstractUser):
-	email = models.EmailField(max_length=64)
-	first_name = models.CharField(max_length=64)
-	last_name = models.CharField(max_length=64)
-	password = models.CharField(max_length=64)"""
-
-
 class Company(models.Model):
 	name = models.CharField(max_length=100)
 	logo = models.ImageField()
@@ -18,6 +11,7 @@ class Company(models.Model):
 class Module(models.Model):
 	name = models.CharField(max_length=100, verbose_name='Название')
 	slug = models.SlugField()
+	author = models.ManyToManyField(User, related_name='modules')
 
 	def __str__(self):
 		return self.name
@@ -42,6 +36,11 @@ class Student(models.Model):
 
 	def __str__(self):
 		return "{0} {1}".format(self.first_name, self.last_name)
+
+
+class NewStudent(User):
+	company = models.ManyToManyField(Company, related_name="newstudent", blank=True)
+	stream = models.ManyToManyField(Stream, related_name="newstudents", blank=True)
 
 
 class Lesson(models.Model):
@@ -144,6 +143,7 @@ class Feedback(models.Model):
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 	text = models.TextField(null=True)
+	seen = models.BooleanField(verbose_name="Просмотрено", default=False)
 	#lesson_help = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, related_name='feedbacks')
 
 	def __str__(self):

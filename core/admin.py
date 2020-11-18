@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from .models import Student, Stream, Module, Task, Lesson, Feedback, Solution, Question, Variant
+from .models import Student, Stream, Module, Task, Lesson, Feedback, Solution, Question, Variant, NewStudent
 
 
 class VariantInline(admin.TabularInline):
@@ -86,7 +86,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('task', 'student', 'text', 'get_lesson', 'get_module')
-    list_filter = ('task__lesson', 'student',)
+    list_filter = ('task__lesson__module', 'task__lesson', 'student',)
 
     def get_lesson(self, obj):
         return obj.task.lesson
@@ -106,6 +106,10 @@ class SolutionAdmin(admin.ModelAdmin):
     exclude = ('variant',)
 
 
+class NewStudentAdmin(admin.ModelAdmin):
+    model = NewStudent
+
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Stream, StreamAdmin)
 admin.site.register(Module, ModuleAdmin)
@@ -115,3 +119,4 @@ admin.site.register(Feedback, FeedbackAdmin)
 admin.site.register(Solution, SolutionAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Variant, VariantAdmin)
+admin.site.register(NewStudent, NewStudentAdmin)
