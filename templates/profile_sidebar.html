@@ -6,11 +6,10 @@
           <div class="nav flex-column nav-pills">
             <a class="nav-link active" href="{% url 'core:profile' %}">Профиль</a>
             {% for module in user.modules.all %}
-            <a class="nav-link" href="{% url 'core:module' module.id %}">{{ module.name }}</a>
+            <a class="nav-link" href="{% url 'core:module' module.id %}">Модуль «{{ module.name }}»</a>
             {% endfor %}
-            <a class="nav-link" href="{% url 'core:streams' %}">2. Мои студенты</a>
-            <a class="nav-link" href="{% url 'core:streams' %}">3. Статистика</a>
-            <a class="nav-link" href="{% url 'core:streams' %}">4. Feedback</a>
+            <a class="nav-link" href="{% url 'core:streams' %}">Cтуденты</a>
+            <a class="nav-link" href="{% url 'core:streams' %}">Статистика</a>
             {% for module in user.modules.all %}
             <a class="nav-link" href="{% url 'core:module_feedbacks' module.id %}">Feedback по модулю {{ module.name }}</a>
             {% endfor %}
