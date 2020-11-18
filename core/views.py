@@ -140,19 +140,23 @@ def new_solution(request, task_id):
 			myformset = VariantForm(request.POST, prefix=questions[0].id)
 			formset.append(myformset)
 			if myformset.is_valid():
-				if questions[0].question_type == '3':
+				if task.task_type == '3':
 					solution.text = myformset.cleaned_data['answer']
-					solution.mark = questions[0].mark
-				elif questions[0].question_type == '2':
-					name = myformset.cleaned_data['variants']
-					for answer in name:
-						if answer:
-							solution.variant.add(answer)
+					solution.mark = task.mark
+				elif task.task_type == '2':
+					answers = myformset.cleaned_data['variants']
+					not_checked = task.questions.all()[0].variants.exclude(id__in=answers)
+					for answer in answers:
+						solution.variant.add(answer)
+						if answer.is_right:
 							solution.mark += answer.mark
+					for empty in not_checked:
+						if not empty.is_right:
+							solution.mark += empty.mark
 				solution.save()
 				messages.add_message(
 					request,
-					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, questions[0].mark))
+					messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark))
 		else:
 			try:
 				formset = QuestionFormSet(request.POST, instance=task)
