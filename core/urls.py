@@ -20,6 +20,7 @@ urlpatterns = [
     path('login/', views.MyLoginView.as_view(), name='login'),
     path('logout', LogoutView.as_view(), name='logout'),
     path('profile/', views.show_profile, name='profile'),
+    path('profile/<int:module_id>/', views.show_profile_module, name='module_feedbacks'),
 	path('tone/', views.tone, name='tone'),
 	path('count_words/', views.tolstoy, name='count_words'),
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),

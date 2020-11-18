@@ -12,7 +12,7 @@
             <a class="nav-link" href="{% url 'core:streams' %}">3. Статистика</a>
             <a class="nav-link" href="{% url 'core:streams' %}">4. Feedback</a>
             {% for module in user.modules.all %}
-            <a class="nav-link" href="{% url 'core:streams' %}">Feedback по модулю {{ module.name }}</a>
+            <a class="nav-link" href="{% url 'core:module_feedbacks' module.id %}">Feedback по модулю {{ module.name }}</a>
             {% endfor %}
           </div>
         </aside>

@@ -66,6 +66,16 @@ def show_profile(request):
 	return render(request, 'profile.html', {'feedbacks': feedbacks, 'students': students})
 
 
+def show_profile_module(request, module_id):
+	module = Module.objects.get(id=module_id)
+	feedbacks = Task.objects.filter(
+		lesson__module__author=request.user,
+		lesson__module=module).annotate(
+		num_feedbacks=Count('feedbacks')).annotate(
+		num_unseen=Count('feedbacks__seen'))
+	return render(request, 'profile_module.html', {'feedbacks': feedbacks, 'module': module})
+
+
 class TaskFeedbackView(SingleObjectMixin, ListView):
 	model = Feedback
 
@@ -215,6 +225,7 @@ class TaskView(DetailView):
 
 class FeedbackView(DetailView):
 	model = Feedback
+
 
 
 class LessonView(DetailView):
