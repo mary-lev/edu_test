@@ -222,7 +222,7 @@ for i, v in students_texts.items():
 	values_f['values'].append([v[1][0]])
 	values_g['values'].append([v[1][1]])
 	if v[0] != '-':
-		values_m['values'].append([str(round(v[2]*100, 1)) + '%'])
+		values_m['values'].append([round(v[2]*100)])
 	else:
 		values_m['values'].append(['-'])
 
