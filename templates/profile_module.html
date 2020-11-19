@@ -2,10 +2,6 @@
 
 {% block content %}
 <div class="container">
- Мой адрес {{ user.username }}.
-  {% if perms.core %}
-    {% if perms.core.add_task %}
-    <p>Это автор</p>
     <h3>Feedback по модулю {{ module.name }}</h3>
     	<ul>
     	{% for f in feedbacks %}
@@ -13,9 +9,5 @@
     	{% endfor %}
 		</ul>
 	
-    {% else %} 
-      <p>Это студент</p>
-  {% endif %}
-  {% endif %}
 </div>
 {% endblock %}
