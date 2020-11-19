@@ -31,7 +31,6 @@ urlpatterns = [
 	path('solutions/', views.SolutionAll.as_view(), name='solutions'),
 	path('student/<pk>/solutions/', views.SolutionStudent.as_view(), name='student_solutions'),
 	path('task/<pk>/solutions', views.SolutionTask.as_view(), name='task_solutions'),
-
 	path('solution1/<int:task_id>/new/', views.new_solution, name='solution1'),
 	path('lesson/<pk>/', views.LessonView.as_view(), name='lesson'),
 	path('module/<pk>/', views.ModuleView.as_view(), name='module'),
