@@ -85,7 +85,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('task', 'student', 'text', 'get_lesson', 'get_module')
+    list_display = ('task', 'student', 'text', 'seen', 'get_lesson', 'get_module')
     list_filter = ('task__lesson__module', 'task__lesson', 'student',)
 
     def get_lesson(self, obj):

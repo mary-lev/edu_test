@@ -14,21 +14,6 @@ from django.forms import (
 from .models import Variant, Question, Feedback, Task, Solution
 
 
-"""forms for task solutions"""
-def choice_form(task):
-    if task.task_type == 1:
-        VariantForm = QuestionFormSet(instance=task)
-        print(VariantForm)
-    elif task.task_type == '2':
-        print(task.questions.all())
-        VariantForm = make_checkbox_formset(task.questions.all()[0])
-    elif task.task_type == '3':
-        VariantForm = make_task_form(task.questions.all()[0])
-    else:
-        VariantForm = make_question_formset(task.questions.all()[0])
-    return VariantForm
-
-
 """create crispy design for all modelforms"""
 class CrispyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -40,6 +25,12 @@ class CrispyModelForm(forms.ModelForm):
             css_class='btn btn-info mt-4 mb-2'))
         self.helper.form_class = 'card mt-4 mb-3'
         self.helper.label_class = 'display-4'
+
+
+"""form for unseen feedbacks"""
+class FeedbackForm(CrispyModelForm):
+    model = Feedback
+    fields = "__all__"
 
 
 """form for radiobuttons"""
@@ -100,6 +91,19 @@ def make_task_form(question, extra=0):
             fields = ('answer',)
 
     return _QuestionForm
+
+
+"""forms for task solutions"""
+def choice_form(task):
+    if task.task_type == 1:
+        VariantForm = QuestionFormSet(instance=task)
+    elif task.task_type == '2':
+        VariantForm = make_checkbox_formset(task.questions.all()[0])
+    elif task.task_type == '3':
+        VariantForm = make_task_form(task.questions.all()[0])
+    else:
+        VariantForm = make_question_formset(task.questions.all()[0])
+    return VariantForm
 
 
 """other forms"""
@@ -172,7 +176,6 @@ class BaseQuestionFormSet(BaseInlineFormSet):
         if self.is_bound:
             for form in self.forms:
                 if hasattr(form, 'nested'):
-                    print("Nested", form.nested)
                     result = result and form.nested.is_valid()
         return result
 
@@ -183,12 +186,10 @@ class BaseQuestionFormSet(BaseInlineFormSet):
         mark = 0
         for form in self.forms:
             if hasattr(form, 'nested'):
-                print('Question: ', form.cleaned_data['id'].id)
                 answer = form.nested.cleaned_data['variants']
                 solution.variant.add(answer)
                 if answer.is_right:
                     mark += answer.mark
-                    print(mark)
         solution.mark = mark        
         solution.save()
         return result

@@ -1,0 +1,13 @@
+{% extends 'profile_base.html' %}
+
+{% block content %}
+<div class="container">
+    <h3>Feedback по модулю {{ module.name }}</h3>
+    	<ul>
+    	{% for f in feedbacks %}
+    		<li>Задача {{f.number }}. {{ f.name }}: {{f.num_feedbacks}} <button type="button" class="btn btn-outline-info btn-sm">{{f.num_unseen}}</button> </li>
+    	{% endfor %}
+		</ul>
+	
+</div>
+{% endblock %}
