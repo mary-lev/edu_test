@@ -113,8 +113,6 @@ class Question(models.Model):
 	question_text = models.CharField(max_length=1000)
 	description = models.CharField(max_length=1000, null=True, blank=True)
 	mark = models.IntegerField(default=0)
-	answers = models.CharField(max_length=200)
-	slug = models.SlugField()
 
 	def __str__(self):
 		return self.question_text
