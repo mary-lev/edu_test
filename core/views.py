@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count, Case, When, IntegerField
 from django.forms import modelformset_factory
 
 from rest_framework import viewsets
@@ -61,7 +61,7 @@ def index(request):
 def show_profile(request):
 	feedbacks = Module.objects.filter(author=request.user).annotate(
 		num_feedbacks=Count('lessons__tasks__feedbacks')).annotate(
-		new=Count('lessons__tasks__feedbacks__seen'))
+		new=Count('lessons__tasks__feedbacks'))
 	students = Module.objects.filter(author=request.user).annotate(num_students=Count('streams__students'))
 	return render(request, 'profile.html', {'feedbacks': feedbacks, 'students': students})
 
@@ -72,7 +72,13 @@ def show_profile_module(request, module_id):
 		lesson__module__author=request.user,
 		lesson__module=module).annotate(
 		num_feedbacks=Count('feedbacks')).annotate(
-		num_unseen=Count('feedbacks__seen'))
+		num_unseen=Count(
+			Case(
+				When(feedbacks__seen=False, then=1),
+				output_field=IntegerField()
+				)
+			)
+		)
 	return render(request, 'profile_module.html', {'feedbacks': feedbacks, 'module': module})
 
 
