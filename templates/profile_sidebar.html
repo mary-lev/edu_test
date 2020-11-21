@@ -5,9 +5,14 @@
           <h1 class="h4 pt-2 pb-2">Dashboard</h1>
           <div class="nav flex-column nav-pills">
             <a class="nav-link active" href="{% url 'core:profile' %}">Профиль</a>
-            {% for module in user.modules.all %}
-            <a class="nav-link" href="{% url 'core:module' module.id %}">Модуль «{{ module.name }}»</a>
-            {% endfor %}
+            {% if user.is_authenticated %}
+              {% for module in user.modules.all %}
+                <a class="nav-link" href="{% url 'core:module' module.id %}">Модуль «{{ module.name }}»</a>
+              {% endfor %}
+              {% for stream in user.streams.all %}
+                <a class="nav-link" href="{% url 'core:stream' stream.id %}">Модуль «{{ stream.module.name }}»</a>
+              {% endfor %}
+            {% endif %}
             <a class="nav-link" href="{% url 'core:streams' %}">Cтуденты</a>
             <a class="nav-link" href="{% url 'core:streams' %}">Статистика</a>
             {% for module in user.modules.all %}

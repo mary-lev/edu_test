@@ -32,7 +32,13 @@
 
 <h3 class="display-4">Feedback</h3>
 {% for feedback in object.feedbacks.all %}
-<li> {{ feedback.text }} (<a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student }}: {{feedback.student.streams.all }}</a>)</li>
+  {% if not feedback.seen %} 
+      <div class="alert alert-primary" role="alert">
+        {{ feedback.text }}  (<a href="{% url 'core:student' feedback.student.id %}">{{ feedback.student }}</a>)
+      </div> 
+    {% else %}
+      <li>{{ feedback.text }}  (<a href="{% url 'core:student' feedback.student.id %}"> </a>)</li> 
+{% endif %}  
 {% endfor %}
 
 <h3 class="display-4">Решения</h3>

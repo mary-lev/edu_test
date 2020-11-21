@@ -21,7 +21,7 @@ httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
 #извлекаем данные о файлах задачника МИО 4 потока
-with open('mio4.json', 'r') as f:
+with open('sce3.json', 'r') as f:
 	students = json.load(f)
 
 spreadsheet_id = students[0]['lesson_9']
@@ -32,7 +32,16 @@ spreadsheet = service.spreadsheets().get(
     ).execute()
 
 #извлекаем листы из шита
-titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
+titles = list()
+for sheet in spreadsheet['sheets']:
+	try:
+		title = int(sheet['properties']['title'])
+		titles.append(str(title))
+	except:
+		pass
+print(titles)
+
+#titles = [sheet['properties']['title'] for sheet in spreadsheet['sheets']]
 
 first_lesson = list()
 start_feedback = titles[0] + "!E21:F21"
@@ -41,8 +50,8 @@ razbor = titles[1] + "!B13:B13"
 
 old_ranges = {'start_feedback': start_feedback, 'help_feedback': help_feedback, 'razbor': razbor}
 tasks = []
-for index, title in enumerate(titles[2:]):
-	task_index = str(index+88)
+for index, title in enumerate(titles):
+	task_index = str(index+121)
 	task = dict()
 	task_number= task_index + '_number'
 	task_text = task_index + '_text'
@@ -108,7 +117,7 @@ for task in tasks:
 
 #for task1_mark:
 #values = values['values'][0][0]
-with open('mio_lesson_9.json', 'w') as f:
+with open('sce_lesson_9.json', 'w') as f:
 	json.dump(first_lesson, f)
 
 values = first_lesson

@@ -13,6 +13,7 @@ mio_filenames = ['mio4_lesson1.json', 'mio4_lesson2.json', 'mio4_lesson3.json',
 			'mio4_lesson4.json', 'mio4_lesson5.json', 'mio4_lesson6.json',
 			'mio4_lesson7.json'
 			]
+sce_filenames = []
 
 def index(request):
 	return render(request, 'sheets/index.html', {

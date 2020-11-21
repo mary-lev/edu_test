@@ -6,7 +6,7 @@ from django.shortcuts import render
 from core.models import Module, Stream, Lesson, Task, Student, Solution, Feedback, Question, Variant
 
 
-def index(request):
+def index1(request):
     with open('mio_4_feedback.json', 'r') as f:
         feedbacks = json.load(f)
     module = Module.objects.get(name='Информационные ожидания')
@@ -32,13 +32,13 @@ def index(request):
 
 
 # parse mio lesson
-def index1(request):
-    with open('mio_lesson_8.json', 'r') as f:
+def index(request):
+    with open('sce_lesson_9.json', 'r') as f:
         tasks = json.load(f)
-    module = Module.objects.get(name='Информационные ожидания')
-    lesson, create = Lesson.objects.get_or_create(number=7, module=module)
+    module = Module.objects.get(name='Сценарии')
+    lesson, create = Lesson.objects.get_or_create(number=9, module=module)
     for n, task in enumerate(tasks):
-        task_number = n + 77
+        task_number = n + 121
         task_image_key = str(task_number) + '_hyperlink'
         task_image_title_key = str(task_number) + '_image_title'
         task_answer_key = str(task_number) + '_answer'

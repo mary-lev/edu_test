@@ -1,3 +1,6 @@
+"""
+parse from course stats urls for all students files
+"""
 import json
 import pandas as pd
 import httplib2
@@ -8,7 +11,12 @@ from oauth2client.service_account import ServiceAccountCredentials
 # Файл, полученный в Google Developer Console
 CREDENTIALS_FILE = 'sheets/creds1.json'
 # ID Google Sheets документа (можно взять из его URL)
-spreadsheet_id = '1XLlJLyQP69i155tzMlMLoHZM_B83XgvTxQ6eazuFuA0'
+
+# МИО-4
+#spreadsheet_id = '1XLlJLyQP69i155tzMlMLoHZM_B83XgvTxQ6eazuFuA0'
+
+#Сценарии-3
+spreadsheet_id = '11ErqwwqrVdJLNHKgqEuc8rsdnb3jYY1nzCnDAJb38Ug'
 
 # Авторизуемся и получаем service — экземпляр доступа к API
 credentials = ServiceAccountCredentials.from_json_keyfile_name(
@@ -37,7 +45,10 @@ values = service.spreadsheets().values().get(
     ).execute()
 
 #for summary sheet
-columns = values['values'][4] + ['proc']
+print(values['values'][4])
+print(values['values'][5:][0])
+columns = values['values'][4]
+print(columns)
 
 def extract_id(filename):
     start = len('https://docs.google.com/spreadsheets/d/')
@@ -63,10 +74,10 @@ for index, row in df.iterrows():
         student['lesson_7'] = extract_id(row['7 урок'])
         student['lesson_8'] = extract_id(row['8 урок'])
         student['lesson_9'] = extract_id(row['9 урок'])
-        student['lesson_0'] = extract_id(row['0 урок'])
+        student['lesson_0'] = extract_id(row['0'])
         students.append(student)
 
-with open('mio4.json', 'w') as f:
+with open('sce3.json', 'w') as f:
     json.dump(students, f)
 
 df = df.to_html()
