@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.offline as opy
 
 import pandas as pd
-df = pd.read_json('core/messages.json')
+df = pd.read_json('data/messages.json')
 df['long'] = df['text'].apply(lambda x: len(x) if x is not None else 0)
 df['day'] = df['date'].dt.date
 

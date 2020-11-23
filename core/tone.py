@@ -11,7 +11,7 @@ from .models import Feedback, Task, Stream
 
 def create_new_graph():
 
-	with open('my_train.csv', 'r', encoding='utf-8') as f:
+	with open('data/my_train.csv', 'r', encoding='utf-8') as f:
 		csvrows = csv.reader(f) 
 		train = [all for all in csvrows]
 	data = []
