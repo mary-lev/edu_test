@@ -15,15 +15,23 @@ DEBUG = True
 if DEBUG:
     try:
         from .secret import *
+        DATABASES = {
+            'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+                }
+            }
     except:
+        DATABASES = {'default':
+                 {'ENGINE': 'django.db.backends.postgresql',
+                  'NAME': DATABASE_NAME,
+                  "USER": DATABASE_USER,
+                  "PASSWORD": DATABASE_PASSWORD,
+                  'HOST': DATABASE_HOST,
+                  'PORT': "5432",
+                  },
+            }
         pass
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 
 ALLOWED_HOSTS = ["*"]
 
@@ -138,11 +146,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '/')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
-
-STATIC_URL = '/static/'
 
 
 INTERNAL_IPS = [
