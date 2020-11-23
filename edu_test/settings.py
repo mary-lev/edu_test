@@ -144,9 +144,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
-INTERNAL_IPS = [
+
+"""INTERNAL_IPS = [
     '127.0.0.1',
-]
+]"""
 
 django_heroku.settings(locals())

@@ -109,7 +109,7 @@ for task in text_tasks:
 
 students_texts = dict()
 
-with open('texts_2_indexes.json', 'r') as f:
+with open('data/texts_2_indexes.json', 'r') as f:
 	old_data = json.load(f)
 
 #old_data = dict()
@@ -169,7 +169,7 @@ for index, student in enumerate(students):
 			pass
 
 	old_data[student]['tolstoy'] = count_tolstoy(student_texts)
-	with open('texts_2_indexes.json', 'w') as f:
+	with open('data/texts_2_indexes.json', 'w') as f:
 		json.dump(old_data, f)
 	for k, v in old_data[student].items():
 		try:
