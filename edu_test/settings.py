@@ -13,7 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 if DEBUG:
-    from .secret import *
+    try:
+        from .secret import *
+    except:
+        pass
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
