@@ -152,7 +152,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 
-CELERY_IMPORTS = ['edu_test.sheets.tasks']
+#CELERY_IMPORTS = ['edu_test.sheets.tasks']
 
 CELERY_BEAT_SCHEDULE = {
                 'task-first': {
