@@ -149,11 +149,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
-CELERY_IMPORTS = ['sheets.tasks']
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 
 CELERY_BEAT_SCHEDULE = {
                 'task-first': {
-                'task': 'sheets.tasks.save_stats_task',
+                'task': 'tasks.save_stats_task',
                 'schedule': timedelta(seconds=60)
                 },
                 }
