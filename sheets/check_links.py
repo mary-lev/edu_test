@@ -24,6 +24,7 @@ def create_keyfile_dict():
     }
     return variables_keys
 
+print(create_keyfile_dict())
 
 
 scope = ['https://www.googleapis.com/auth/spreadsheets',
