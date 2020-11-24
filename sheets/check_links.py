@@ -29,12 +29,11 @@ def create_keyfile_dict():
 scope = ['https://www.googleapis.com/auth/spreadsheets',
      'https://www.googleapis.com/auth/drive']
 
-try:
-	credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-		create_keyfile_dict(),
-		scope
-		)
-except:
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+	create_keyfile_dict(),
+	scope
+	)
+"""except:
 	CREDENTIALS_FILE = 'sheets/sheetstest.p12'
 	CREDENTIALS_EMAIL = 'account@sheetstest-292309.iam.gserviceaccount.com'
 	KEY = 'notasecret'
@@ -44,7 +43,7 @@ except:
 		KEY,
 		scope,
 		)
-
+"""
 
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
