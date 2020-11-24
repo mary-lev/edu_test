@@ -29,10 +29,12 @@ defusedxml==0.7.0rc1
 dj-database-url==0.5.0
 Django==3.1.2
 django-bootstrap4==2.3.0
+django-celery-beat==2.1.0
 django-crispy-forms==1.9.2
 django-extensions==3.0.9
 django-heroku==0.3.1
 django-rest-framework==0.1.0
+django-timezone-field==4.0
 django-tinymce==3.1.0
 djangorestframework==3.12.2
 docopt==0.6.2
@@ -55,11 +57,13 @@ google-resumable-media==0.5.1
 googleapis-common-protos==1.52.0
 greenlet==0.4.17
 gspread==3.6.0
+gunicorn==19.0.0
 h11==0.9.0
 h5py==2.10.0
 htmlmin==0.1.12
 httplib2==0.18.1
 idna==2.8
+importlib-metadata==3.1.0
 intervaltree==3.1.0
 ipymarkup==0.9.0
 itsdangerous==1.1.0
@@ -104,6 +108,7 @@ pymorphy2-dicts-ru==2.4.417127.4579844
 pyOpenSSL==19.1.0
 pyrsistent==0.17.3
 pyTelegramBotAPI==3.6.7
+python-crontab==2.5.1
 python-dateutil==2.8.1
 python3-openid==3.2.0
 pytz==2019.1
@@ -134,6 +139,7 @@ starlette==0.12.9
 thinc==7.4.1
 threadpoolctl==2.1.0
 tqdm==4.41.1
+typing-extensions==3.7.4.3
 ujson==3.0.0
 uritemplate==3.0.1
 uritools==3.0.0
@@ -150,6 +156,6 @@ WTForms==2.3.3
 xmljson==0.2.0
 yargy==0.14.0
 yarl==1.6.2
+zipp==3.4.0
 zope.event==4.5.0
 zope.interface==5.1.2
-gunicorn==19.0.0
