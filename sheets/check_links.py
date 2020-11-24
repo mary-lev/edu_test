@@ -13,10 +13,10 @@ def create_keyfile_dict():
     variables_keys = {
         "type": "service_account",
         "project_id": "sheetstest-292309",
-        "private_key_id": S3Connection(os.environ['SHEETS_PRIVATE_KEY_ID']),
-        "private_key": S3Connection(os.environ['SHEETS_PRIVATE_KEY']),
+        "private_key_id": os.environ.get('SHEETS_PRIVATE_KEY_ID'),
+        "private_key": os.environ.get('SHEETS_PRIVATE_KEY'),
         "client_email": "account@sheetstest-292309.iam.gserviceaccount.com",
-        "client_id": S3Connection(os.environ['SHEETS_CLIENT_ID']),
+        "client_id": os.environ.get('SHEETS_CLIENT_ID'),
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
