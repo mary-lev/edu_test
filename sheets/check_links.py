@@ -5,7 +5,6 @@ import requests
 import httplib2
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
-from sheets.from_navec import analyze_one
 
 
 def create_keyfile_dict():
