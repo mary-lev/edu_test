@@ -29,11 +29,12 @@ def create_keyfile_dict():
 scope = ['https://www.googleapis.com/auth/spreadsheets',
      'https://www.googleapis.com/auth/drive']
 
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-	create_keyfile_dict(),
-	scope
-	)
-"""except:
+try:
+	credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+		create_keyfile_dict(),
+		scope
+		)
+except:
 	CREDENTIALS_FILE = 'sheets/sheetstest.p12'
 	CREDENTIALS_EMAIL = 'account@sheetstest-292309.iam.gserviceaccount.com'
 	KEY = 'notasecret'
@@ -43,7 +44,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(
 		KEY,
 		scope,
 		)
-"""
+print(credentials)
 
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
@@ -66,11 +67,21 @@ def main():
 		range="37!I6:I49",
 		majorDimension='ROWS',
 		).execute()['values']
+	links = [link for link in links if link]
+	print(links)
+	body = {
+		'values': links,
+		}
 
-	return links
+	new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
+
+	query = service.spreadsheets().values().update(
+		spreadsheetId=new_spreadsheet_id,
+		valueInputOption='RAW',
+		range="1!A6:A49",
+		body=body,
+		).execute()
 
 
 if __name__ == '__main__':
-	links = main()
-	for link in links:
-		print(link)
+	main()
