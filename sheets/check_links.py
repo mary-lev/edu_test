@@ -14,7 +14,7 @@ def create_keyfile_dict():
         "type": "service_account",
         "project_id": "sheetstest-292309",
         "private_key_id": os.environ.get('SHEETS_PRIVATE_KEY_ID'),
-        "private_key": os.environ.get('SHEETS_PRIVATE_KEY'),
+        "private_key": os.environ.get('SHEETS_PRIVATE_KEY').replace('\n', ''),
         "client_email": "account@sheetstest-292309.iam.gserviceaccount.com",
         "client_id": os.environ.get('SHEETS_CLIENT_ID'),
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
