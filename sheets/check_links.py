@@ -24,11 +24,6 @@ def create_keyfile_dict():
 
 
 
-# Файл, полученный в Google Developer Console
-CREDENTIALS_FILE = 'sheets/sheetstest.p12'
-CREDENTIALS_EMAIL = 'account@sheetstest-292309.iam.gserviceaccount.com'
-KEY = 'notasecret'
-
 scope = ['https://www.googleapis.com/auth/spreadsheets',
      'https://www.googleapis.com/auth/drive']
 
@@ -38,6 +33,9 @@ try:
 		scope
 		)
 except:
+	CREDENTIALS_FILE = 'sheets/sheetstest.p12'
+	CREDENTIALS_EMAIL = 'account@sheetstest-292309.iam.gserviceaccount.com'
+	KEY = 'notasecret'
 	credentials = ServiceAccountCredentials.from_p12_keyfile(
 		CREDENTIALS_EMAIL,
 		CREDENTIALS_FILE,
