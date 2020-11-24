@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import django_heroku
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'tinymce',
     'crispy_forms',
     'rest_framework',
+    'django_celery_beat',
     
     'sheets',
     'core',
@@ -146,6 +148,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_IMPORTS = ['sheets.tasks']
+
+CELERY_BEAT_SCHEDULE = {
+                'task-first': {
+                'task': 'sheets.tasks.save_stats_task',
+                'schedule': timedelta(seconds=60)
+                },
+                }
 
 
 """INTERNAL_IPS = [
