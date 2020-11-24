@@ -8,6 +8,7 @@ beautifulsoup4==4.9.3
 billiard==3.6.3.0
 blis==0.4.1
 bootstrap4==0.1.0
+boto==2.49.0
 boto3==1.15.18
 botocore==1.18.18
 cachetools==4.1.1
