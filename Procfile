@@ -1,2 +1,2 @@
 web: gunicorn edu_test.wsgi
-celery: celery worker -A edu_test -l info -c 4
+worker: celery -A edu_test worker --beat
