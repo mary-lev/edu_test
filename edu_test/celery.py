@@ -1,7 +1,6 @@
 import os
 from celery import Celery
-
-from django.conf import settings
+from sheets import check_links
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edu_test.settings')
@@ -21,3 +20,8 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+@app.task(bind=True)
+def write_sheet(self):
+    check_links()
+

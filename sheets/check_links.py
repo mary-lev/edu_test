@@ -57,31 +57,27 @@ service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 spreadsheet_id = '11ErqwwqrVdJLNHKgqEuc8rsdnb3jYY1nzCnDAJb38Ug'
 
 # читаем шит
-def main():
-	spreadsheet = service.spreadsheets().get(
-		spreadsheetId=spreadsheet_id,
-		).execute()
 
-	links = service.spreadsheets().values().get(
-		spreadsheetId=spreadsheet_id,
-		range="37!I6:I49",
-		majorDimension='ROWS',
-		).execute()['values']
-	links = [link for link in links if link]
-	print(links)
-	body = {
-		'values': links,
-		}
+spreadsheet = service.spreadsheets().get(
+	spreadsheetId=spreadsheet_id,
+).execute()
 
-	new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
+links = service.spreadsheets().values().get(
+	spreadsheetId=spreadsheet_id,
+	range="37!I6:I49",
+	majorDimension='ROWS',
+	).execute()['values']
+links = [link for link in links if link]
+print(links)
+body = {
+	'values': links,
+}
 
-	query = service.spreadsheets().values().update(
-		spreadsheetId=new_spreadsheet_id,
-		valueInputOption='RAW',
-		range="1!A6:A49",
-		body=body,
-		).execute()
+new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
 
-
-if __name__ == '__main__':
-	main()
+query = service.spreadsheets().values().update(
+	spreadsheetId=new_spreadsheet_id,
+	valueInputOption='RAW',
+	range="1!A6:A49",
+	body=body,
+).execute()
