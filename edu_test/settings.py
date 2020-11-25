@@ -14,22 +14,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-if DEBUG:
-    try:
-        from .secret import *
-        DATABASES = {
-            'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-                }
-            }
-    except ImportError:
-        DATABASES = {
-            'default':
-            {'ENGINE': 'django.db.backends.postgresql',
-             'PORT': "5432",
-            }
+try:
+    from .secret import *
+    DATABASES = {
+        'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         }
+        }
+except ImportError:
+    DATABASES = {
+    'default':
+    {'ENGINE': 'django.db.backends.postgresql',
+    'PORT': "5432",
+    }
+    }
 
 ALLOWED_HOSTS = ["*"]
 
@@ -151,13 +150,6 @@ CELERY_TASK_SERIALIZER = 'json'
 
 #CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
-CELERY_BEAT_SCHEDULE = {
-    'send-summary-every-hour': {
-        'task': 'save_stats',
-        # There are 4 ways we can handle time, read further
-       'schedule': 3600.0,
-    },
-}
 
 """INTERNAL_IPS = [
     '127.0.0.1',
