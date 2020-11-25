@@ -149,18 +149,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-
-#CELERY_IMPORTS = ['edu_test.sheets.tasks']
+#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 CELERY_BEAT_SCHEDULE = {
-                'task-first': {
-                'task': 'edu_test.save_stats_task',
-                'schedule': timedelta(seconds=60)
-                },
-                }
-
+    'send-summary-every-hour': {
+        'task': 'save_stats',
+        # There are 4 ways we can handle time, read further
+       'schedule': 3600.0,
+    },
+}
 
 """INTERNAL_IPS = [
     '127.0.0.1',
