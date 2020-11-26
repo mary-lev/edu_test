@@ -1,6 +1,6 @@
 import os
 from celery import Celery
-from sheets import check_links
+from sheets.check_links import LinkChecker
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edu_test.settings')
@@ -19,9 +19,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 """@app.task(bind=True)
 def debug_task(self):
-    print(f'Request: {self.request!r}')"""
+	print(f'Request: {self.request!r}')"""
 
 @app.task(bind=True)
 def write_sheet(self):
-    check_links()
+	a = LinkChecker()
+	a.check()
 
