@@ -44,7 +44,6 @@ except:
 		KEY,
 		scope,
 		)
-print(credentials)
 
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
@@ -58,26 +57,28 @@ spreadsheet_id = '11ErqwwqrVdJLNHKgqEuc8rsdnb3jYY1nzCnDAJb38Ug'
 
 # читаем шит
 
-spreadsheet = service.spreadsheets().get(
-	spreadsheetId=spreadsheet_id,
-).execute()
+class LinkChecker():
+	def __init__(self):
+		self.spreadsheet_id = spreadsheet_id
+		self.new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
 
-links = service.spreadsheets().values().get(
-	spreadsheetId=spreadsheet_id,
-	range="37!I6:I49",
-	majorDimension='ROWS',
-	).execute()['values']
-links = [link for link in links if link]
-print(links)
-body = {
-	'values': links,
-}
+	def check(self):
+		links = service.spreadsheets().values().get(
+			spreadsheetId=self.spreadsheet_id,
+			range="37!I6:I49",
+			majorDimension='ROWS',
+			).execute()['values']
+		links = [link for link in links if link]
 
-new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
+		body = {
+		'values': links,
+		}
 
-query = service.spreadsheets().values().update(
-	spreadsheetId=new_spreadsheet_id,
-	valueInputOption='RAW',
-	range="1!A6:A49",
-	body=body,
-).execute()
+		query = service.spreadsheets().values().update(
+			spreadsheetId=new_spreadsheet_id,
+			valueInputOption='RAW',
+			range="1!A6:A49",
+			body=body,
+			).execute()
+		return links
+
