@@ -75,7 +75,7 @@ class LinkChecker():
 		}
 
 		query = service.spreadsheets().values().update(
-			spreadsheetId=new_spreadsheet_id,
+			spreadsheetId=self.new_spreadsheet_id,
 			valueInputOption='RAW',
 			range="1!A6:A49",
 			body=body,
