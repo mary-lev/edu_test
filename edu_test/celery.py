@@ -1,6 +1,7 @@
 import os
 from celery import Celery
 from sheets.check_links import LinkChecker
+import datetime
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'edu_test.settings')
@@ -26,3 +27,8 @@ def write_sheet(self):
 	a = LinkChecker()
 	a.check()
 
+@app.task()
+def write_text(self):
+	self.s = 'Пишем ерунду в файл'
+	with open('text.txt', 'a') as f:
+		f.write(self.s, datetime.datetime)
