@@ -146,3 +146,11 @@ class Feedback(models.Model):
 
 	def __str__(self):
 		return self.text
+
+class Image(models.Model):
+	task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='images')
+	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='images')
+	url = models.URLField()
+
+	def __str__(self):
+		return self.url

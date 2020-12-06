@@ -1,7 +1,19 @@
 from django import forms
 from django.contrib import admin
 
-from .models import Student, Stream, Module, Task, Lesson, Feedback, Solution, Question, Variant, NewStudent
+from .models import (
+    Student,
+    Stream,
+    Module,
+    Task,
+    Lesson,
+    Feedback,
+    Solution,
+    Question,
+    Variant,
+    NewStudent,
+    Image,
+)
 
 
 class VariantInline(admin.TabularInline):
@@ -110,6 +122,10 @@ class NewStudentAdmin(admin.ModelAdmin):
     model = NewStudent
 
 
+class ImageAdmin(admin.ModelAdmin):
+    model = Image
+
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Stream, StreamAdmin)
 admin.site.register(Module, ModuleAdmin)
@@ -120,3 +136,4 @@ admin.site.register(Solution, SolutionAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Variant, VariantAdmin)
 admin.site.register(NewStudent, NewStudentAdmin)
+admin.site.register(Image, ImageAdmin)
