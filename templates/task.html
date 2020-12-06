@@ -46,4 +46,12 @@
 <li> {{ solution.text }} (<a href="{% url 'core:student' solution.student.id %}">{{ solution.student }}</a>) </li>
 {% endfor %}
 
+    {% if task.images %}
+        <ol>
+        {% for image in task.images.all %}
+            <li>{{ image.student.email }}</li>
+            <li><img src="{{ image.show_picture }}" width=500 /></li>
+        {% endfor %}</ol>
+    {% endif %}
+
 {% endblock %}
