@@ -151,6 +151,17 @@ class Image(models.Model):
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='images')
 	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='images')
 	url = models.URLField()
+	name = models.FileField(upload_to='mio')
+	type = models.CharField(max_length=10)
 
 	def __str__(self):
 		return self.url
+
+	def show_picture(self):
+		if 'open?id=' in self.url:
+			return self.url.replace('open?id=', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+		else:
+			return self.url.replace('file/d/', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+
+	def get_file(self):
+		pass
