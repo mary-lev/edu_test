@@ -4,6 +4,7 @@ import time
 import string
 import requests
 import httplib2
+from urlextract import URLExtract
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 from boto.s3.connection import S3Connection
@@ -44,7 +45,6 @@ except:
 		KEY,
 		scope,
 		)
-print(credentials)
 
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
@@ -53,35 +53,42 @@ service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 #статистика текстового модуля за сентябрь
 #spreadsheet_id = '1ZNFzqIpfAVdGdcp2e_e9C5NJz__-NeccbSR-Qjrr__E'
 
-#статистика сценариев за сентябрь
+#статистика потока Сценарии-3 (сентябрь)
 spreadsheet_id = '11ErqwwqrVdJLNHKgqEuc8rsdnb3jYY1nzCnDAJb38Ug'
+task_with_links = ['29', '37', '41', '54', '60', '61', '64', '68', '70', '71', '73', '75', '78', '79', '80', '88', '89', '101', '198', '205']
+# task 70: E6:E49 !
 
 # читаем шит
-def main():
-	spreadsheet = service.spreadsheets().get(
-		spreadsheetId=spreadsheet_id,
-		).execute()
 
-	links = service.spreadsheets().values().get(
-		spreadsheetId=spreadsheet_id,
-		range="37!I6:I49",
-		majorDimension='ROWS',
-		).execute()['values']
-	links = [link for link in links if link]
-	print(links)
-	body = {
+class LinkChecker():
+	def __init__(self):
+		self.spreadsheet_id = spreadsheet_id
+		self.new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
+		self.data = self.check()
+
+	def extract_url(self):
+		headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36' }
+		extractor = URLExtract()
+
+	def check(self):
+		links = service.spreadsheets().values().get(
+			spreadsheetId=self.spreadsheet_id,
+			range="29!I6:I49",
+			majorDimension='ROWS',
+			).execute()['values']
+		links = [link for link in links if link]
+
+		body = {
 		'values': links,
 		}
+		return body
 
-	new_spreadsheet_id = '15WqE31Mp8Wy2g0C5-Evklfccd2vcfra8XbDkUTDTChg'
+	def write(self):
+		query = service.spreadsheets().values().update(
+			spreadsheetId=self.new_spreadsheet_id,
+			valueInputOption='RAW',
+			range="1!A6:A49",
+			body=self.data,
+			).execute()
+		return query
 
-	query = service.spreadsheets().values().update(
-		spreadsheetId=new_spreadsheet_id,
-		valueInputOption='RAW',
-		range="1!A6:A49",
-		body=body,
-		).execute()
-
-
-if __name__ == '__main__':
-	main()

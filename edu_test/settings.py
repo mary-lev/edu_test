@@ -14,22 +14,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if DEBUG:
-    try:
-        from .secret import *
-        DATABASES = {
-            'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-                }
-            }
-    except ImportError:
-        DATABASES = {
-            'default':
-            {'ENGINE': 'django.db.backends.postgresql',
-             'PORT': "5432",
-            }
+try:
+    from .secret import *
+    DATABASES = {
+        'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         }
+        }
+except ImportError:
+    DATABASES = {
+    'default':
+    {'ENGINE': 'django.db.backends.postgresql',
+    'PORT': "5432",
+    }
+    }
 
 ALLOWED_HOSTS = ["*"]
 
@@ -149,17 +148,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-
-#CELERY_IMPORTS = ['edu_test.sheets.tasks']
-
-CELERY_BEAT_SCHEDULE = {
-                'task-first': {
-                'task': 'edu_test.save_stats_task',
-                'schedule': timedelta(seconds=60)
-                },
-                }
+#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 
 """INTERNAL_IPS = [
