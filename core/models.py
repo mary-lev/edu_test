@@ -147,21 +147,34 @@ class Feedback(models.Model):
 	def __str__(self):
 		return self.text
 
+
 class Image(models.Model):
 	task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='images')
 	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='images')
 	url = models.URLField()
-	name = models.FileField(upload_to='mio')
+	name = models.ImageField(upload_to='data')
 	type = models.CharField(max_length=10)
 
 	def __str__(self):
 		return self.url
 
 	def show_picture(self):
-		if 'open?id=' in self.url:
-			return self.url.replace('open?id=', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+		if 'google' in self.url:
+			return self.url.replace(
+				'open?id=',
+				'uc?id='
+			).replace(
+				'/view',
+				''
+			).replace(
+				'?usp=sharing',
+				''
+			).replace(
+				'file/d/',
+				'uc?id='
+			)
 		else:
-			return self.url.replace('file/d/', 'uc?id=').replace('/view', '').replace('?usp=sharing', '')
+			return "data/{}".format(self.name)
 
 	def get_file(self):
 		pass
