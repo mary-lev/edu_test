@@ -1,3 +1,10 @@
+"""
+Извлекаем из гугл-шита со статистикой
+линки на картинки, сохраняем их
+и скачиваем файлы, до которых можем дотянуться.
+Не можем: до Яндекс-диска, Фигмы, папок.
+"""
+
 import io
 import json
 import requests
@@ -50,7 +57,7 @@ def get_yandex_file(file_id):
     download_url = response.json()['href']
 
     download_response = requests.get(download_url)
-    with open('data/1.jpg', 'wb') as f:  # Здесь укажите нужный путь к файлу
+    with open('data/1.jpg', 'wb') as f:
         f.write(download_response.content)
 
 
