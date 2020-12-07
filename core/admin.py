@@ -124,7 +124,7 @@ class NewStudentAdmin(admin.ModelAdmin):
 
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('type', 'name', 'student', 'task',)
-    list_filter = ('task__lesson',)
+    list_filter = ('task__lesson', 'task__number',)
 
 
 admin.site.register(Student, StudentAdmin)
