@@ -4,6 +4,16 @@
 
 <h1 class="display-4">Модуль «{{ object }}»</h1>
 
+    <div>
+    {% for lesson in object.lessons.all %}
+        {% for task in lesson.tasks.all %}
+            {% if task.images.all %}
+                <li><a href="{% url 'core:task' task.id %}">Урок {{ lesson.number }}. Задача {{ task.number }}</a></li>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    </div>
 
 <nav id="navbar-example2" class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="#">Содержание</a>
