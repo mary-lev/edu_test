@@ -51,7 +51,7 @@
         <ol>
         {% for image in object.images.all %}
             {% if image.name != '1' %}
-                <li>{{ image.student.email }}</li>
+                <li><a href="{% url 'core:student' image.student.id %}">{{ image.student.email }}</a></li>
                 {% thumbnail image.name "100x100" crop="center" as im %}
                     <li> <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></li>
                 {% endthumbnail %}

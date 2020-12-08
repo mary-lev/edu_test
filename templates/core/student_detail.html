@@ -1,36 +1,70 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3 class="display-4">{{ object }}</h3>
+    {% load thumbnail %}
+    <h3 class="display-4">{{ object }}</h3>
 
-<h4 class='display-5'>Модули</h4>
-{% for stream in object.stream.all %}
-<li>{{ stream.module.name }}. {{ stream.name }}</li>
+    <h4 class='display-5'>Модули</h4>
+    {% for stream in object.stream.all %}
+        <li>{{ stream.module.name }}. {{ stream.name }}</li>
+        <!-- Если студент проходит модуль "Тексты" -->
+        {% if 'Тексты' in stream.module.name %}
+            <h4 class="display-4">Решения</h4>
+            <p>Индекс удобочитаемости по всем текстам: {{ analytics.1 }}.</p>
+            <p>Индекс Толстого: {{ analytics.2.0 }} слова, примерно {{ analytics.2.1 }}% от «Войны и мира».</p>
+            <p>Индекс непохожести: 0.78. </p>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Текст</th>
+                    <th>Ссылка</th>
+                    <th>Проверка</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for text in analytics.0 %}
+                    <tr>
+                        <td>{{ text.0 }}</td>
+                        <td>{% if text.1.metrics %} {{ text.1.indexes.grade_SMOG }} {% else %} {{ text.1 }} {% endif %}</td>
+                        <td>По формуле SMOG</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    <!-- Конец текстового модуля -->
+
+    <!-- Если студент проходил модуль МИО -->
+    {% if 'Информационные ожидания' in stream.module.name %}
+        {% for image in object.images.all %}
+            {{ image.task.number }}
+
+            {% thumbnail image.name "100x100" crop="center" as im %}
+              <div data-toggle="modal" data-target="#exampleModal{{ image.task.number }}">
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></div>
+                <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{ image.task.number }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel{{ image.task.number }}">{{ image.task.number }}</h5>
+
+      </div>
+      <div class="modal-body">
+        <img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 />
+      </div>
+
+    </div>
+  </div>
+</div>
+            {% endthumbnail %}
+        {% endfor %}
+
+    {% endif %}
+<!-- Конец модуля МИО -->
+
 {% endfor %}
-
-<h4 class="display-4">Решения</h4>
-<p>Индекс удобочитаемости по всем текстам: {{ analytics.1 }}.</p>
-<p>Индекс Толстого: {{ analytics.2.0 }} слова, примерно {{ analytics.2.1 }}% от «Войны и мира».</p>
-<p>Индекс непохожести: 0.78. </p>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Текст</th>
-			<th>Ссылка</th>
-			<th>Проверка</th>
-		</tr>
-	</thead>
-	<tbody>
-{% for text in analytics.0 %}
-<tr>
-	<td>{{ text.0 }}</td>
-	<td>{% if text.1.metrics %} {{ text.1.indexes.grade_SMOG }} {% else %} {{ text.1 }} {% endif %}</td>
-	<td>По формуле SMOG</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-
 
 <h4 class='display-4'>Feedbacks</h4>
 {% for feedback in object.feedbacks.all %}
