@@ -70,7 +70,7 @@ class Task(models.Model):
 							blank=True,
 							related_name='tasks'
 							) # связь с группой задач
-	text = models.TextField(blank=True) # формулировка задачи
+	text = HTMLField() # формулировка задачи
 	hint = models.CharField(blank=True, null=True, max_length=500)
 	task_type = models.CharField(choices = TASK_TYPES, blank=True, null=True, max_length=1) # тип задачи (сделать список: выбор, вписать ответ)
 	options = models.TextField(blank=True) # поле для хранения опций, если вопрос - выбор

@@ -8,7 +8,7 @@
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
-      <p>{{ task.text }}</p>
+      <p>{{ task.text|safe }}</p>
       <div class="container">
       	<div class="row">
       		<div class="col">{% if task.picture %}<img class="img-fluid" src="{{ task.show_picture }}"/>{% endif %}</div>
