@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+{% load thumbnail %}
 
 <div class="card">
 	<div class="card-header">Модуль «{{ object.lesson.module.name }}». Урок {{ object.lesson.number }} </div>
@@ -50,10 +51,15 @@
         <ol>
         {% for image in object.images.all %}
             {% if image.name != '1' %}
-            <li>{{ image.student.email }}
-                <img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 /></li>
+                <li>{{ image.student.email }}</li>
+                {% thumbnail image.name "100x100" crop="center" as im %}
+                    <li> <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></li>
+                {% endthumbnail %}
+
+
             {% endif %}
         {% endfor %}</ol>
     {% endif %}
 
 {% endblock %}
+<li><img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 /></li>
