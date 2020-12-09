@@ -4,9 +4,9 @@
     {% load thumbnail %}
     <h3 class="display-4">{{ object }}</h3>
 
-    <h4 class='display-5'>Модули</h4>
+
     {% for stream in object.stream.all %}
-        <li>{{ stream.module.name }}. {{ stream.name }}</li>
+        <h3 class='display-5'>Модуль {{ stream.module.name }}. {{ stream.name }}</h3>
         <!-- Если студент проходит модуль "Тексты" -->
         {% if 'Тексты' in stream.module.name %}
             <h4 class="display-4">Решения</h4>
@@ -38,29 +38,28 @@
     <!-- Если студент проходил модуль МИО -->
     {% if 'Информационные ожидания' in stream.module.name %}
         {% for image in object.images.all %}
+            {%  if image.name.url != '1' %}
             {{ image.task.number }}
 
             {% thumbnail image.name "100x100" crop="center" as im %}
               <div data-toggle="modal" data-target="#exampleModal{{ image.task.number }}">
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></div>
                 <!-- Modal -->
-            <div class="modal fade" id="exampleModal{{ image.task.number }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel{{ image.task.number }}">{{ image.task.number }}</h5>
-
-      </div>
-      <div class="modal-body">
-        <img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 />
-      </div>
-
-    </div>
-  </div>
-</div>
+                <div class="modal fade" id="exampleModal{{ image.task.number }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{ image.task.number }}">{{ image.task.number }}</h5>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endthumbnail %}
+            {% endif %}
         {% endfor %}
-
     {% endif %}
 <!-- Конец модуля МИО -->
 
