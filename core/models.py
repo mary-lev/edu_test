@@ -60,6 +60,7 @@ class Task(models.Model):
 		('1', 'Radiobutton'),
 		('2', 'Checkbutton'),
 		('3', 'TextArea'),
+		('4', 'OneCheckbox'),
 		)
 	number = models.IntegerField()
 	name = models.CharField(max_length=200, blank=True)
@@ -108,6 +109,7 @@ class Question(models.Model):
 		('1', 'Radiobutton'),
 		('2', 'Checkbutton'),
 		('3', 'TextArea'),
+		('4', 'OneCheckbox'),
 		)
 	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
 	question_text = models.CharField(max_length=1000)

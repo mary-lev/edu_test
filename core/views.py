@@ -134,6 +134,10 @@ def new_solution(request, task_id):
                     for empty in not_checked:
                         if not empty.is_right:
                             solution.mark += empty.mark
+                elif task.task_type == '4':
+                    if myformset.cleaned_data['answer']:
+                        solution.text = 'Done!'
+                        solution.mark = task.mark
                 solution.save()
                 messages.add_message(
                     request,

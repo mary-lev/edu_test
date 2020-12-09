@@ -92,6 +92,19 @@ def make_task_form(question, extra=0):
 
     return _QuestionForm
 
+"""form for textarea"""
+def make_one_checkbox(question, extra=0):
+    class _OneCheckboxForm(CrispyModelForm):
+        answer = forms.CharField(
+            widget=forms.CheckboxInput(),
+            label=question.question_text
+            )
+        class Meta:
+            model = Question
+            fields = ('answer',)
+
+    return _OneCheckboxForm
+
 
 """forms for task solutions"""
 def choice_form(task):
@@ -101,6 +114,8 @@ def choice_form(task):
         VariantForm = make_checkbox_formset(task.questions.all()[0])
     elif task.task_type == '3':
         VariantForm = make_task_form(task.questions.all()[0])
+    elif task.task_type == '4':
+        VariantForm = make_one_checkbox(task.questions.all().first())
     else:
         VariantForm = make_question_formset(task.questions.all()[0])
     return VariantForm
