@@ -1,7 +1,11 @@
+import os
+import cv2
+import numpy
+from PIL import Image as img2
 from django.db import models
 from django.contrib.auth.models import User, Group
 from tinymce.models import HTMLField
-
+from edu_test.settings import BASE_DIR
 
 class Company(models.Model):
 	name = models.CharField(max_length=100)
@@ -158,25 +162,15 @@ class Image(models.Model):
 	type = models.CharField(max_length=10)
 
 	def __str__(self):
-		return self.url
+		return self.name.url
 
-	def show_picture(self):
-		if 'google' in self.url:
-			return self.url.replace(
-				'open?id=',
-				'uc?id='
-			).replace(
-				'/view',
-				''
-			).replace(
-				'?usp=sharing',
-				''
-			).replace(
-				'file/d/',
-				'uc?id='
-			)
+	def get_contours(self):
+		if self.name != '1':
+			img = cv2.imdecode(numpy.fromstring(self.name.read(), numpy.uint8), cv2.IMREAD_UNCHANGED)
+			gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+			ret, thresh4 = cv2.threshold(gray, 127, 255, cv2.THRESH_TOZERO)
+			contours, hierarchy = cv2.findContours(thresh4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+			return len(contours)
 		else:
-			return "data/{}".format(self.name)
+			return '1'
 
-	def get_file(self):
-		pass
