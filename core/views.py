@@ -103,6 +103,7 @@ class TaskFeedbackView(SingleObjectMixin, ListView):
 @login_required
 @permission_required('core.add_solution')
 def new_solution(request, task_id):
+    """todo: Вынести валидацию в формы!"""
     task = Task.objects.get(id=task_id)
     formset = []
     if task.task_type == '1':
