@@ -1,12 +1,11 @@
 import os
 #import cv2
 import numpy
-from colorthief import ColorThief
-from PIL import Image as img2
+#from PIL import Image as img2
 from django.db import models
 from django.contrib.auth.models import User, Group
 from tinymce.models import HTMLField
-from edu_test.settings import BASE_DIR
+
 
 class Company(models.Model):
 	name = models.CharField(max_length=100)
