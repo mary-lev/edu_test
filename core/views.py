@@ -87,7 +87,7 @@ def show_profile_module(request, module_id):
     return render(request, 'profile_module.html', {'feedbacks': feedbacks, 'module': module})
 
 
-class TaskFeedbackView(SingleObjectMixin, ListView, LoginRequiredMixin):
+class TaskFeedbackView(LoginRequiredMixin, SingleObjectMixin, ListView):
     model = Feedback
 
     def get(self, request, *args, **kwargs):
@@ -180,7 +180,7 @@ mio_filenames = ['mio4_lesson_1.json', 'mio4_lesson_2.json', 'mio4_lesson_3.json
                  ]
 
 
-class Feedbackadding(CreateView, LoginRequiredMixin):
+class Feedbackadding(LoginRequiredMixin, CreateView):
     model = Feedback
     form_class = FeedbackForm
     template_name = 'add_feedbacks.html'
@@ -220,7 +220,7 @@ class Feedbackadding(CreateView, LoginRequiredMixin):
             return self.form_valid(form)
 
 
-class StudentView(DetailView, LoginRequiredMixin):
+class StudentView(LoginRequiredMixin, DetailView):
     model = Student
 
     """def get_context_data(self, **kwargs):
@@ -235,7 +235,7 @@ class StudentView(DetailView, LoginRequiredMixin):
                     return context"""
 
 
-class StudentImageView(ListView, LoginRequiredMixin):
+class StudentImageView(LoginRequiredMixin, ListView):
     model = Student
     template_name = "core/students_images.html"
 
@@ -243,24 +243,24 @@ class StudentImageView(ListView, LoginRequiredMixin):
         return Student.objects.filter(stream=4)
 
 
-class ImageListView(ListView, LoginRequiredMixin):
+class ImageListView(LoginRequiredMixin, ListView):
     model = Image
 
 
-class TaskView(DetailView, LoginRequiredMixin):
+class TaskView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'task.html'
 
 
-class FeedbackView(DetailView, LoginRequiredMixin):
+class FeedbackView(LoginRequiredMixin, DetailView):
     model = Feedback
 
 
-class LessonView(DetailView, LoginRequiredMixin):
+class LessonView(LoginRequiredMixin, DetailView):
     model = Lesson
 
 
-class ModuleView(DetailView, LoginRequiredMixin):
+class ModuleView(LoginRequiredMixin, DetailView):
     model = Module
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
@@ -271,7 +271,7 @@ class ModuleView(DetailView, LoginRequiredMixin):
                     return context"""
 
 
-class StreamView(DetailView, LoginRequiredMixin):
+class StreamView(LoginRequiredMixin, DetailView):
     model = Stream
 
 
@@ -302,7 +302,7 @@ def tolstoy(request):
 """show all solutions for one task"""
 
 
-class SolutionTask(SingleObjectMixin, ListView, LoginRequiredMixin):
+class SolutionTask(LoginRequiredMixin, SingleObjectMixin, ListView):
     model = Solution
 
     def get(self, request, *args, **kwargs):
@@ -321,7 +321,7 @@ class SolutionTask(SingleObjectMixin, ListView, LoginRequiredMixin):
 """show all solutions for module Texts"""
 
 
-class SolutionAll(ListView, LoginRequiredMixin):
+class SolutionAll(LoginRequiredMixin, ListView):
     model = Solution
 
     def get_queryset(self):
@@ -331,7 +331,7 @@ class SolutionAll(ListView, LoginRequiredMixin):
 """show all solutions if one student"""
 
 
-class SolutionStudent(SingleObjectMixin, ListView, LoginRequiredMixin):
+class SolutionStudent(LoginRequiredMixin, SingleObjectMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=Student.objects.all())
@@ -346,15 +346,15 @@ class SolutionStudent(SingleObjectMixin, ListView, LoginRequiredMixin):
         return self.object.solutions.all()
 
 
-class ModuleListView(ListView, LoginRequiredMixin):
+class ModuleListView(LoginRequiredMixin, ListView):
     model = Module
 
 
-class StreamListView(ListView, LoginRequiredMixin):
+class StreamListView(LoginRequiredMixin, ListView):
     model = Stream
 
 
-class StudentListView(ListView, LoginRequiredMixin):
+class StudentListView(LoginRequiredMixin, ListView):
     model = Student
 
 
