@@ -44,8 +44,7 @@
                 </div>
             {% endthumbnail %}</td>
         <td>{% if image.get_width < 2000 %}small{% else %}big{% endif %}{{ image.size }}</td>
-        <td>{{ image.contours }}</td>
-    <td>{{ image.edges }}</td>
+
         <td>{{ image.contours_edges }}</td>
     </tr>
         {% endif %}

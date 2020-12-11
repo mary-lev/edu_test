@@ -262,6 +262,8 @@ class LessonView(DetailView, LoginRequiredMixin):
 
 class ModuleView(DetailView, LoginRequiredMixin):
     model = Module
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
 
     """def get_context_data(self, **kwargs):
                     context = super().get_context_data(**kwargs)
