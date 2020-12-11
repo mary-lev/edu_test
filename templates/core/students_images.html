@@ -1,0 +1,21 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1 class="display-4">Студенты</h1>
+
+<ol>
+	{% for student in object_list %}
+        {% if student.images.all %}
+	<li><a href="{% url 'core:student' student.id %}">{{ student }}</a>:
+        индекс {{ student.get_image_index.0 }},
+        всего {{ student.get_image_index.1 }} {% if student.get_image_index.1 == 1 %}картинка.
+            {% elif student.get_image_index.1 < 5 %}картинки.{% else %}картинок.{% endif %}</p> </li>
+        {% endif %}
+	{% endfor %}
+</ol>
+
+
+
+{% endblock %}

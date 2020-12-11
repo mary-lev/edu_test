@@ -26,6 +26,8 @@ urlpatterns = [
 	path('student/<pk>/', views.StudentView.as_view(), name='student'),
 	path('students/', views.StudentListView.as_view(), name='students'),
     path('task/<pk>/solutions', views.SolutionTask.as_view(), name='task_solutions'),
+	path('images/', views.ImageListView.as_view(), name='images'),
+	path('students_images', views.StudentImageView.as_view(), name='students_with_images'),
 
 	path('add_feedbacks/', views.Feedbackadding.as_view(), name='add_feedbacks'),
     path('task/<pk>/feedbacks', views.TaskFeedbackView.as_view(), name='task_feedbacks'),

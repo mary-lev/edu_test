@@ -1,0 +1,57 @@
+  
+{% extends 'base.html' %}
+
+
+{% block content %}
+     {% load thumbnail %}
+<h1 class="display-4">Эскизы</h1>
+
+    <p><a href="{% url 'core:module' 3 %}">По задачам МИО</a></p>
+    <p><a href="{% url 'core:students_with_images' %}">По студентам</a></p>
+
+
+<table class="table table-striped">
+<thead>
+    <tr>
+      <th scope="col">Студент</th>
+      <th scope="col">Задача</th>
+        <th scope="col">Эскиз</th>
+      <th scope="col">Размер</th>
+        <th scope="col">Index</th>
+    </tr>
+  </thead>
+	{% for image in object_list %}
+        {% if image.size != '1' %}
+	<tr>
+        <td><a href="{% url 'core:student' image.student.id %}">{{ image.student.first_name }} {{ image.student.last_name }}</a></td>
+        <td><a href="{% url 'core:task' image.task.id %}">{{ image.task.number }}</a></td>
+        <td>
+            {% thumbnail image.name "100x100" crop="center" as im %}
+              <div data-toggle="modal" data-target="#exampleModal{{ image.id }}">
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></div>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal{{ image.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{ image.id }}">{{ image.task.number }}</h5>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ MEDIA_URL }}{{ image.name.url }}" width=500 />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endthumbnail %}</td>
+        <td>{% if image.get_width < 2000 %}small{% else %}big{% endif %}{{ image.size }}</td>
+        <td>{{ image.contours }}</td>
+    <td>{{ image.edges }}</td>
+        <td>{{ image.contours_edges }}</td>
+    </tr>
+        {% endif %}
+	{% endfor %}
+</table>
+
+
+
+{% endblock %}

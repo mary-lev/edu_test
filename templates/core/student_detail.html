@@ -37,11 +37,12 @@
 
     <!-- Если студент проходил модуль МИО -->
     {% if 'Информационные ожидания' in stream.module.name %}
+        <p>Усредненный индекс {{ object.get_image_index.0 }}, нарисовано {{ object.get_image_index.1 }} картинок.</p>
         {% for image in object.images.all %}
             {%  if image.name.url != '1' %}
-            {{ image.task.number }}
+           Задача {{ image.task.number }}.
                 {% if image.contours %}
-                Contours: {{ image.contours }}. Edges: {{ image.edges }}. Size: {{ image.size }}
+                Детальность {{ image.contours_edges }}.
                 {% endif %}
 
             {% thumbnail image.name "100x100" crop="center" as im %}

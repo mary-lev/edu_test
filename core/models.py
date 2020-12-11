@@ -1,6 +1,7 @@
 import os
 #import cv2
 import numpy
+from colorthief import ColorThief
 from PIL import Image as img2
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -40,6 +41,15 @@ class Student(models.Model):
 
 	def __str__(self):
 		return "{0} {1}".format(self.first_name, self.last_name)
+
+	def get_image_index(self):
+		images = Image.objects.filter(student=self.id).exclude(name='1').exclude(type='doc').exclude(
+			type='application/x-zip-compressed')
+		try:
+			all_edges = round(sum([image.contours_edges() for image in images]) / len(images), 2)
+		except ZeroDivisionError:
+			all_edges = 0
+		return all_edges, len(images)
 
 
 class NewStudent(User):
@@ -166,6 +176,22 @@ class Image(models.Model):
 
 	def __str__(self):
 		return self.name.url
+
+	def get_area(self):
+		width, height, _ = self.size.replace('(', '').replace(')', '').split(', ')
+		area = int(width) * int(height)
+		return int(area / self.contours)
+
+	def get_width(self):
+		width, height, _ = self.size.replace('(', '').replace(')', '').split(', ')
+		return int(width)
+
+	def get_height(self):
+		width, height, _ = self.size.replace('(', '').replace(')', '').split(', ')
+		return int(height)
+
+	def contours_edges(self):
+		return round(self.contours / self.edges, 2)
 
 	"""def get_contours(self):
 		if self.name != '1' and self.type != 'doc' and self.type != 'application/x-zip-compressed':
