@@ -123,7 +123,7 @@ class NewStudentAdmin(admin.ModelAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('type', 'name', 'student', 'task', 'edges', 'contours',)
+    list_display = ('type', 'name', 'student', 'task', 'edges', 'contours', 'size',)
     list_filter = ('task__lesson', 'task__number',)
 
 
