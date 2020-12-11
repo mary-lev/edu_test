@@ -39,9 +39,9 @@
     {% if 'Информационные ожидания' in stream.module.name %}
         {% for image in object.images.all %}
             {%  if image.name.url != '1' %}
-            {{ image.task.number }} {{ image.get_contours }}
+            {{ image.task.number }}
                 {% if image.contours %}
-                Contours: {{ image.contours }}. Edges: {{ image.edges }}
+                Contours: {{ image.contours }}. Edges: {{ image.edges }}. Size: {{ image.size }}
                 {% endif %}
 
             {% thumbnail image.name "100x100" crop="center" as im %}
