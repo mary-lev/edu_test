@@ -16,20 +16,16 @@ DEBUG = True
 
 try:
     from .secret import *
-    DATABASES = {
-        'default': {
+
+except ImportError:
+    pass
+    #DATABASES = {'default':{'ENGINE': 'django.db.backends.postgresql','PORT': "5432",}
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        }
-        }
-except ImportError:
-    DATABASES = {
-    'default':
-    {'ENGINE': 'django.db.backends.postgresql',
-    'PORT': "5432",
     }
-    }
-
+}
 ALLOWED_HOSTS = ["*"]
 
 
@@ -143,8 +139,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
 MEDIA_URL = '/data/'

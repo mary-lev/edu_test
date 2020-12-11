@@ -40,6 +40,9 @@
         {% for image in object.images.all %}
             {%  if image.name.url != '1' %}
             {{ image.task.number }} {{ image.get_contours }}
+                {% if image.contours %}
+                Contours: {{ image.contours }}. Edges: {{ image.edges }}
+                {% endif %}
 
             {% thumbnail image.name "100x100" crop="center" as im %}
               <div data-toggle="modal" data-target="#exampleModal{{ image.task.number }}">

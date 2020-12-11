@@ -160,17 +160,24 @@ class Image(models.Model):
 	url = models.URLField()
 	name = models.ImageField(upload_to='data')
 	type = models.CharField(max_length=10)
+	contours = models.IntegerField(default=0)
+	edges = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.name.url
 
 	def get_contours(self):
-		if self.name != '1':
+		if self.name != '1' and self.type != 'doc' and self.type != 'application/x-zip-compressed':
 			img = cv2.imdecode(numpy.fromstring(self.name.read(), numpy.uint8), cv2.IMREAD_UNCHANGED)
 			gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 			ret, thresh4 = cv2.threshold(gray, 127, 255, cv2.THRESH_TOZERO)
 			contours, hierarchy = cv2.findContours(thresh4, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-			return len(contours)
+			edges = cv2.Canny(thresh4, 100, 120)
+			cnts, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+			self.edges = len(edges)
+			self.contours = len(contours)
+			self.save()
+			return (len(contours), len(edges))
 		else:
 			return '1'
 
