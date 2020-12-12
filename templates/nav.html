@@ -50,9 +50,31 @@
          {% endif %}
       </li>
     </ul>
-        
-      {% if user.is_authenticated %}<a class="nav-link" href="{% url 'core:profile' %}"><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Мой профиль</button></a>{% else %}<a class="nav-link" href="{% url 'core:login' %}"><button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Вход</button></a>{% endif %}
-    
+
+
+
+  <ul class="navbar-nav col-2 justify-content-end">
+          {% if user.is_authenticated %}
+          <li class="nav-item active">
+            <div class="btn-group">
+              <button type="button" class="btn dropdown-toggle btn-outline-primary my-2 my-sm-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Мой профиль
+              </button>
+              <div class="dropdown-menu dropdown-menu-right mt-3">
+                <a href="{% url 'core:profile' %}" class="dropdown-item py-2">Профиль</a>
+                <a href="{% url 'core:profile' %}" class="dropdown-item py-2">Модули</a>
+                <a href="{% url 'core:profile' %}" class="dropdown-item py-2">Статистика</a>
+                <a href="{% url 'core:logout' %}?next=/" class="dropdown-item py-2">Выйти</a>
+              </div>
+            </div>
+          </li>
+          {% else %}
+              <li class="nav-item">
+              <a class="nav-link text-light font-weight-bold" href="{%  url 'core:login' %}">
+                  <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Вход</button></a>
+          {% endif %}
+      </li>
+        </ul>
+
   </div>
 </nav>
 </div>

@@ -128,15 +128,18 @@ def new_solution(request, task_id):
             if myformset.is_valid():
                 messages.add_message(
                     request,
-                    messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark))
+                    messages.SUCCESS,
+                    "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
+                )
         else:
             formset = QuestionFormSet(request.POST, instance=task)
             if formset and formset.is_valid():
-                rooms = formset.save()
-                solution = Solution.objects.get(task=task, student=student)
+                formset.save()
+                solution.refresh_from_db()
                 messages.add_message(
                     request,
-                    messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
+                    messages.SUCCESS,
+                    "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark)
                 )
         return render(request, template, {
             'task': task,
