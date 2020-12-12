@@ -1,7 +1,7 @@
 import json
 import string
-import csv
 import pandas as pd
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
@@ -108,16 +108,17 @@ class TaskFeedbackView(LoginRequiredMixin, SingleObjectMixin, ListView):
 def new_solution(request, task_id):
     """todo: Вынести валидацию в формы!"""
     task = Task.objects.get(id=task_id)
+    student = Student.objects.get(id=128)
+    solution, create = Solution.objects.get_or_create(student=student, task=task)
     formset = []
     if task.task_type == '1':
         template = 'solution2.html'
         formset = QuestionFormSet(instance=task)
     else:
         template = 'solution1.html'
-        VariantForm = choice_form(task)
+        VariantForm = choice_form(task, solution)
     questions = Question.objects.filter(task=task)
-    student = Student.objects.get(id=128)
-    solution, create = Solution.objects.get_or_create(student=student, task=task)
+
     if request.method == 'POST':
         solution.mark = 0
         solution.variant.clear()
@@ -125,10 +126,7 @@ def new_solution(request, task_id):
             myformset = VariantForm(request.POST, prefix=questions[0].id)
             formset.append(myformset)
             if myformset.is_valid():
-                if task.task_type == '3':
-                    solution.text = myformset.cleaned_data['answer']
-                    solution.mark = task.mark
-                elif task.task_type == '2':
+                if task.task_type == '2':
                     answers = myformset.cleaned_data['variants']
                     not_checked = task.questions.all()[0].variants.exclude(id__in=answers)
                     for answer in answers:
@@ -138,10 +136,6 @@ def new_solution(request, task_id):
                     for empty in not_checked:
                         if not empty.is_right:
                             solution.mark += empty.mark
-                elif task.task_type == '4':
-                    if myformset.cleaned_data['answer']:
-                        solution.text = 'Done!'
-                        solution.mark = task.mark
                 solution.save()
                 messages.add_message(
                     request,

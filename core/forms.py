@@ -80,7 +80,7 @@ def make_checkbox_formset(question, extra=0):
 
 
 """form for textarea"""
-def make_task_form(question, extra=0):
+def make_task_form(question, solution, extra=0):
     class _QuestionForm(CrispyModelForm):
         answer = forms.CharField(
             widget=forms.Textarea(attrs={"rows":5, "cols":40, 'class': 'mb-0'}),
@@ -90,10 +90,16 @@ def make_task_form(question, extra=0):
             model = Question
             fields = ('answer',)
 
+        def clean(self):
+            cleaned_data = super().clean()
+            solution.text = cleaned_data.get('answer')
+            solution.mark = question.mark
+            solution.save()
+
     return _QuestionForm
 
-"""form for textarea"""
-def make_one_checkbox(question, extra=0):
+"""form for one checkbox"""
+def make_one_checkbox(question, solution, extra=0):
     class _OneCheckboxForm(CrispyModelForm):
         answer = forms.CharField(
             widget=forms.CheckboxInput(),
@@ -103,19 +109,26 @@ def make_one_checkbox(question, extra=0):
             model = Question
             fields = ('answer',)
 
+        def clean(self):
+            cleaned_data = super().clean()
+            if cleaned_data['answer']:
+                solution.text = 'Done!'
+                solution.mark = question.mark
+                solution.save()
+
     return _OneCheckboxForm
 
 
 """forms for task solutions"""
-def choice_form(task):
+def choice_form(task, solution):
     if task.task_type == 1:
         VariantForm = QuestionFormSet(instance=task)
     elif task.task_type == '2':
         VariantForm = make_checkbox_formset(task.questions.all()[0])
     elif task.task_type == '3':
-        VariantForm = make_task_form(task.questions.all()[0])
+        VariantForm = make_task_form(task.questions.all()[0], solution)
     elif task.task_type == '4':
-        VariantForm = make_one_checkbox(task.questions.all().first())
+        VariantForm = make_one_checkbox(task.questions.all().first(), solution)
     else:
         VariantForm = make_question_formset(task.questions.all()[0])
     return VariantForm
