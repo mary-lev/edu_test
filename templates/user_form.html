@@ -1,0 +1,12 @@
+{% extends 'profile_base.html' %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+<div class="container">
+    <h3>Мой профиль: {{ object.username }}</h3>
+    {% crispy form %}
+    <button type="button" class="btn btn-outline-success">Изменить</button>
+
+
+</div>
+{% endblock %}

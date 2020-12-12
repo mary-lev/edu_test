@@ -3,12 +3,13 @@ import string
 import pandas as pd
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import TemplateView, ListView, CreateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, UpdateView
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -68,6 +69,23 @@ def show_profile(request):
         new=Count('lessons__tasks__feedbacks'))
     students = Module.objects.filter(author=request.user).annotate(num_students=Count('streams__students'))
     return render(request, 'profile.html', {'feedbacks': feedbacks, 'students': students})
+
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'user_detail.html'
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(id=self.request.user.id)
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = ('first_name', 'last_name', 'email',)
+    template_name = 'user_form.html'
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(id=self.request.user.id)
 
 
 @login_required

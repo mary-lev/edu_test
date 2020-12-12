@@ -1,0 +1,13 @@
+{% extends 'profile_base.html' %}
+
+{% block content %}
+<div class="container">
+    <h3>Мой профиль: {{ object.username }}</h3>
+    <p>{{ object.first_name }} {{ object.last_name }}</p>
+    <p>{{ object.email }}</p>
+    <a href="{% url 'core:profile_update' %}">
+    <button type="button" class="btn btn-outline-success">Изменить</button>
+</a>
+
+</div>
+{% endblock %}
