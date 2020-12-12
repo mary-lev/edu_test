@@ -62,7 +62,7 @@ class VariantModelMultipleChoiceField(ModelMultipleChoiceField):
         return obj.text
 
 
-def make_checkbox_formset(question, extra=0):
+def make_checkbox_formset(question, solution, extra=0):
     class _VariantForm(CrispyModelForm):
         variants = VariantModelMultipleChoiceField(
             queryset=Variant.objects.filter(question=question).distinct(),
@@ -75,6 +75,18 @@ def make_checkbox_formset(question, extra=0):
         class Meta:
             model = Question
             fields = ['variants']
+
+        def clean(self):
+            cleaned_data = super().clean()
+            answers = cleaned_data.get('variants')
+            not_checked = question.variants.exclude(id__in=answers)
+            for answer in answers:
+                solution.variant.add(answer)
+                if answer.is_right:
+                    solution.mark += answer.mark
+            for empty in not_checked:
+                if not empty.is_right:
+                    solution.mark += empty.mark
 
     return _VariantForm
 
@@ -124,7 +136,7 @@ def choice_form(task, solution):
     if task.task_type == 1:
         VariantForm = QuestionFormSet(instance=task)
     elif task.task_type == '2':
-        VariantForm = make_checkbox_formset(task.questions.all()[0])
+        VariantForm = make_checkbox_formset(task.questions.all()[0], solution)
     elif task.task_type == '3':
         VariantForm = make_task_form(task.questions.all()[0], solution)
     elif task.task_type == '4':
