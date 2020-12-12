@@ -59,7 +59,7 @@ class MyLoginView(LoginView):
 
 def index(request):
     streams = Stream.objects.all().order_by('module__name', 'name')
-    return render(request, 'index.html', {'streams': streams})
+    return render(request, 'index.html', {'streams': streams, 'form': form})
 
 
 @login_required

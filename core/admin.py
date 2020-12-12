@@ -70,8 +70,12 @@ class LessonInline(admin.TabularInline):
 
 
 class ModuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'get_author',)
     model = Module
     inlines = (StreamInline, LessonInline,)
+
+    def get_author(self, obj):
+        return ' '.join([module.username for module in obj.author.all()])
 
 
 class TaskForm(forms.ModelForm):

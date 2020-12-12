@@ -4,13 +4,14 @@
         <aside class="pt-3 pb-4 px-4 mb-5 card">
           <h1 class="h4 pt-2 pb-2">Dashboard</h1>
           <div class="nav flex-column nav-pills">
-            <a class="nav-link active" href="{% url 'core:profile_detail' %}">Профиль</a>
+            <a class="nav-link" href="{% url 'core:profile_detail' %}">Мой профиль</a>
             {% if user.is_authenticated %}
               {% for module in user.modules.all %}
                 <a class="nav-link" href="{% url 'core:module' module.id %}">Модуль «{{ module.name }}»</a>
                 <ul>
+                    <li><a href="{% url 'core:module' module.id %}">Задачи</a></li>
                   {% for stream in module.streams.all %}
-                      <li>   {{ stream.name }}</li>
+                      <li>   {{ stream.name }}: Статистика * <a href="{% url 'core:module_feedbacks' module.id %}">Feedback</a></li>
                       {% endfor %}
                 </ul>
               {% endfor %}
@@ -18,11 +19,7 @@
                 <a class="nav-link" href="{% url 'core:stream' stream.id %}">Модуль «{{ stream.module.name }}»</a>
               {% endfor %}
             {% endif %}
-            <a class="nav-link" href="{% url 'core:streams' %}">Cтуденты</a>
-            <a class="nav-link" href="{% url 'core:streams' %}">Статистика</a>
-            {% for module in user.modules.all %}
-            <a class="nav-link" href="{% url 'core:module_feedbacks' module.id %}">Feedback по модулю {{ module.name }}</a>
-            {% endfor %}
+
           </div>
         </aside>
       </div>
