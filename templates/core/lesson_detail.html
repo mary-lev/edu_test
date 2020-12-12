@@ -22,6 +22,7 @@
 <div class="card">
   <div class="card-body">{% if object.next_lesson %}
     <a href="{% url 'core:lesson' object.next_lesson %}">Следующий урок</a>
+      {% else %} <a href="{% url 'core:module' object.module.id %}">К оглавлению модуля</a>
     {% endif %}
   </div>
 </div>

@@ -153,6 +153,21 @@ CELERY_TASK_SERIALIZER = 'json'
 
 #CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "320px",
+    "width": "960px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "autolink lists link image charmap preview anchor"
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+    "language": "ru_RU",  # To force a specific language instead of the Django current language.
+}
+
 
 """INTERNAL_IPS = [
     '127.0.0.1',
