@@ -130,10 +130,7 @@ def new_solution(request, task_id):
                     request,
                     messages.SUCCESS, "Ответ принят! Ваш балл {} из {}!".format(solution.mark, task.mark))
         else:
-            try:
-                formset = QuestionFormSet(request.POST, instance=task)
-            except ValidationError:
-                formset = None
+            formset = QuestionFormSet(request.POST, instance=task)
             if formset and formset.is_valid():
                 rooms = formset.save()
                 solution = Solution.objects.get(task=task, student=student)

@@ -178,8 +178,10 @@ FeedbackFormSet = modelformset_factory(
     )
 
 
-"""inlineformset for task with radiobuttons"""
 class VariantForm(forms.ModelForm):
+    """
+    Inlineformset for task with multiple radiobuttons
+    """
     variants = VariantModelChoiceField(
         queryset=Variant.objects.none(),
         to_field_name='text',

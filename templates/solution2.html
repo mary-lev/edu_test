@@ -1,3 +1,5 @@
+<!-- Template for multiple radiobutton task -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -26,8 +28,8 @@
     {% csrf_token %}
 
 {{ formset.management_form }}
-	{% for form in formset.forms %}
-  		<h5>{{ form.initial.question_text }} {{ form }}</h5>
+	{% for form in formset.forms %}<div class="invisible">{{ form }}</div>
+        <h5>{{ form.initial.question_text }} </h5>
   			{{ form.nested.management_form }}
   			{% for f in form.nested %}
 		  		<p>{{ f }}</p>

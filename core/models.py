@@ -125,7 +125,7 @@ class Question(models.Model):
 		('4', 'OneCheckbox'),
 		)
 	question_type = models.CharField(max_length=1, choices = QUESTION_TYPES, verbose_name='Тип вопроса')
-	question_text = models.CharField(max_length=1000)
+	question_text = models.CharField(max_length=1000, blank=True)
 	description = models.CharField(max_length=1000, null=True, blank=True)
 	mark = models.IntegerField(default=0)
 
